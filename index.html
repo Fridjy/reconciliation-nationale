@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 Questions · Réconciliation Nationale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+
+<!-- ===== MODULAR CSS ===== -->
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/answers.css">
+<link rel="stylesheet" href="css/map.css">
+<link rel="stylesheet" href="css/register.css">
+<link rel="stylesheet" href="css/pagination.css">
+<link rel="stylesheet" href="css/experience.css">
+<link rel="stylesheet" href="css/modern.css">
+</head>
+<body>
+
+<!-- ============================================================
+     PHASE 1: QUESTIONNAIRE (what the user sees on landing)
+     Full-screen, one question at a time
+     ============================================================ -->
+<div id="phase-questionnaire" class="phase active">
+
+  <!-- Minimal topbar during questionnaire -->
+  <div class="q-topbar">
+    <div class="q-topbar-inner">
+      <div class="q-brand">
+        <img src="logo.png" alt="RN" class="q-brand-logo">
+        <span>Réconciliation Nationale</span>
+      </div>
+      <div class="q-topbar-right">
+        <button class="link-btn" onclick="showAbout()" data-i18n="about-btn">Poukisa?</button>
+        <button class="link-btn" onclick="showLogin()" data-i18n="profile-login">Konekte</button>
+        <div class="lang-switch">
+          <button data-lang="ht">KR</button>
+          <button data-lang="fr" class="active">FR</button>
+          <button data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+    <!-- Progress -->
+    <div class="q-progress">
+      <div class="q-progress-fill" id="q-progress-fill" style="width: 20%"></div>
+    </div>
+  </div>
+
+  <!-- Welcome screen (shown before Q1) -->
+  <div class="welcome-screen" id="welcome-screen">
+    <div class="welcome-inner">
+      <!-- Hero art -->
+      <div class="hero-art">
+        <img src="images/people.png" alt="Pèp Ayisyen" class="hero-art-img">
+      </div>
+      <img src="logo.png" alt="Réconciliation Nationale" class="welcome-logo">
+      <h1 class="welcome-title" data-i18n="welcome-title">5 questions.<br>Un seul pays.</h1>
+      <p class="welcome-sub" data-i18n="welcome-sub">Un appel direct à chaque Haïtien. Votre voix compte.</p>
+      <div class="welcome-counter">
+        <span class="welcome-count" id="welcome-count">1,847</span>
+        <span class="welcome-count-label" data-i18n="welcome-count-label">Haïtiens ont déjà répondu</span>
+      </div>
+      <div class="welcome-quote" id="welcome-quote"></div>
+      <button class="btn-primary welcome-cta" onclick="startQuestionnaire()" data-i18n="welcome-cta">Commencer</button>
+      <button class="link-btn welcome-about" onclick="showAbout()" data-i18n="about-btn">Pourquoi ?</button>
+    </div>
+  </div>
+
+  <!-- Question slides -->
+  <div class="q-fullscreen" id="q-fullscreen" style="display:none;">
+    <!-- Slides injected by JS -->
+  </div>
+
+</div>
+
+<!-- ============================================================
+     PHASE 2: REGISTRATION (after answering 5 questions)
+     ============================================================ -->
+<div id="phase-register" class="phase">
+
+  <div class="q-topbar">
+    <div class="q-topbar-inner">
+      <div class="q-brand">
+        <img src="logo.png" alt="RN" class="q-brand-logo">
+        <span>Réconciliation Nationale</span>
+      </div>
+      <div class="q-topbar-right">
+        <div class="lang-switch">
+          <button data-lang="ht">KR</button>
+          <button data-lang="fr" class="active">FR</button>
+          <button data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="register-screen">
+    <div class="register-card">
+      <div class="register-kicker" data-i18n="reg-kicker">Dènye etap</div>
+      <h2 class="register-title" data-i18n="reg-title">Sign<span class="accent">ati</span>re ou.</h2>
+      <p class="register-hint" data-i18n="reg-hint">Enskri pou pibliye repons ou yo. Enfòmasyon w ap rete prive — sèlman non ou ap parèt piblikman.</p>
+
+      <form id="register-form" onsubmit="return handleRegister(event)">
+        <div class="form-group">
+          <label for="reg-name" data-i18n="reg-name-label">Non konplè <span class="required">*</span></label>
+          <input type="text" id="reg-name" required placeholder="" data-i18n-ph="reg-name-ph">
+        </div>
+        <div class="form-group">
+          <label for="reg-phone" data-i18n="reg-phone-label">Nimewo telefòn <span class="required">*</span></label>
+          <input type="tel" id="reg-phone" required placeholder="" data-i18n-ph="reg-phone-ph">
+        </div>
+        <div class="form-group">
+          <label for="reg-email" data-i18n="reg-email-label">Imèl</label>
+          <input type="email" id="reg-email" placeholder="" data-i18n-ph="reg-email-ph">
+        </div>
+        <div class="form-group">
+          <label for="reg-address" data-i18n="reg-address-label">Kote w ye <span class="required">*</span></label>
+          <input type="text" id="reg-address" required placeholder="" data-i18n-ph="reg-address-ph">
+        </div>
+        <div class="form-group">
+          <label for="reg-password" data-i18n="reg-password-label">Modpas</label>
+          <input type="password" id="reg-password" minlength="4" placeholder="" data-i18n-ph="reg-password-ph">
+        </div>
+
+        <!-- Anonymous toggle -->
+        <div class="anon-toggle" id="anon-toggle">
+          <label class="anon-switch">
+            <input type="checkbox" id="reg-anon" onchange="toggleAnon()">
+            <span class="anon-slider"></span>
+          </label>
+          <div class="anon-label">
+            <span class="anon-text" data-i18n="reg-anon-label">Pibliye anonim</span>
+            <span class="anon-hint" data-i18n="reg-anon-hint">Non w p ap parèt piblikman. Enfòmasyon w rete prive.</span>
+          </div>
+        </div>
+        <div class="anon-preview" id="anon-preview">
+          <span class="anon-preview-label" data-i18n="reg-publish-as">Ap pibliye tankou:</span>
+          <span class="anon-preview-name" id="anon-preview-name"></span>
+        </div>
+
+        <!-- Review answers before submitting -->
+        <div class="register-review" id="register-review"></div>
+
+        <button type="submit" class="btn-primary btn-full" data-i18n="reg-submit">Pibliye manifes mwen</button>
+      </form>
+
+      <p class="register-login-link">
+        <span data-i18n="reg-already">Ou gen kont deja?</span>
+        <a href="#" onclick="showLogin(); return false;" data-i18n="reg-login-link">Konekte</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     LOGIN OVERLAY
+     ============================================================ -->
+<div id="login-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideLogin()">&times;</button>
+    <h3 data-i18n="login-title">Konekte</h3>
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="form-group">
+        <label for="login-phone" data-i18n="reg-phone-label">Nimewo telefòn</label>
+        <input type="tel" id="login-phone" required placeholder="" data-i18n-ph="reg-phone-ph">
+      </div>
+      <div class="form-group">
+        <label for="login-password" data-i18n="reg-password-label">Modpas</label>
+        <input type="password" id="login-password" required placeholder="" data-i18n-ph="reg-password-ph">
+      </div>
+      <button type="submit" class="btn-primary btn-full" data-i18n="login-submit">Konekte</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================
+     ABOUT OVERLAY (learn more about the platform)
+     ============================================================ -->
+<div id="about-overlay" class="overlay">
+  <div class="overlay-card overlay-card--wide">
+    <button class="overlay-close" onclick="hideAbout()">&times;</button>
+    <div class="about-content">
+      <div class="about-kicker" data-i18n="about-kicker">Mouvman Sitwayen · Ayiti 2026</div>
+      <h2 data-i18n="about-title">Poukisa platfòm sa a?</h2>
+      <p data-i18n="about-p1">Pa gen ankèt. Pa gen sondaj. Se yon apèl dirèk bay chak Ayisyen: isit la, nan dyaspora, nan pwovens, nan kapital. Si w vle peyi a chanje, pale. Si w pa pale, lòt moun pral deside pou ou — ankò.</p>
+      <p data-i18n="about-p2"><strong>5 kesyon. Pa gen mwayèn nan pòs. Pa gen reponn olye. Ekri sa w panse vre.</strong></p>
+      <p data-i18n="about-p3">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+      <p data-i18n="about-p4">Aujourd'hui, la crise nous donne l'opportunité. L'opportunité de reconfigurer totalement. L'occasion de faire une entente nationale sur ce que nous voulons, non pas pour la garder pour nous, mais pour l'extérioriser. Pour prendre conscience, ensemble et publiquement, de qui nous sommes.</p>
+      <div class="about-tagline" data-i18n="tagline">Yon sèl peyi. Yon sèl tab. Yon sèl konvèsasyon.</div>
+      <button class="btn-primary" onclick="hideAbout()" data-i18n="about-close">Kontinye reponn</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PROFILE OVERLAY
+     ============================================================ -->
+<div id="profile-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideProfile()">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <h3 class="profile-name" id="profile-display-name"></h3>
+    </div>
+    <div class="profile-info" id="profile-info">
+      <!-- Filled by JS -->
+    </div>
+    <div class="profile-actions">
+      <button class="btn-ghost btn-full" onclick="handleLogout()" data-i18n="profile-logout">Dekonekte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PHASE 3: COMMUNITY (unlocked after registration)
+     ============================================================ -->
+<div id="phase-community" class="phase">
+
+  <!-- Full topbar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="ticker">
+        <span class="dot"></span>
+        <span data-i18n="ticker">5 KESYON · 5 REPONS · YON PEYI</span>
+      </div>
+      <div class="topbar-right-community">
+        <div class="lang-switch">
+          <button data-lang="ht">KR</button>
+          <button data-lang="fr" class="active">FR</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <button class="profile-btn" id="profile-btn" onclick="showProfile()">
+          <span class="profile-initials" id="profile-initials"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead-meta">
+      <span data-i18n="issue">Nimewo 01 · Vol. I</span>
+      <span class="edition" data-i18n="edition">Edisyon Sitwayen</span>
+      <span id="date-stamp"></span>
+    </div>
+    <div class="masthead-hero">
+      <img src="logo.png" alt="Réconciliation Nationale" class="masthead-logo">
+      <div class="masthead-hero-text">
+        <div class="brand" data-i18n="brand-kicker">Mouvman Sitwayen · Ayiti 2026</div>
+        <h1 data-i18n="title-1">Rekonsilyasyon<br><span class="amp">&</span>Nasyonal</h1>
+        <div class="tagline" data-i18n="tagline">Yon sèl peyi. Yon sèl tab. Yon sèl konvèsasyon.</div>
+      </div>
+    </div>
+    <div class="masthead-sub">
+      <span data-i18n="sub-left">Yon platfòm pou tout vwa Ayisyen</span>
+      <span data-i18n="sub-right">Pa pou yon kan · Pou peyi a</span>
+    </div>
+  </header>
+
+  <!-- Nav links -->
+  <nav class="site-nav">
+    <a href="index.html" class="site-nav-link active" data-i18n="nav-home">Accueil</a>
+    <a href="rapport.html" class="site-nav-link" data-i18n="nav-rapport">Rapport</a>
+    <a href="map.html" class="site-nav-link" data-i18n="nav-map">Carte</a>
+    <a href="about.html" class="site-nav-link" data-i18n="nav-about">&Agrave; propos</a>
+    <a href="consulted.html" class="site-nav-link" data-i18n="nav-consulted">Consultations</a>
+  </nav>
+
+  <!-- Activity feed -->
+  <div class="activity-feed" id="activity-feed">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat-item"><div class="n" id="stat-participants">1,847</div><div class="label" data-i18n="s-part">Patisipan</div></div>
+    <div class="stat-item"><div class="n" id="stat-answers">9,235</div><div class="label" data-i18n="s-ans">Repons</div></div>
+    <div class="stat-item"><div class="n" id="stat-votes">12,408</div><div class="label" data-i18n="s-votes">Vòt</div></div>
+    <div class="stat-item"><div class="n">10</div><div class="label" data-i18n="s-dept">Depatman</div></div>
+    <div class="stat-item"><div class="n">32</div><div class="label" data-i18n="s-dias">Peyi dyaspora</div></div>
+  </section>
+
+  <!-- 5 Questions as buttons -->
+  <section class="questions-buttons" id="questions-buttons">
+    <div class="qb-head reveal">
+      <h3 data-i18n="qo-h">5 kesyon pou yon nasyon</h3>
+    </div>
+    <div class="qb-grid reveal-stagger" id="qb-grid">
+      <a class="qb-btn" onclick="showQuestionAnswers('q1')">
+        <span class="qb-num">1</span>
+        <span class="qb-text" data-i18n="q1">Quel pays voulons-nous b&acirc;tir ?</span>
+        <span class="qb-arrow">&rarr;</span>
+      </a>
+      <a class="qb-btn" onclick="showQuestionAnswers('q2')">
+        <span class="qb-num">2</span>
+        <span class="qb-text" data-i18n="q2">Quel peuple voulons-nous devenir ?</span>
+        <span class="qb-arrow">&rarr;</span>
+      </a>
+      <a class="qb-btn" onclick="showQuestionAnswers('q3')">
+        <span class="qb-num">3</span>
+        <span class="qb-text" data-i18n="q3">Dans quel type de soci&eacute;t&eacute; voulons-nous vivre ?</span>
+        <span class="qb-arrow">&rarr;</span>
+      </a>
+      <a class="qb-btn" onclick="showQuestionAnswers('q4')">
+        <span class="qb-num">4</span>
+        <span class="qb-text" data-i18n="q4">Quelles institutions devons-nous cr&eacute;er ou changer ?</span>
+        <span class="qb-arrow">&rarr;</span>
+      </a>
+      <a class="qb-btn" onclick="showQuestionAnswers('q5')">
+        <span class="qb-num">5</span>
+        <span class="qb-text" data-i18n="q5">Comment voulons-nous &ecirc;tre gouvern&eacute;s ?</span>
+        <span class="qb-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Answers (shown when a question button is clicked) -->
+  <section class="answers-section" id="answers" style="display:none;">
+    <div class="answers-back">
+      <button class="btn-ghost" onclick="hideAnswers()" data-i18n="back-questions">&larr; Retounen nan kesyon yo</button>
+    </div>
+    <div class="current-q-display" id="current-q-display"></div>
+    <div class="answers-toolbar" id="answers-toolbar"></div>
+    <div class="answers-grid" id="answers-grid"></div>
+  </section>
+
+  <!-- Pullquote -->
+  <section class="pullquote">
+    <blockquote data-i18n="pq">Si w pa reponn kesyon sa yo jodi a, lòt moun ap reponn yo pou ou — demen.</blockquote>
+    <cite data-i18n="pq-c">&mdash; Apèl sitwayen</cite>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h5>Réconciliation Nationale</h5>
+        <p data-i18n="foot-p">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+      </div>
+      <div>
+        <h5 data-i18n="foot-nav">Navige</h5>
+        <ul>
+          <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+          <li><a href="rapport.html" data-i18n="nav-rapport">Rapport Citoyen</a></li>
+          <li><a href="map.html" data-i18n="nav-map">Carte</a></li>
+          <li><a href="about.html" data-i18n="nav-about">&Agrave; propos</a></li>
+          <li><a href="consulted.html" data-i18n="nav-consulted">Consultations</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 data-i18n="foot-conn">Konekte</h5>
+        <ul>
+          <li><a href="#">WhatsApp</a></li>
+          <li><a href="#">Telegram</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">TikTok</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 data-i18n="foot-lang">Lang</h5>
+        <ul>
+          <li><a onclick="setLang('ht')">Kreyòl</a></li>
+          <li><a onclick="setLang('fr')">Français</a></li>
+          <li><a onclick="setLang('en')">English</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>&copy; 2026 &middot; Reconciliation Nationale</span>
+      <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== MODULAR JS (order matters) ===== -->
+<!-- Uncomment when Firebase is configured:
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+-->
+<script src="js/firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/questionnaire.js"></script>
+<script src="js/answers.js"></script>
+<script src="js/map.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/app.js"></script>
+
+<script src="js/modern.js"></script>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapport Citoyen · Réconciliation Nationale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/register.css">
+<link rel="stylesheet" href="css/experience.css">
+<link rel="stylesheet" href="css/modern.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="ticker">
+      <span class="dot"></span>
+      <span data-i18n="ticker">5 QUESTIONS · 5 RÉPONSES · UN PAYS</span>
+    </div>
+    <div class="topbar-right-community">
+      <div class="lang-switch">
+        <button data-lang="ht">KR</button>
+        <button data-lang="fr" class="active">FR</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="profile-btn" id="profile-btn" onclick="showProfile()">
+        <span class="profile-initials" id="profile-initials"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <a href="index.html" class="site-nav-link" data-i18n="nav-home">Accueil</a>
+  <a href="rapport.html" class="site-nav-link active" data-i18n="nav-rapport">Rapport</a>
+  <a href="map.html" class="site-nav-link" data-i18n="nav-map">Carte</a>
+  <a href="about.html" class="site-nav-link" data-i18n="nav-about">&Agrave; propos</a>
+  <a href="consulted.html" class="site-nav-link" data-i18n="nav-consulted">Consultations</a>
+</nav>
+
+<div class="page-content">
+  <div class="page-head">
+    <span class="page-kicker" data-i18n="rapport-kicker">Analyse des données · Temps réel</span>
+    <h2 data-i18n="rapport-title">Rapport <em>Citoyen</em></h2>
+  </div>
+
+  <!-- Per-question analysis -->
+  <div id="rapport-questions"></div>
+
+  <!-- Insight cards -->
+  <div style="margin-top:48px;">
+    <h3 style="font-family:'Fraunces',serif;font-weight:900;font-size:24px;text-transform:uppercase;margin-bottom:20px;" data-i18n="rapport-insights">Découvertes clés</h3>
+    <div class="insight-cards" id="rapport-insights"></div>
+  </div>
+
+  <!-- Thematic Map -->
+  <div style="margin-top:48px;">
+    <h3 style="font-family:'Fraunces',serif;font-weight:900;font-size:24px;text-transform:uppercase;margin-bottom:8px;" data-i18n="rapport-thematic-map">Carte thématique</h3>
+    <p style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:rgba(10,8,6,0.55);margin-bottom:20px;" data-i18n="rapport-thematic-desc">Le thème dominant par département pour chaque question.</p>
+
+    <!-- Question selector -->
+    <div class="thematic-q-selector" id="thematic-q-selector"></div>
+
+    <div class="thematic-map-layout">
+      <!-- Mini map -->
+      <div class="thematic-map-wrap">
+        <svg class="thematic-map-svg" id="thematic-map-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" aria-label="Carte thématique">
+          <text x="400" y="250" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="rgba(10,8,6,0.4)">Chargement...</text>
+        </svg>
+        <!-- Theme color legend -->
+        <div class="thematic-legend" id="thematic-legend"></div>
+      </div>
+
+      <!-- Department detail panel -->
+      <div class="thematic-sidebar">
+        <div class="thematic-detail" id="thematic-detail">
+          <p style="font-style:italic;color:rgba(10,8,6,0.45);" data-i18n="rapport-thematic-click">Cliquez sur un département pour voir ses thèmes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department comparison -->
+  <div style="margin-top:48px;">
+    <h3 style="font-family:'Fraunces',serif;font-weight:900;font-size:24px;text-transform:uppercase;margin-bottom:20px;" data-i18n="rapport-compare">Comparaison par département</h3>
+    <div class="compare-grid" id="rapport-compare"></div>
+  </div>
+
+  <!-- AI Report -->
+  <div class="ai-report" id="ai-report-section">
+    <h3 data-i18n="rapport-ai">Rapport IA</h3>
+    <span class="ai-badge" data-i18n="rapport-ai-badge">Génération intelligente</span>
+    <div class="ai-report-content" id="ai-report-content">
+      <p style="color:rgba(10,8,6,0.5);font-style:italic;" data-i18n="rapport-ai-hint">
+        Générez un rapport complet analysé par intelligence artificielle à partir de toutes les réponses citoyennes.
+      </p>
+    </div>
+    <button class="btn-primary ai-generate-btn" id="ai-generate-btn" onclick="generateAIReport()" data-i18n="rapport-generate">Générer le rapport IA</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h5>Réconciliation Nationale</h5>
+      <p data-i18n="foot-p">Une plateforme citoyenne indépendante. Sans parti. Sans affiliation gouvernementale. Seulement la voix du peuple haïtien.</p>
+    </div>
+    <div>
+      <h5 data-i18n="foot-nav">Naviguer</h5>
+      <ul>
+        <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+        <li><a href="rapport.html" data-i18n="nav-rapport">Rapport Citoyen</a></li>
+        <li><a href="map.html" data-i18n="nav-map">Carte</a></li>
+        <li><a href="about.html" data-i18n="nav-about">&Agrave; propos</a></li>
+        <li><a href="consulted.html" data-i18n="nav-consulted">Consultations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-conn">Connecter</h5>
+      <ul>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Telegram</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-lang">Langue</h5>
+      <ul>
+        <li><a onclick="setLang('ht')">Kreyòl</a></li>
+        <li><a onclick="setLang('fr')">Français</a></li>
+        <li><a onclick="setLang('en')">English</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <span>&copy; 2026 &middot; Réconciliation Nationale</span>
+    <span>Un projet <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<div id="profile-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideProfile()">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <h3 class="profile-name" id="profile-display-name"></h3>
+    </div>
+    <div class="profile-info" id="profile-info"></div>
+    <div class="profile-actions">
+      <button class="btn-ghost btn-full" onclick="handleLogout()" data-i18n="profile-logout">Se déconnecter</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/questionnaire.js"></script>
+<script src="js/answers.js"></script>
+<script src="js/haiti-geo.js"></script>
+<script src="js/map.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/ai-report.js"></script>
+<script>
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.addEventListener('click', () => { setLang(b.dataset.lang); buildRapport(); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('profile-overlay').classList.contains('open')) hideProfile();
+  });
+
+  const user = getStoredUser();
+  if (!user || !user.registered) {
+    window.location.href = 'index.html';
+  } else {
+    setLang(currentLang);
+    const el = document.getElementById('profile-initials');
+    if (el) el.textContent = getInitials(user.name);
+    buildRapport();
+  }
+
+  function buildRapport() {
+    const lang = currentLang;
+    const qContainer = document.getElementById('rapport-questions');
+
+    // Per-question analysis
+    qContainer.innerHTML = QUESTIONS.map((q, idx) => {
+      const themes = ANALYSIS.topThemes(q.id, lang);
+      const consensus = ANALYSIS.consensus(q.id, lang);
+      const words = ANALYSIS.wordFrequency(q.id, lang);
+
+      return `
+        <div style="margin-bottom:48px;">
+          <h3 style="font-family:'Fraunces',serif;font-weight:900;font-size:20px;text-transform:uppercase;margin-bottom:4px;">
+            Q${idx + 1}. ${i18n[lang][q.key]}
+          </h3>
+          <div class="rapport-grid">
+            <div class="rapport-card">
+              <h4>${i18n[lang]['rapport-themes'] || 'Thèmes principaux'}</h4>
+              <div class="theme-tags">
+                ${themes.map((t, i) => `<span class="theme-tag ${i < 3 ? 'theme-tag-hot' : ''}">${t.word} <small>${t.pct}%</small></span>`).join('')}
+              </div>
+            </div>
+            <div class="rapport-card">
+              <h4>${i18n[lang]['rapport-consensus'] || 'Points de consensus'}</h4>
+              ${consensus.length > 0 ? consensus.map(c => `
+                <div class="consensus-item">
+                  <div class="consensus-label"><span>${c.word}</span><span>${c.pct}%</span></div>
+                  <div class="consensus-bar"><div class="consensus-fill" style="width:${c.pct}%"></div></div>
+                </div>
+              `).join('') : '<p style="font-style:italic;opacity:0.5;">Pas encore assez de données</p>'}
+            </div>
+          </div>
+          <div class="rapport-card" style="border:2px solid var(--ink);margin-top:2px;">
+            <h4>${i18n[lang]['rapport-words'] || 'Mots les plus fréquents'}</h4>
+            <div class="word-cloud">
+              ${words.slice(0, 25).map(([word, count]) => {
+                const size = Math.max(12, Math.min(36, 12 + count * 4));
+                const opacity = Math.max(0.4, Math.min(1, 0.4 + count * 0.1));
+                return `<span class="wc-word" style="font-size:${size}px;opacity:${opacity};">${word}</span>`;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Insight cards
+    const insights = ANALYSIS.generateInsights(lang);
+    document.getElementById('rapport-insights').innerHTML = insights.map(ins => `
+      <div class="insight-card">
+        <button class="ic-share" onclick="shareInsight(this)">\u2197</button>
+        <div class="ic-stat">${ins.stat}</div>
+        <div class="ic-text">${ins.text}</div>
+        <div class="ic-source">${ins.source}</div>
+      </div>
+    `).join('');
+
+    // Department comparison
+    const compareData = ANALYSIS.departmentComparison('q1', lang);
+    document.getElementById('rapport-compare').innerHTML = DEPARTMENTS
+      .filter(d => compareData[d.id] && compareData[d.id].length > 0)
+      .map(d => `
+        <div class="compare-card">
+          <h5>${d.name[lang]}</h5>
+          <div class="theme-tags">
+            ${compareData[d.id].map(t => `<span class="theme-tag">${t.word}</span>`).join('')}
+          </div>
+        </div>
+      `).join('') || '<div class="compare-card" style="grid-column:1/-1;text-align:center;padding:40px;"><p style="font-style:italic;opacity:0.5;">Pas encore assez de données par département</p></div>';
+
+    // AI Report button state
+    const btn = document.getElementById('ai-generate-btn');
+    if (btn) {
+      btn.disabled = !AI_REPORT.isConfigured();
+      if (!AI_REPORT.isConfigured()) {
+        btn.style.opacity = '0.5';
+        btn.title = 'Clé API non configurée (js/ai-report.js)';
+      }
+    }
+  }
+
+  async function generateAIReport() {
+    const btn = document.getElementById('ai-generate-btn');
+    const content = document.getElementById('ai-report-content');
+    btn.textContent = i18n[currentLang]['rapport-generating'] || 'Génération en cours...';
+    btn.disabled = true;
+
+    const report = await AI_REPORT.generateFullReport(currentLang);
+    if (report) {
+      content.innerHTML = AI_REPORT.markdownToHtml(report);
+      btn.style.display = 'none';
+    } else {
+      content.innerHTML = '<p style="color:var(--blood);">Erreur: vérifiez votre clé API dans js/ai-report.js</p>';
+      btn.textContent = i18n[currentLang]['rapport-generate'] || 'Générer le rapport IA';
+      btn.disabled = false;
+    }
+  }
+
+  function shareInsight(btn) {
+    const card = btn.closest('.insight-card');
+    const text = card.querySelector('.ic-stat').textContent + ' ' + card.querySelector('.ic-text').textContent;
+    if (navigator.share) {
+      navigator.share({ title: 'Réconciliation Nationale', text, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(text + ' — ' + window.location.href);
+      showToast('Copié');
+    }
+  }
+
+  /* =============================================
+     THEMATIC MAP
+     ============================================= */
+  const THEME_COLORS = [
+    '#d62418', '#2c6e49', '#3a86c8', '#d4a24c', '#8a1812',
+    '#e67e22', '#6c3483', '#c0392b', '#1abc9c', '#34495e'
+  ];
+  let thematicQuestion = 'q1';
+  let thematicSelectedDept = null;
+
+  function buildThematicSelector() {
+    const el = document.getElementById('thematic-q-selector');
+    if (!el) return;
+    el.innerHTML = QUESTIONS.map((q, i) => `
+      <button class="tq-btn ${thematicQuestion === q.id ? 'active' : ''}" onclick="selectThematicQ('${q.id}')">
+        Q${i + 1}
+      </button>
+    `).join('');
+  }
+
+  function selectThematicQ(qId) {
+    thematicQuestion = qId;
+    thematicSelectedDept = null;
+    buildThematicSelector();
+    renderThematicMap();
+  }
+
+  function selectThematicDept(deptId) {
+    thematicSelectedDept = (thematicSelectedDept === deptId) ? null : deptId;
+    renderThematicMap();
+  }
+
+  async function renderThematicMap() {
+    const svg = document.getElementById('thematic-map-svg');
+    if (!svg) return;
+
+    // Load GeoJSON if needed
+    if (!HAITI_GEO && typeof loadHaitiGeo === 'function') {
+      await loadHaitiGeo();
+    }
+
+    const lang = currentLang;
+    const qId = thematicQuestion;
+
+    // Get dominant theme per department
+    const deptThemes = {};
+    const allThemeWords = new Set();
+
+    DEPARTMENTS.forEach(d => {
+      const comparison = ANALYSIS.departmentComparison(qId, lang);
+      if (comparison[d.id] && comparison[d.id].length > 0) {
+        deptThemes[d.id] = comparison[d.id][0].word; // dominant theme
+        allThemeWords.add(comparison[d.id][0].word);
+      } else {
+        deptThemes[d.id] = null;
+      }
+    });
+
+    // Assign a color to each unique theme
+    const themeList = [...allThemeWords];
+    const themeColorMap = {};
+    themeList.forEach((word, i) => {
+      themeColorMap[word] = THEME_COLORS[i % THEME_COLORS.length];
+    });
+
+    // Render map
+    if (HAITI_GEO && HAITI_GEO.features) {
+      // Real GeoJSON map
+      svg.setAttribute('viewBox', `0 0 ${MAP_CONFIG.svgWidth} ${MAP_CONFIG.svgHeight}`);
+
+      let pathsHtml = '';
+      const deptPaths = {};
+
+      HAITI_GEO.features.forEach(f => {
+        const deptName = f.properties.department;
+        const deptId = DEPT_NAME_TO_ID[deptName] || deptName.toLowerCase().replace(/[' ]/g, '-');
+        const theme = deptThemes[deptId];
+        const fillColor = theme ? themeColorMap[theme] : '#ebdfc3';
+        const isActive = thematicSelectedDept === deptId;
+        const pathData = geometryToPath(f.geometry);
+
+        if (!deptPaths[deptId]) deptPaths[deptId] = [];
+        deptPaths[deptId].push(pathData);
+
+        pathsHtml += `<path class="tm-dept${isActive ? ' tm-active' : ''}" data-dept="${deptId}"
+          d="${pathData}" style="fill:${fillColor};"
+        ><title>${f.properties.name} · ${deptName}</title></path>`;
+      });
+
+      // Department borders
+      let bordersHtml = '';
+      Object.keys(deptPaths).forEach(deptId => {
+        const combined = deptPaths[deptId].join(' ');
+        bordersHtml += `<path d="${combined}" fill="none" stroke="var(--ink,#0a0806)" stroke-width="2.5" pointer-events="none" stroke-linejoin="round"/>`;
+      });
+
+      // Labels
+      const centroids = computeDeptCentroids(HAITI_GEO.features);
+      let labelsHtml = '';
+      Object.keys(centroids).forEach(deptName => {
+        const [cx, cy] = centroids[deptName];
+        const deptId = DEPT_NAME_TO_ID[deptName] || deptName.toLowerCase().replace(/[' ]/g, '-');
+        const dept = DEPARTMENTS.find(d => d.id === deptId);
+        const displayName = dept ? dept.name[lang] : deptName;
+        const theme = deptThemes[deptId];
+        const themeColor = theme ? themeColorMap[theme] : '#ebdfc3';
+        const labelFill = isColorDark(themeColor) ? '#f3ead7' : '#0a0806';
+
+        labelsHtml += `
+          <text class="tm-label" x="${cx}" y="${cy - 2}" style="fill:${labelFill};">${displayName.toUpperCase()}</text>
+          ${theme ? `<text class="tm-theme-label" x="${cx}" y="${cy + 11}" style="fill:${labelFill};">${theme}</text>` : ''}
+        `;
+      });
+
+      svg.innerHTML = pathsHtml + bordersHtml + labelsHtml;
+
+    } else {
+      // Fallback: simple text
+      svg.innerHTML = '<text x="400" y="250" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="rgba(10,8,6,0.4)">GeoJSON non disponible</text>';
+    }
+
+    // Click handlers
+    svg.querySelectorAll('.tm-dept').forEach(path => {
+      path.addEventListener('click', () => selectThematicDept(path.dataset.dept));
+    });
+
+    // Legend
+    const legendEl = document.getElementById('thematic-legend');
+    if (legendEl) {
+      legendEl.innerHTML = themeList.map(word => `
+        <div class="tl-item">
+          <span class="tl-swatch" style="background:${themeColorMap[word]};"></span>
+          <span class="tl-name">${word}</span>
+        </div>
+      `).join('');
+    }
+
+    // Detail panel
+    renderThematicDetail(qId, lang, themeColorMap);
+  }
+
+  function renderThematicDetail(qId, lang, themeColorMap) {
+    const detail = document.getElementById('thematic-detail');
+    if (!detail) return;
+
+    if (!thematicSelectedDept) {
+      detail.innerHTML = `<p style="font-style:italic;color:rgba(243,234,215,0.5);">${i18n[lang]['rapport-thematic-click'] || 'Cliquez sur un département.'}</p>`;
+      return;
+    }
+
+    const dept = DEPARTMENTS.find(d => d.id === thematicSelectedDept);
+    if (!dept) return;
+
+    const comparison = ANALYSIS.departmentComparison(qId, lang);
+    const themes = comparison[thematicSelectedDept] || [];
+    const total = themes.reduce((s, t) => s + t.count, 0) || 1;
+
+    detail.innerHTML = `
+      <div class="td-kicker">${i18n[lang]['rapport-themes'] || 'Thèmes'} · Q${QUESTIONS.findIndex(q => q.id === qId) + 1}</div>
+      <h4>${dept.name[lang]}</h4>
+      <div class="td-themes">
+        ${themes.length > 0 ? themes.map(t => {
+          const pct = Math.round((t.count / total) * 100);
+          const color = themeColorMap[t.word] || '#d4a24c';
+          return `
+            <div class="td-theme-row">
+              <span class="td-swatch" style="background:${color};"></span>
+              <span class="td-word">${t.word}</span>
+              <div class="td-bar-wrap"><div class="td-bar" style="width:${pct}%;background:${color};"></div></div>
+              <span class="td-pct">${pct}%</span>
+            </div>
+          `;
+        }).join('') : '<p style="font-style:italic;opacity:0.5;">Pas assez de données</p>'}
+      </div>
+    `;
+  }
+
+  function isColorDark(hex) {
+    if (!hex || hex.length < 7) return false;
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return (r * 0.299 + g * 0.587 + b * 0.114) < 140;
+  }
+
+  // Add thematic map to buildRapport
+  const origBuildRapport = buildRapport;
+  buildRapport = function() {
+    origBuildRapport();
+    buildThematicSelector();
+    renderThematicMap();
+  };
+</script>
+<script src="js/modern.js"></script>
+</body>
+</html>

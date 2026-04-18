@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A propos · Réconciliation Nationale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/register.css">
+<!-- Uncomment when Firebase is configured:
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+-->
+<style>
+  .about-block { margin-bottom: 48px; }
+  .about-block h3 {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.1; margin-bottom: 16px; color: var(--blood);
+  }
+  .about-block p {
+    font-family: 'Fraunces', serif; font-size: 17px;
+    line-height: 1.6; max-width: 65ch; margin-bottom: 14px;
+  }
+  .about-block p strong { color: var(--ink); }
+  .about-values {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    background: var(--ink); border: 2px solid var(--ink); margin-top: 28px;
+  }
+  @media (max-width: 700px) { .about-values { grid-template-columns: 1fr; } }
+  .about-value {
+    background: var(--paper); padding: 28px 22px;
+  }
+  .about-value h4 {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--blood); margin-bottom: 10px;
+  }
+  .about-value p { font-size: 15px; line-height: 1.5; }
+  .about-quote {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: clamp(22px, 3.5vw, 36px); line-height: 1.2;
+    color: var(--blood); max-width: 30ch; padding: 40px 0;
+    border-top: 3px double var(--ink); border-bottom: 3px double var(--ink);
+    margin: 48px 0;
+  }
+</style>
+<link rel="stylesheet" href="css/modern.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="ticker">
+      <span class="dot"></span>
+      <span data-i18n="ticker">5 KESYON · 5 REPONS · YON PEYI</span>
+    </div>
+    <div class="topbar-right-community">
+      <div class="lang-switch">
+        <button data-lang="ht">KR</button>
+        <button data-lang="fr" class="active">FR</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="profile-btn" id="profile-btn" onclick="showProfile()">
+        <span class="profile-initials" id="profile-initials"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <a href="index.html" class="site-nav-link" data-i18n="nav-home">Accueil</a>
+  <a href="rapport.html" class="site-nav-link" data-i18n="nav-rapport">Rapport</a>
+  <a href="map.html" class="site-nav-link" data-i18n="nav-map">Carte</a>
+  <a href="about.html" class="site-nav-link active" data-i18n="nav-about">&Agrave; propos</a>
+  <a href="consulted.html" class="site-nav-link" data-i18n="nav-consulted">Consultations</a>
+</nav>
+
+<div class="page-content">
+  <div class="page-head">
+    <span class="page-kicker" data-i18n="about-kicker">Mouvman Sitwayen · Ayiti 2026</span>
+    <h2 data-i18n="about-title">Poukisa platfòm sa a<em>?</em></h2>
+  </div>
+
+  <div class="about-block">
+    <h3>Mission</h3>
+    <p data-i18n="about-p1">Pa gen ankèt. Pa gen sondaj. Se yon apèl dirèk bay chak Ayisyen: isit la, nan dyaspora, nan pwovens, nan kapital. Si w vle peyi a chanje, pale. Si w pa pale, lòt moun pral deside pou ou — ankò.</p>
+    <p data-i18n="about-p2"><strong>5 kesyon. Pa gen mwayèn nan pòs. Pa gen reponn olye. Ekri sa w panse vre.</strong></p>
+  </div>
+
+  <div class="about-quote" data-i18n="tagline">
+    Yon sèl peyi. Yon sèl tab. Yon sèl konvèsasyon.
+  </div>
+
+  <div class="about-block">
+    <h3>Qui sommes-nous</h3>
+    <p data-i18n="about-p3">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+    <p data-i18n="about-p4">Aujourd'hui, la crise nous donne l'opportunité. L'opportunité de reconfigurer totalement. L'occasion de faire une entente nationale sur ce que nous voulons, non pas pour la garder pour nous, mais pour l'extérioriser. Pour prendre conscience, ensemble et publiquement, de qui nous sommes.</p>
+    <p>Réconciliation Nationale est une initiative de <a href="https://lfrancophonie.org" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">LANS</a> — Leadership Ayitien pour une Nouvelle Société.</p>
+  </div>
+
+  <div class="about-values">
+    <div class="about-value">
+      <h4>Indépendance</h4>
+      <p>Aucun parti politique. Aucun gouvernement. Aucune influence externe. Uniquement la voix des citoyens.</p>
+    </div>
+    <div class="about-value">
+      <h4>Transparence</h4>
+      <p>Toutes les réponses sont publiques. Toutes les données sont ouvertes. Tout le monde peut voir ce que les autres ont écrit.</p>
+    </div>
+    <div class="about-value">
+      <h4>Inclusion</h4>
+      <p>Tous les Haïtiens : ici, en diaspora, en province, dans la capitale. 3 langues. Tous les départements.</p>
+    </div>
+  </div>
+
+  <div class="about-block" style="margin-top:48px;">
+    <h3>Contactez-nous</h3>
+    <p>E-mail : <strong>contact@reconciliation-nationale.ht</strong></p>
+    <p>Site web LANS : <a href="https://lfrancophonie.org" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">lfrancophonie.org</a></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h5>Réconciliation Nationale</h5>
+      <p data-i18n="foot-p">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+    </div>
+    <div>
+      <h5 data-i18n="foot-nav">Navige</h5>
+      <ul>
+        <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+        <li><a href="rapport.html" data-i18n="nav-rapport">Rapport Citoyen</a></li>
+        <li><a href="map.html" data-i18n="nav-map">Carte</a></li>
+        <li><a href="about.html" data-i18n="nav-about">&Agrave; propos</a></li>
+        <li><a href="consulted.html" data-i18n="nav-consulted">Consultations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-conn">Konekte</h5>
+      <ul>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Telegram</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-lang">Lang</h5>
+      <ul>
+        <li><a onclick="setLang('ht')">Kreyòl</a></li>
+        <li><a onclick="setLang('fr')">Français</a></li>
+        <li><a onclick="setLang('en')">English</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <span>&copy; 2026 &middot; Réconciliation Nationale</span>
+    <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<div id="profile-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideProfile()">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <h3 class="profile-name" id="profile-display-name"></h3>
+    </div>
+    <div class="profile-info" id="profile-info"></div>
+    <div class="profile-actions">
+      <button class="btn-ghost btn-full" onclick="handleLogout()" data-i18n="profile-logout">Dekonekte</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/questionnaire.js"></script>
+<script>
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.addEventListener('click', () => setLang(b.dataset.lang));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('profile-overlay').classList.contains('open')) hideProfile();
+  });
+  const user = getStoredUser();
+  if (!user || !user.registered) {
+    window.location.href = 'index.html';
+  } else {
+    setLang(currentLang);
+    const el = document.getElementById('profile-initials');
+    if (el) el.textContent = getInitials(user.name);
+  }
+</script>
+<script src="js/modern.js"></script>
+</body>
+</html>

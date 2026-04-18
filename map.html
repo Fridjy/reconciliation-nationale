@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte Nationale · Réconciliation Nationale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/map.css">
+<link rel="stylesheet" href="css/register.css">
+<!-- Uncomment when Firebase is configured:
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+-->
+<link rel="stylesheet" href="css/modern.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="ticker">
+      <span class="dot"></span>
+      <span data-i18n="ticker">5 KESYON · 5 REPONS · YON PEYI</span>
+    </div>
+    <div class="topbar-right-community">
+      <div class="lang-switch">
+        <button data-lang="ht">KR</button>
+        <button data-lang="fr" class="active">FR</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="profile-btn" id="profile-btn" onclick="showProfile()">
+        <span class="profile-initials" id="profile-initials"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <a href="index.html" class="site-nav-link" data-i18n="nav-home">Accueil</a>
+  <a href="rapport.html" class="site-nav-link" data-i18n="nav-rapport">Rapport</a>
+  <a href="map.html" class="site-nav-link active" data-i18n="nav-map">Carte</a>
+  <a href="about.html" class="site-nav-link" data-i18n="nav-about">&Agrave; propos</a>
+  <a href="consulted.html" class="site-nav-link" data-i18n="nav-consulted">Consultations</a>
+</nav>
+
+<section class="map-section" id="map" style="border-bottom:none;">
+  <div class="map-head reveal">
+    <span class="num">01</span>
+    <h3 data-i18n="map-h">Kat nasyonal · Kote vwa yo soti</h3>
+    <span class="kicker" data-i18n="map-k">10 depatman · Chak repons konte</span>
+  </div>
+  <div class="map-layout">
+    <div class="map-wrap reveal">
+      <!-- SVG is rendered dynamically by map.js from GeoJSON data -->
+      <svg class="map-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" aria-label="Carte d'Haïti">
+        <text x="400" y="250" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="rgba(10,8,6,0.4)">Chargement de la carte...</text>
+      </svg>
+      <!-- Intensity legend -->
+      <div class="map-legend">
+        <span data-i18n="legend-label">Intensité des réponses :</span>
+        <div class="legend-scale">
+          <div class="legend-box" style="background: #f3ead7"></div>
+          <div class="legend-box" style="background: #f5c9a0"></div>
+          <div class="legend-box" style="background: #ec7a54"></div>
+          <div class="legend-box" style="background: #d62418"></div>
+          <div class="legend-box" style="background: #8a1812"></div>
+        </div>
+        <span data-i18n="legend-low">Moins</span>
+        <span>&rarr;</span>
+        <span data-i18n="legend-high">Plus</span>
+      </div>
+      <!-- Department color legend -->
+      <div class="map-dept-legend" id="map-dept-legend">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+    <div class="map-sidebar">
+      <div class="sidebar-intro reveal">
+        <p class="lede" data-i18n="map-lede">Klike yon depatman pou tande vwa li.</p>
+        <p data-i18n="map-p1">Chak zòn nan Ayiti gen istwa pa l, pwoblèm pa l, rèv pa l. Gade ki kote mouvman an pi fò — epi ki kote nou poko tande ase vwa.</p>
+      </div>
+      <div class="dept-detail reveal" id="dept-detail">
+        <div class="dd-kicker" id="dd-kicker">Depatman chwazi</div>
+        <h4 id="dd-name">&mdash;</h4>
+        <div class="dd-hint" id="dd-hint" data-i18n="map-default-hint">Klike sou yon depatman nan kat la.</div>
+      </div>
+      <div class="reveal">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; color: var(--blood);" data-i18n="ranking-h">Klasman · Plis repons</div>
+        <div class="ranking-list" id="ranking-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h5>Réconciliation Nationale</h5>
+      <p data-i18n="foot-p">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+    </div>
+    <div>
+      <h5 data-i18n="foot-nav">Navige</h5>
+      <ul>
+        <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+        <li><a href="rapport.html" data-i18n="nav-rapport">Rapport Citoyen</a></li>
+        <li><a href="map.html" data-i18n="nav-map">Carte</a></li>
+        <li><a href="about.html" data-i18n="nav-about">&Agrave; propos</a></li>
+        <li><a href="consulted.html" data-i18n="nav-consulted">Consultations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-conn">Konekte</h5>
+      <ul>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Telegram</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-lang">Lang</h5>
+      <ul>
+        <li><a onclick="setLang('ht')">Kreyòl</a></li>
+        <li><a onclick="setLang('fr')">Français</a></li>
+        <li><a onclick="setLang('en')">English</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <span>&copy; 2026 &middot; Réconciliation Nationale</span>
+    <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Profile overlay (shared) -->
+<div id="profile-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideProfile()">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <h3 class="profile-name" id="profile-display-name"></h3>
+    </div>
+    <div class="profile-info" id="profile-info"></div>
+    <div class="profile-actions">
+      <button class="btn-ghost btn-full" onclick="handleLogout()" data-i18n="profile-logout">Dekonekte</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/questionnaire.js"></script>
+<script src="js/answers.js"></script>
+<script src="js/haiti-geo.js"></script>
+<script src="js/map.js"></script>
+<script>
+  // Page init
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.addEventListener('click', () => setLang(b.dataset.lang));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('profile-overlay').classList.contains('open')) hideProfile();
+  });
+
+  // Check auth — redirect to index if not registered
+  const user = getStoredUser();
+  if (!user || !user.registered) {
+    window.location.href = 'index.html';
+  } else {
+    setLang(currentLang);
+    const el = document.getElementById('profile-initials');
+    if (el) el.textContent = getInitials(user.name);
+    // Load GeoJSON then render map
+    renderMap();
+    // Reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }
+</script>
+<script src="js/modern.js"></script>
+</body>
+</html>

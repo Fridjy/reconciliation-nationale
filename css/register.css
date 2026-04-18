@@ -1,0 +1,339 @@
+/* =============================================
+   PHASE SYSTEM — Controls which screen is visible
+   ============================================= */
+.phase { display: none; }
+.phase.active { display: block; }
+
+/* =============================================
+   QUESTIONNAIRE TOPBAR (minimal, during questions)
+   ============================================= */
+.q-topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  background: var(--ink); color: var(--paper);
+}
+.q-topbar-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 28px; gap: 16px;
+}
+.q-brand {
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'DM Serif Display', serif; font-size: 16px;
+}
+.q-brand-logo { height: 32px; width: auto; }
+.q-topbar-right { display: flex; align-items: center; gap: 16px; }
+
+.link-btn {
+  background: none; border: none; color: var(--paper);
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; border-bottom: 1px solid rgba(243,234,215,0.4);
+  padding: 2px 0; transition: all 0.2s;
+}
+.link-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+/* Progress bar under topbar */
+.q-progress {
+  height: 3px; background: rgba(243,234,215,0.15);
+}
+.q-progress-fill {
+  height: 100%; background: var(--blood);
+  transition: width 0.5s ease;
+}
+
+/* =============================================
+   FULLSCREEN QUESTION SLIDES
+   ============================================= */
+.q-fullscreen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 100px 28px 60px; position: relative; z-index: 2;
+}
+.q-fs-slide {
+  max-width: 800px; width: 100%;
+  display: none; animation: slideIn 0.5s ease;
+}
+.q-fs-slide.active { display: block; }
+
+.q-fs-step {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood);
+  margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+}
+.q-fs-step::before { content: ""; width: 40px; height: 2px; background: var(--blood); }
+
+.q-fs-slide h2 {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: clamp(38px, 7vw, 80px); line-height: 0.9;
+  letter-spacing: -0.035em; text-transform: uppercase;
+  margin-bottom: 16px; font-variation-settings: "opsz" 144;
+}
+.q-fs-slide h2 .accent {
+  color: var(--blood); font-style: italic;
+  font-family: 'DM Serif Display', serif; font-weight: 400;
+  text-transform: none; letter-spacing: -0.02em;
+}
+.q-fs-hint {
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 18px;
+  color: rgba(10,8,6,0.65); margin-bottom: 28px; max-width: 50ch;
+}
+
+.q-fs-textarea {
+  width: 100%; min-height: 160px;
+  background: var(--paper-warm); border: 2.5px solid var(--ink);
+  padding: 20px 22px;
+  font-family: 'GFS Didot', 'Didot', 'Bodoni MT', 'Noto Serif Display', serif;
+  font-size: 20px; line-height: 1.6; color: var(--ink);
+  resize: vertical; transition: border-color 0.18s;
+}
+.q-fs-textarea:focus { outline: none; border-color: var(--blood); background: var(--paper); }
+.q-fs-textarea::placeholder { color: rgba(10,8,6,0.35); font-style: italic; }
+
+.q-fs-controls {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 24px; gap: 16px; flex-wrap: wrap;
+}
+.q-fs-char {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(10,8,6,0.5);
+}
+.q-fs-nav { display: flex; gap: 10px; }
+
+/* =============================================
+   REGISTRATION SCREEN
+   ============================================= */
+.register-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 100px 28px 60px; position: relative; z-index: 2;
+}
+.register-card {
+  max-width: 560px; width: 100%;
+}
+.register-kicker {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+}
+.register-kicker::before { content: ""; width: 40px; height: 2px; background: var(--blood); }
+.register-title {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: clamp(36px, 6vw, 64px); line-height: 0.9;
+  letter-spacing: -0.035em; text-transform: uppercase;
+  margin-bottom: 16px; font-variation-settings: "opsz" 144;
+}
+.register-title .accent {
+  color: var(--blood); font-style: italic;
+  font-family: 'DM Serif Display', serif; font-weight: 400;
+  text-transform: none;
+}
+.register-hint {
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 17px;
+  color: rgba(10,8,6,0.65); margin-bottom: 32px; max-width: 48ch;
+}
+
+/* Form fields */
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; margin-bottom: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink);
+}
+.required { color: var(--blood); font-weight: 700; }
+.form-group input {
+  width: 100%; background: var(--paper-warm); border: 2.5px solid var(--ink);
+  padding: 14px 16px;
+  font-family: 'GFS Didot', 'Didot', 'Bodoni MT', 'Noto Serif Display', serif;
+  font-size: 17px; color: var(--ink); transition: border-color 0.18s;
+}
+.form-group input:focus { outline: none; border-color: var(--blood); background: var(--paper); }
+.form-group input::placeholder { color: rgba(10,8,6,0.3); font-style: italic; }
+
+.btn-full { width: 100%; justify-content: center; margin-top: 8px; }
+
+/* =============================================
+   ANONYMOUS TOGGLE
+   ============================================= */
+.anon-toggle {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 18px 20px; margin-bottom: 12px;
+  background: var(--paper-warm); border: 2px solid var(--ink);
+}
+.anon-label { flex: 1; }
+.anon-text {
+  display: block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; letter-spacing: 0.08em; font-weight: 600;
+  color: var(--ink); margin-bottom: 4px;
+}
+.anon-hint {
+  display: block; font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 13px; color: rgba(10,8,6,0.55); line-height: 1.4;
+}
+
+/* Toggle switch */
+.anon-switch {
+  position: relative; display: inline-block;
+  width: 48px; height: 26px; flex-shrink: 0; margin-top: 2px;
+}
+.anon-switch input { opacity: 0; width: 0; height: 0; }
+.anon-slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: rgba(10,8,6,0.2); transition: 0.3s;
+}
+.anon-slider::before {
+  content: ""; position: absolute;
+  height: 20px; width: 20px; left: 3px; bottom: 3px;
+  background: var(--paper); transition: 0.3s;
+}
+.anon-switch input:checked + .anon-slider { background: var(--blood); }
+.anon-switch input:checked + .anon-slider::before { transform: translateX(22px); }
+
+/* Preview of published name */
+.anon-preview {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; padding: 10px 16px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.anon-preview-label { color: rgba(10,8,6,0.55); }
+.anon-preview-name {
+  background: var(--ink); color: var(--paper);
+  padding: 3px 10px; font-weight: 600;
+}
+
+/* Review block in registration */
+.register-review {
+  background: var(--ink); color: var(--paper); padding: 24px;
+  margin-bottom: 24px; max-height: 220px; overflow-y: auto;
+}
+.register-review h4 {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+}
+.rr-item { padding: 10px 0; border-bottom: 1px dashed rgba(243,234,215,0.25); }
+.rr-item:last-child { border-bottom: none; }
+.rr-q {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blood); margin-bottom: 4px;
+}
+.rr-a { font-size: 14px; line-height: 1.45; }
+
+.register-login-link {
+  text-align: center; margin-top: 20px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.register-login-link a {
+  color: var(--blood); text-decoration: none;
+  border-bottom: 1px solid var(--blood); cursor: pointer;
+}
+
+/* =============================================
+   OVERLAYS (About, Login)
+   ============================================= */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(10,8,6,0.7); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  padding: 28px;
+}
+.overlay.open { display: flex; }
+.overlay-card {
+  background: var(--paper); max-width: 440px; width: 100%;
+  padding: 40px 36px; position: relative;
+  border: 2px solid var(--ink);
+  animation: slideIn 0.3s ease;
+}
+.overlay-card--wide { max-width: 620px; }
+.overlay-close {
+  position: absolute; top: 14px; right: 18px;
+  background: none; border: none; font-size: 28px;
+  color: var(--ink); cursor: pointer; line-height: 1;
+}
+.overlay-close:hover { color: var(--blood); }
+.overlay-card h3 {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: 28px; text-transform: uppercase; margin-bottom: 24px;
+}
+
+/* About overlay specifics */
+.about-content {}
+.about-kicker {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood);
+  margin-bottom: 16px;
+}
+.about-content h2 {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: clamp(28px, 5vw, 42px); line-height: 0.95;
+  text-transform: uppercase; margin-bottom: 20px;
+  font-variation-settings: "opsz" 144;
+}
+.about-content p {
+  font-size: 16px; line-height: 1.55; margin-bottom: 14px; max-width: 52ch;
+}
+.about-tagline {
+  font-family: 'DM Serif Display', serif; font-style: italic;
+  font-size: 20px; color: var(--blood); margin: 24px 0;
+}
+
+/* =============================================
+   COMMUNITY TOPBAR extras
+   ============================================= */
+.topbar-right-community {
+  display: flex; align-items: center; gap: 14px;
+}
+
+/* Profile button (circle with initials) */
+.profile-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--blood); border: 2px solid rgba(243,234,215,0.3);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; padding: 0;
+}
+.profile-btn:hover { border-color: var(--gold); transform: scale(1.08); }
+.profile-initials {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  font-weight: 700; letter-spacing: 0.05em;
+  color: var(--paper); text-transform: uppercase; line-height: 1;
+}
+
+/* =============================================
+   PROFILE OVERLAY
+   ============================================= */
+.profile-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 2px solid var(--rule);
+}
+.profile-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--blood); display: flex;
+  align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 18px;
+  font-weight: 700; color: var(--paper); text-transform: uppercase;
+  flex-shrink: 0;
+}
+.profile-name {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: 24px; text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.profile-info { margin-bottom: 28px; }
+.profile-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px dashed var(--rule);
+}
+.profile-row:last-child { border-bottom: none; }
+.profile-row-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(10,8,6,0.5); flex-shrink: 0;
+}
+.profile-row-value {
+  font-family: 'Fraunces', serif; font-size: 15px;
+  text-align: right; word-break: break-word;
+}
+
+.profile-actions { margin-top: 8px; }

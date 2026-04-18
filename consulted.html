@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultation · Réconciliation Nationale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/register.css">
+<link rel="stylesheet" href="css/pagination.css">
+<style>
+  .consult-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px; background: var(--ink); border: 2px solid var(--ink); margin-top: 20px;
+  }
+
+  /* ===== INSTITUTION CARD ===== */
+  .consult-card {
+    background: var(--paper); padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .card-header { display: flex; align-items: flex-start; gap: 16px; }
+  .card-logo {
+    width: 56px; height: 56px; flex-shrink: 0;
+    border: 1.5px solid var(--rule); background: var(--paper-warm);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .card-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .card-logo-placeholder {
+    font-family: 'IBM Plex Mono', monospace; font-size: 16px;
+    font-weight: 700; color: var(--blood); letter-spacing: 0.05em;
+  }
+  .card-header-text { flex: 1; min-width: 0; }
+  .consult-card .card-type {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--blood);
+    display: block; margin-bottom: 4px;
+  }
+  .consult-card h4 { font-family: 'DM Serif Display', serif; font-size: 20px; line-height: 1.15; }
+  .consult-card .card-desc {
+    font-family: 'Fraunces', serif; font-size: 14px;
+    line-height: 1.5; color: rgba(10,8,6,0.7);
+  }
+  .consult-card .card-location {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(10,8,6,0.45); margin-top: auto; padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+  }
+  .card-website a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; color: var(--blood); text-decoration: none;
+    border-bottom: 1px solid var(--blood);
+  }
+  .card-website a:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ===== PERSONALITY CARD ===== */
+  .person-card {
+    background: var(--paper); padding: 0; display: flex;
+    flex-direction: column; overflow: hidden;
+  }
+  .person-top {
+    background: var(--ink); color: var(--paper);
+    padding: 24px 24px 20px; position: relative;
+  }
+  .person-role {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .person-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px; line-height: 1.1;
+  }
+  .person-expertise {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 15px; color: rgba(243,234,215,0.75);
+    margin-top: 8px; line-height: 1.35;
+  }
+  .person-body {
+    padding: 20px 24px 24px; flex: 1;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .person-body .card-desc {
+    font-family: 'Fraunces', serif; font-size: 14px;
+    line-height: 1.5; color: rgba(10,8,6,0.7); flex: 1;
+  }
+  .person-body .card-location {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(10,8,6,0.45); padding-top: 10px;
+    border-top: 1px dashed var(--rule); margin-top: auto;
+  }
+
+  /* Category tabs */
+  .consulted-tabs { display: flex; gap: 2px; flex-wrap: wrap; }
+  .c-tab {
+    background: transparent; border: 1.5px solid var(--ink); padding: 8px 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+  }
+  .c-tab:hover { background: var(--ink); color: var(--paper); }
+  .c-tab.active { background: var(--blood); color: var(--paper); border-color: var(--blood); }
+
+  /* Type chips */
+  .consulted-type-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .ct-chip {
+    background: transparent; border: 1px solid var(--rule); padding: 4px 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .ct-chip:hover { border-color: var(--blood); color: var(--blood); }
+  .ct-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .consult-note {
+    margin-top: 48px; padding: 28px;
+    background: var(--paper-warm); border-left: 6px solid var(--blood);
+  }
+  .consult-note p { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; line-height: 1.55; max-width: 60ch; }
+</style>
+<!-- Uncomment when Firebase is configured:
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+-->
+<link rel="stylesheet" href="css/modern.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="ticker">
+      <span class="dot"></span>
+      <span data-i18n="ticker">5 KESYON · 5 REPONS · YON PEYI</span>
+    </div>
+    <div class="topbar-right-community">
+      <div class="lang-switch">
+        <button data-lang="ht">KR</button>
+        <button data-lang="fr" class="active">FR</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="profile-btn" id="profile-btn" onclick="showProfile()">
+        <span class="profile-initials" id="profile-initials"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <a href="index.html" class="site-nav-link" data-i18n="nav-home">Accueil</a>
+  <a href="rapport.html" class="site-nav-link" data-i18n="nav-rapport">Rapport</a>
+  <a href="map.html" class="site-nav-link" data-i18n="nav-map">Carte</a>
+  <a href="about.html" class="site-nav-link" data-i18n="nav-about">&Agrave; propos</a>
+  <a href="consulted.html" class="site-nav-link active" data-i18n="nav-consulted">Consultations</a>
+</nav>
+
+<div class="page-content">
+  <div class="page-head">
+    <span class="page-kicker">Consultation Nationale · 2026</span>
+    <h2>Institutions <em>&</em> Personnalités</h2>
+  </div>
+
+  <!-- Filters (built by JS) -->
+  <div id="consulted-filters"></div>
+
+  <!-- Cards grid (filled by JS) -->
+  <div class="consult-grid" id="consulted-grid"></div>
+
+  <div class="consult-note">
+    <p>Cette liste s'enrichit chaque jour. Si vous représentez une institution ou si vous êtes une personnalité souhaitant contribuer, contactez-nous à <strong>contact@reconciliation-nationale.ht</strong></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h5>Réconciliation Nationale</h5>
+      <p data-i18n="foot-p">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
+    </div>
+    <div>
+      <h5 data-i18n="foot-nav">Navige</h5>
+      <ul>
+        <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+        <li><a href="rapport.html" data-i18n="nav-rapport">Rapport Citoyen</a></li>
+        <li><a href="map.html" data-i18n="nav-map">Carte</a></li>
+        <li><a href="about.html" data-i18n="nav-about">&Agrave; propos</a></li>
+        <li><a href="consulted.html" data-i18n="nav-consulted">Consultations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-conn">Konekte</h5>
+      <ul>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Telegram</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5 data-i18n="foot-lang">Lang</h5>
+      <ul>
+        <li><a onclick="setLang('ht')">Kreyòl</a></li>
+        <li><a onclick="setLang('fr')">Français</a></li>
+        <li><a onclick="setLang('en')">English</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <span>&copy; 2026 &middot; Réconciliation Nationale</span>
+    <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<div id="profile-overlay" class="overlay">
+  <div class="overlay-card">
+    <button class="overlay-close" onclick="hideProfile()">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <h3 class="profile-name" id="profile-display-name"></h3>
+    </div>
+    <div class="profile-info" id="profile-info"></div>
+    <div class="profile-actions">
+      <button class="btn-ghost btn-full" onclick="handleLogout()" data-i18n="profile-logout">Dekonekte</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/questionnaire.js"></script>
+<script src="js/consulted.js"></script>
+<script>
+  // Seed data for fallback (when Firestore is not configured)
+  const CONSULTED_SEED = [
+    // INSTITUTIONS (with logo, website, description)
+    { name: 'LANS', type: 'Sosyete sivil', category: 'institution', logo: '', logoInitials: 'LA', website: 'https://lfrancophonie.org', description: 'Leadership Ayitien pour une Nouvelle Société. Inisyatè pwojè Rekonsilyasyon Nasyonal. Mouvman sitwayen ki travay pou chanjman sosyal ann Ayiti.', location: 'Port-au-Prince' },
+    { name: "Université d'État d'Haïti", type: 'Inivèsite', category: 'institution', logo: '', logoInitials: 'UEH', website: '', description: 'Fakilte Syans Imèn. Kontribisyon nan redaksyon kesyon yo ak analiz done sosyolojik.', location: 'Port-au-Prince' },
+    { name: 'Radio Kiskeya', type: 'Medya', category: 'institution', logo: '', logoInitials: 'RK', website: '', description: 'Difizyon kanpay la ak deba piblik sou 5 kesyon yo. Espas pou vwa sitwayen sou antèn nasyonal.', location: 'Port-au-Prince' },
+    { name: 'Haitian Diaspora Federation', type: 'Dyaspora', category: 'institution', logo: '', logoInitials: 'HDF', website: '', description: 'Relè vwa Ayisyen nan dyaspora a nan pwosesis la. Kowòdinasyon patisipasyon nan 32 peyi.', location: 'New York · Montreal · Paris' },
+    { name: "Conférence Épiscopale d'Haïti", type: 'Relijyon', category: 'institution', logo: '', logoInitials: 'CEH', website: '', description: 'Konsiltasyon sou kesyon rekonsilyasyon, jistis, ak lapè. Akonpayman moral ak espirityèl.', location: 'Port-au-Prince' },
+    { name: 'RNDDH', type: 'Dwa moun', category: 'institution', logo: '', logoInitials: 'RN', website: '', description: 'Réseau National de Défense des Droits Humains. Konsèy sou enklizyon, transparans, ak pwoteksyon done pèsonèl.', location: 'Port-au-Prince' },
+
+    // PERSONALITIES (with role, expertise)
+    { name: 'Jean-Robert Cadet', role: 'Ekriven · Aktivis', category: 'personality', expertise: 'Dwa timoun, edikasyon, jistis sosyal', description: 'Otè ak defansè dwa timoun. Kontribisyon sou kesyon lidèchip ak enstitisyon.', location: 'Ayiti · Etazini' },
+    { name: 'Marie-Laurence Jocelyn Lassègue', role: 'Ansyen Minis', category: 'personality', expertise: 'Dwa fanm, kominikasyon, politik piblik', description: 'Ansyen Minis Kondisyon Feminin ak Kominikasyon. Ekspètiz nan kesyon enstitisyon ak patisipasyon sitwayen.', location: 'Port-au-Prince' },
+    { name: 'Patrick Elie', role: 'Aktivis · Analis politik', category: 'personality', expertise: 'Sekirite nasyonal, demokrasi, rekonsilyasyon', description: 'Figiy enpòtan nan mouvman demokratik. Konsiltasyon sou lidèchip ak vizyon nasyonal.', location: 'Port-au-Prince' },
+    { name: 'Yanick Lahens', role: 'Ekriven · Pwofesè', category: 'personality', expertise: 'Literati, idantite kiltirèl, syans sosyal', description: 'Ekriven ak entelektyèl rekonèt entènasyonalman. Refleksyon sou idantite ayisyen ak anviwonman.', location: 'Port-au-Prince' }
+  ];
+
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.addEventListener('click', () => { setLang(b.dataset.lang); initConsultedPage(); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('profile-overlay').classList.contains('open')) hideProfile();
+  });
+
+  const user = getStoredUser();
+  if (!user || !user.registered) {
+    window.location.href = 'index.html';
+  } else {
+    setLang(currentLang);
+    const el = document.getElementById('profile-initials');
+    if (el) el.textContent = getInitials(user.name);
+    initConsultedPage();
+  }
+</script>
+<script src="js/modern.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+/* =============================================
+   FILTER TOOLBAR
+   ============================================= */
+.answers-toolbar {
+  margin-bottom: 24px;
+}
+.toolbar-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 14px; flex-wrap: wrap;
+}
+.toolbar-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.toolbar-select {
+  background: var(--paper); border: 1.5px solid var(--ink);
+  padding: 8px 14px; font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink); cursor: pointer; appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%230a0806'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+.toolbar-select:focus { outline: none; border-color: var(--blood); }
+
+.toolbar-search { flex: 1; min-width: 180px; max-width: 320px; }
+.toolbar-search input {
+  width: 100%; background: var(--paper); border: 1.5px solid var(--ink);
+  padding: 8px 14px;
+  font-family: 'GFS Didot', 'Didot', 'Bodoni MT', serif;
+  font-size: 15px; color: var(--ink);
+}
+.toolbar-search input:focus { outline: none; border-color: var(--blood); }
+.toolbar-search input::placeholder { color: rgba(10,8,6,0.35); font-style: italic; }
+
+/* =============================================
+   PAGINATION — Numbered page buttons
+   ============================================= */
+.pagination {
+  padding: 28px 0 8px;
+}
+.pagination-inner {
+  display: flex; justify-content: center; align-items: center;
+  gap: 4px; flex-wrap: wrap;
+}
+
+/* Number buttons */
+.pg-num {
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--paper); border: 1.5px solid var(--ink);
+  font-family: 'DM Serif Display', serif; font-size: 16px;
+  color: var(--ink); cursor: pointer; transition: all 0.15s;
+}
+.pg-num:hover { background: var(--ink); color: var(--paper); }
+.pg-num.pg-active {
+  background: var(--blood); color: var(--paper);
+  border-color: var(--blood); font-weight: 700;
+  cursor: default;
+}
+
+/* Arrow buttons */
+.pg-arrow {
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1.5px solid var(--ink);
+  font-size: 18px; color: var(--ink); cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.pg-arrow:hover { background: var(--ink); color: var(--paper); }
+.pg-arrow.pg-disabled {
+  opacity: 0.25; cursor: default; pointer-events: none;
+}
+
+/* Dots */
+.pg-dots {
+  width: 30px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+  color: rgba(10,8,6,0.4); letter-spacing: 0.1em;
+}
+
+/* =============================================
+   LOADING STATE
+   ============================================= */
+.loading-spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--rule); border-top-color: var(--blood);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  margin-right: 8px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
