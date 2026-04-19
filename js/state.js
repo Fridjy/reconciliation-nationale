@@ -72,8 +72,8 @@ async function updateStats() {
     if (hasAny) manifests++;
     QUESTIONS.forEach(q => { votes += (a.votes && a.votes[q.id]) || 0; });
   });
-  partEl.textContent = (1847 + Math.max(0, manifests - 4)).toLocaleString();
-  document.getElementById('stat-answers').textContent = (1847 + Math.max(0, manifests - 4)).toLocaleString();
+  partEl.textContent = manifests.toLocaleString();
+  document.getElementById('stat-answers').textContent = manifests.toLocaleString();
   document.getElementById('stat-votes').textContent = (12408 - 1510 + votes).toLocaleString();
 }
 
@@ -114,8 +114,13 @@ function setLang(lang) {
   if (activePhase) {
     const phaseId = activePhase.id;
     if (phaseId === 'phase-questionnaire') {
-      buildFullscreenSlides();
-      showStepFS(currentStep);
+      // Rebuild whichever questionnaire screen is visible
+      if (document.getElementById('q-picker') && document.getElementById('q-picker').style.display !== 'none') {
+        buildPickerCards();
+      }
+      if (document.getElementById('q-fullscreen') && document.getElementById('q-fullscreen').style.display !== 'none' && currentQuestionId) {
+        openQuestion(currentQuestionId);
+      }
     } else if (phaseId === 'phase-register') {
       buildRegisterReview();
     } else if (phaseId === 'phase-community') {

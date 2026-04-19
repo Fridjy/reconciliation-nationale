@@ -100,10 +100,12 @@
   transition: all 0.18s; text-align: left;
   text-decoration: none; color: var(--ink);
 }
-.qb-btn:hover { background: var(--ink); color: var(--paper); }
-.qb-btn:hover .qb-num { color: var(--gold); }
-.qb-btn:hover .qb-count { color: var(--gold); border-color: var(--gold); }
-.qb-btn:hover .qb-arrow { color: var(--gold); transform: translateX(4px); }
+@media (hover: hover) {
+  .qb-btn:hover { background: var(--blue, var(--ink)); color: var(--paper); }
+  .qb-btn:hover .qb-num { color: var(--gold); }
+  .qb-btn:hover .qb-count { color: var(--gold); border-color: var(--gold); }
+  .qb-btn:hover .qb-arrow { color: var(--gold); transform: translateX(4px); }
+}
 
 .qb-num {
   font-family: 'DM Serif Display', serif; font-style: italic;

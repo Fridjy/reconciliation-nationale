@@ -26,8 +26,11 @@ document.addEventListener('keydown', e => {
 // Boot
 (function init() {
   try {
-    // Don't auto-seed — new visitors see the welcome screen.
-    // The default account (admin) can always log in via handleLogin().
+    // Auto-seed Firestore on first load if connected
+    if (typeof DB !== 'undefined' && db) {
+      DB.seedInitialData().catch(function() {});
+    }
+
     const user = getStoredUser();
 
     if (user && user.registered) {

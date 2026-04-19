@@ -4,9 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>5 Questions · Réconciliation Nationale</title>
+
+<!-- SEO & Social Sharing -->
+<meta name="description" content="5 questions pour Haïti. Un appel direct à chaque Haïtien. Votre voix compte. Plateforme citoyenne de réconciliation nationale.">
+<meta name="keywords" content="Haïti, réconciliation, consultation, citoyenne, 5 questions, LANS">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Réconciliation Nationale — 5 Questions pour Haïti">
+<meta property="og:description" content="Un appel direct à chaque Haïtien. Répondez aux 5 questions fondamentales. Votre voix compte.">
+<meta property="og:image" content="https://reconciliation-nationale.web.app/logo.png">
+<meta property="og:url" content="https://reconciliation-nationale.web.app">
+<meta property="og:site_name" content="Réconciliation Nationale">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Réconciliation Nationale — 5 Questions pour Haïti">
+<meta name="twitter:description" content="Un appel direct à chaque Haïtien. Répondez aux 5 questions fondamentales.">
+<meta name="twitter:image" content="https://reconciliation-nationale.web.app/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
 
 <!-- ===== MODULAR CSS ===== -->
 <link rel="stylesheet" href="css/variables.css">
@@ -55,11 +74,21 @@
   <div class="welcome-screen" id="welcome-screen">
     <div class="welcome-inner">
       <img src="logo.png" alt="Réconciliation Nationale" class="welcome-logo">
-      <h1 class="welcome-title" data-i18n="welcome-title">5 questions.<br>Un seul pays.</h1>
-      <p class="welcome-sub" data-i18n="welcome-sub">Un appel direct à chaque Haïtien. Votre voix compte.</p>
+      <h1 class="welcome-title" data-i18n="welcome-title">5 questions.</h1>
+
+      <!-- LANS attribution -->
+      <div class="welcome-lans">
+        <span class="welcome-lans-label">Propuls&eacute; par</span>
+        <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="welcome-lans-link">
+          <img src="logolans.svg" alt="LANS" class="welcome-lans-logo">
+        </a>
+        <span class="welcome-lans-full">Leadership Ayisyen pour une Nouvelle Soci&eacute;t&eacute;</span>
+      </div>
+
+      <p class="welcome-sub" data-i18n="welcome-sub">Un appel direct &agrave; chaque Ha&iuml;tien. Votre voix compte.</p>
       <div class="welcome-counter">
-        <span class="welcome-count" id="welcome-count">1,847</span>
-        <span class="welcome-count-label" data-i18n="welcome-count-label">Haïtiens ont déjà répondu</span>
+        <span class="welcome-count" id="welcome-count">0</span>
+        <span class="welcome-count-label" data-i18n="welcome-count-label">Ha&iuml;tiens ont d&eacute;j&agrave; r&eacute;pondu</span>
       </div>
       <div class="welcome-quote" id="welcome-quote"></div>
       <button class="btn-primary welcome-cta" onclick="startQuestionnaire()" data-i18n="welcome-cta">Commencer</button>
@@ -67,9 +96,33 @@
     </div>
   </div>
 
-  <!-- Question slides -->
+  <!-- Question picker (choose which question to answer) -->
+  <div class="q-picker" id="q-picker" style="display:none;">
+    <div class="q-picker-inner">
+      <h2 class="q-picker-title" data-i18n="picker-title">Choisissez une question</h2>
+      <p class="q-picker-sub" data-i18n="picker-sub">Répondez à une, plusieurs ou toutes. Chaque voix compte.</p>
+      <div class="q-picker-grid" id="q-picker-grid">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Single question answer (fullscreen) -->
   <div class="q-fullscreen" id="q-fullscreen" style="display:none;">
-    <!-- Slides injected by JS -->
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- Thank you (after submitting one answer) -->
+  <div class="q-thankyou" id="q-thankyou" style="display:none;">
+    <div class="q-thankyou-inner">
+      <div class="q-thankyou-check">&#10003;</div>
+      <h2 data-i18n="ty-single-h">Merci !</h2>
+      <p data-i18n="ty-single-p">Votre réponse a été enregistrée.</p>
+      <div class="q-thankyou-actions">
+        <button class="btn-primary" onclick="backToPicker()" data-i18n="ty-another">Répondre à une autre question</button>
+        <button class="btn-ghost" onclick="goToCommunityFromQ()" data-i18n="ty-see-answers">Voir les réponses</button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -107,16 +160,46 @@
           <input type="text" id="reg-name" required placeholder="" data-i18n-ph="reg-name-ph">
         </div>
         <div class="form-group">
-          <label for="reg-phone" data-i18n="reg-phone-label">Nimewo telefòn <span class="required">*</span></label>
-          <input type="tel" id="reg-phone" required placeholder="" data-i18n-ph="reg-phone-ph">
+          <label data-i18n="reg-phone-label">Nimewo telef&ograve;n <span class="required">*</span></label>
+          <div class="phone-input-group">
+            <select id="reg-phone-country" class="phone-country-select" onchange="updatePhoneCode()">
+              <!-- Filled by JS -->
+            </select>
+            <span class="phone-code" id="reg-phone-code">+509</span>
+            <input type="tel" id="reg-phone" required placeholder="" data-i18n-ph="reg-phone-num-ph" class="phone-number-input">
+          </div>
         </div>
         <div class="form-group">
-          <label for="reg-email" data-i18n="reg-email-label">Imèl</label>
+          <label for="reg-email" data-i18n="reg-email-label">Im&egrave;l</label>
           <input type="email" id="reg-email" placeholder="" data-i18n-ph="reg-email-ph">
         </div>
         <div class="form-group">
-          <label for="reg-address" data-i18n="reg-address-label">Kote w ye <span class="required">*</span></label>
-          <input type="text" id="reg-address" required placeholder="" data-i18n-ph="reg-address-ph">
+          <label data-i18n="reg-country-label">Peyi <span class="required">*</span></label>
+          <select id="reg-country" required class="country-select" onchange="onCountryChange()">
+            <!-- Filled by JS -->
+          </select>
+        </div>
+        <!-- Haiti: department + commune dropdowns -->
+        <div id="haiti-location" style="display:none;">
+          <div class="form-group">
+            <label data-i18n="reg-dept-label">D&eacute;patman <span class="required">*</span></label>
+            <select id="reg-dept" class="country-select" onchange="onDeptChange()">
+              <option value="">--</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="reg-commune-label">Komin <span class="required">*</span></label>
+            <select id="reg-commune" class="country-select">
+              <option value="">--</option>
+            </select>
+          </div>
+        </div>
+        <!-- Other country: free text city -->
+        <div id="other-location">
+          <div class="form-group">
+            <label for="reg-city" data-i18n="reg-city-label">Vil <span class="required">*</span></label>
+            <input type="text" id="reg-city" placeholder="" data-i18n-ph="reg-city-ph">
+          </div>
         </div>
         <div class="form-group">
           <label for="reg-password" data-i18n="reg-password-label">Modpas</label>
@@ -275,9 +358,9 @@
 
   <!-- Stats -->
   <section class="stats">
-    <div class="stat-item"><div class="n" id="stat-participants">1,847</div><div class="label" data-i18n="s-part">Patisipan</div></div>
-    <div class="stat-item"><div class="n" id="stat-answers">9,235</div><div class="label" data-i18n="s-ans">Repons</div></div>
-    <div class="stat-item"><div class="n" id="stat-votes">12,408</div><div class="label" data-i18n="s-votes">Vòt</div></div>
+    <div class="stat-item"><div class="n" id="stat-participants">0</div><div class="label" data-i18n="s-part">Patisipan</div></div>
+    <div class="stat-item"><div class="n" id="stat-answers">0</div><div class="label" data-i18n="s-ans">Repons</div></div>
+    <div class="stat-item"><div class="n" id="stat-votes">0</div><div class="label" data-i18n="s-votes">Vòt</div></div>
     <div class="stat-item"><div class="n">10</div><div class="label" data-i18n="s-dept">Depatman</div></div>
     <div class="stat-item"><div class="n">32</div><div class="label" data-i18n="s-dias">Peyi dyaspora</div></div>
   </section>
@@ -378,10 +461,9 @@
 <div class="toast" id="toast"></div>
 
 <!-- ===== MODULAR JS (order matters) ===== -->
-<!-- Uncomment when Firebase is configured:
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
--->
 <script src="js/firebase-config.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
@@ -390,6 +472,8 @@
 <script src="js/questionnaire.js"></script>
 <script src="js/answers.js"></script>
 <script src="js/map.js"></script>
+<script src="js/countries.js"></script>
+<script src="js/communes.js"></script>
 <script src="js/analysis.js"></script>
 <script src="js/app.js"></script>
 

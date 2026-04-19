@@ -147,6 +147,46 @@
 .form-group input:focus { outline: none; border-color: var(--blood); background: var(--paper); }
 .form-group input::placeholder { color: rgba(10,8,6,0.3); font-style: italic; }
 
+/* Phone input group: [country flag ▼] [+509] [number] */
+.phone-input-group {
+  display: flex; align-items: stretch; gap: 0;
+  border: 2.5px solid var(--ink); background: var(--paper-warm);
+}
+.phone-input-group:focus-within {
+  border-color: var(--blood); background: var(--paper);
+}
+.phone-country-select {
+  width: 70px; padding: 14px 8px; border: none; background: transparent;
+  font-size: 20px; cursor: pointer; appearance: none; -webkit-appearance: none;
+  text-align: center; border-right: 1px solid var(--rule);
+}
+.phone-country-select:focus { outline: none; }
+.phone-code {
+  display: flex; align-items: center; padding: 0 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+  font-weight: 600; color: var(--ink); border-right: 1px solid var(--rule);
+  background: rgba(10,8,6,0.03); min-width: 50px; justify-content: center;
+}
+.phone-number-input {
+  flex: 1; border: none !important; background: transparent !important;
+  padding: 14px 14px;
+  font-family: 'GFS Didot', 'Didot', 'Bodoni MT', 'Noto Serif Display', serif;
+  font-size: 17px; color: var(--ink);
+}
+.phone-number-input:focus { outline: none; }
+
+/* Country select with flags */
+.country-select {
+  width: 100%; background: var(--paper-warm); border: 2.5px solid var(--ink);
+  padding: 14px 16px;
+  font-family: 'Fraunces', serif; font-size: 16px; color: var(--ink);
+  cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='7'><path d='M0 0l6 7 6-7z' fill='%230a0806'/></svg>");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 36px;
+}
+.country-select:focus { outline: none; border-color: var(--blood); background: var(--paper); }
+
 .btn-full { width: 100%; justify-content: center; margin-top: 8px; }
 
 /* =============================================

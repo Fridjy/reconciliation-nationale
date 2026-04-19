@@ -11,6 +11,40 @@ html { font-size: clamp(15px, 1vw + 12px, 18px); }
 h1, h2, h3 { text-wrap: balance; }
 
 /* =============================================
+   1b. SPACE GROTESK — replaces Fraunces on headings/questions
+   ============================================= */
+.welcome-title,
+.masthead-hero-text h1,
+.masthead h1,
+.intro h2,
+.qo-head h3,
+.qb-head h3,
+.aw-head h3,
+.map-head h3,
+.q-slide h2,
+.q-fs-slide h2,
+.register-title,
+.page-head h2,
+.profile-name,
+.overlay-card h3,
+.about-content h2 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variation-settings: normal;
+}
+
+/* Hints — match question titles */
+.q-fs-hint,
+.q-slide .q-hint,
+.register-hint,
+.welcome-sub {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* =============================================
    2. MODERN COLOR ACCENTS
    ============================================= */
 :root {
@@ -32,11 +66,70 @@ h1, h2, h3 { text-wrap: balance; }
    3. GLASSMORPHISM TOPBAR
    ============================================= */
 .topbar, .q-topbar {
-  background: var(--glass) !important;
+  background: rgba(1, 47, 138, 0.9) !important;
   backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
-  border-bottom: 1px solid var(--glass-border) !important;
-  box-shadow: 0 1px 24px rgba(10,8,6,0.15);
+  border-bottom: 2px solid var(--blood) !important;
+  box-shadow: 0 1px 24px rgba(26,58,107,0.2);
+}
+
+/* Logo visibility on dark backgrounds */
+.q-brand-logo, .masthead-logo {
+  filter: brightness(1.8) contrast(0.9);
+}
+
+/* =============================================
+   BLUE + RED COLOR SYSTEM
+   Only elements that should ALWAYS be blue (not cards)
+   ============================================= */
+.stats { background: var(--blue) !important; border-top: 3px solid var(--blood) !important; border-bottom: 3px solid var(--blood) !important; }
+footer { background: var(--blue) !important; }
+.q-cards, .answers-grid, .consult-grid, .compare-grid, .about-values, .rapport-grid { background: var(--blue) !important; border-color: var(--blue) !important; }
+.dept-detail, .thematic-detail { background: var(--blue) !important; }
+.final-review, .register-review { background: var(--blue) !important; }
+.insight-card { background: var(--blue) !important; }
+.share-card { background: var(--blue) !important; }
+.who-tag { background: var(--blue) !important; }
+.qp-all { background: var(--blue) !important; border-color: var(--blue) !important; }
+.person-top { background: var(--blue) !important; }
+.ranking-item.active { background: var(--blue) !important; border-color: var(--blue) !important; }
+.site-nav-link::after { background: var(--blue) !important; }
+.toolbar-select:focus { border-color: var(--blue) !important; }
+.lang-switch button.active { background: var(--blood) !important; border-color: var(--blood) !important; }
+
+/* Mobile nav */
+@media (max-width: 768px) {
+  .mobile-nav { background: rgba(1, 47, 138, 0.94) !important; }
+  .mobile-nav-link.active { color: var(--gold) !important; }
+}
+
+/* =============================================
+   HOVER — only on devices with a mouse
+   ============================================= */
+@media (hover: hover) {
+  .btn-primary:hover { background: var(--blue) !important; }
+  .btn-ghost:hover { background: var(--blue) !important; color: var(--paper) !important; border-color: var(--blue) !important; }
+  .site-nav-link:hover { color: var(--blue) !important; }
+  a:hover { color: var(--blue); }
+  .link-btn:hover { color: var(--blue-light) !important; border-color: var(--blue-light) !important; }
+  .vote-inline:hover { background: var(--blue) !important; border-color: var(--blue) !important; }
+  .comment-toggle:hover { color: var(--blue) !important; border-color: var(--blue) !important; }
+  .c-tab:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .ct-chip:hover { border-color: var(--blue) !important; color: var(--blue) !important; }
+  .tq-btn:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .pg-num:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .pg-arrow:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .qp-card:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .qp-card:hover .qp-num { color: var(--gold) !important; }
+  .qp-card:hover .qp-arrow { color: var(--gold) !important; }
+  .qb-btn:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .qb-btn:hover .qb-num { color: var(--gold) !important; }
+  .q-card:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .ranking-item:hover { background: var(--blue) !important; color: var(--paper) !important; }
+  .qp-all:hover { background: var(--blood) !important; border-color: var(--blood) !important; }
+  .ad-form button:hover { background: var(--blue) !important; }
+  .profile-btn:hover { box-shadow: 0 0 0 3px var(--blue), var(--shadow-md) !important; }
+  footer a:hover { color: var(--gold) !important; border-color: var(--blue-light) !important; }
 }
 
 /* =============================================
@@ -515,3 +608,4 @@ body {
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 0 8px rgba(214, 36, 24, 0.4);
 }
+

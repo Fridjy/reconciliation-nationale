@@ -90,6 +90,138 @@
 .welcome-cta { margin-bottom: 16px; }
 .welcome-about { display: block; color: rgba(10,8,6,0.5); }
 
+/* LANS attribution */
+.welcome-lans {
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.welcome-lans-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(10,8,6,0.4);
+}
+.welcome-lans-link {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--ink);
+  transition: opacity 0.2s;
+}
+.welcome-lans-link:hover { opacity: 0.7; }
+.welcome-lans-logo {
+  height: 36px; width: auto;
+  animation: lansFloat 3s ease-in-out infinite, lansFadeIn 1s ease 1.2s both;
+}
+@keyframes lansFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(1deg); }
+  75% { transform: translateY(3px) rotate(-1deg); }
+}
+@keyframes lansFadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.welcome-lans-link span {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 18px; letter-spacing: 0.05em;
+}
+.welcome-lans-full {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 13px; color: rgba(10,8,6,0.5);
+}
+
+/* =============================================
+   QUESTION PICKER
+   ============================================= */
+.q-picker {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 100px 28px 60px; position: relative; z-index: 2;
+}
+.q-picker-inner { max-width: 700px; width: 100%; }
+.q-picker-title {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: clamp(28px, 5vw, 42px); letter-spacing: -0.03em;
+  text-transform: uppercase; margin-bottom: 8px; text-align: center;
+}
+.q-picker-sub {
+  font-family: 'Space Grotesk', sans-serif; font-size: 16px;
+  color: rgba(10,8,6,0.55); margin-bottom: 32px; text-align: center;
+}
+.q-picker-grid { display: flex; flex-direction: column; gap: 6px; }
+
+.qp-card {
+  display: flex; align-items: center; gap: 18px;
+  padding: 22px 24px; background: var(--paper);
+  border: 2px solid var(--ink); cursor: pointer;
+  transition: all 0.2s; text-align: left;
+  color: var(--ink);
+}
+@media (hover: hover) {
+  .qp-card:hover { background: var(--blue, var(--ink)); color: var(--paper); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,8,6,0.1); }
+}
+@media (hover: hover) {
+  .qp-card:hover .qp-num { color: var(--gold); }
+  .qp-card:hover .qp-arrow { color: var(--gold); transform: translateX(4px); }
+  .qp-card:hover .qp-badge { background: var(--gold); color: var(--ink); }
+}
+.qp-card.qp-answered { border-color: rgba(10,8,6,0.15); }
+.qp-card.qp-answered .qp-badge { background: #2c6e49; color: var(--paper); }
+
+.qp-num {
+  font-family: 'DM Serif Display', serif; font-style: italic;
+  font-size: 32px; color: var(--blood); width: 40px; flex-shrink: 0;
+  transition: color 0.2s;
+}
+.qp-text {
+  flex: 1; font-family: 'DM Serif Display', serif;
+  font-size: clamp(17px, 2.2vw, 22px); line-height: 1.2;
+}
+.qp-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.qp-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid var(--ink);
+  transition: all 0.2s;
+}
+.qp-arrow { font-size: 20px; color: var(--blood); transition: all 0.2s; }
+
+.qp-all {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px; margin-top: 10px;
+  background: var(--ink); color: var(--paper);
+  cursor: pointer; transition: all 0.2s;
+  border: 2px solid var(--ink);
+}
+.qp-all:hover { background: var(--blood); border-color: var(--blood); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,8,6,0.15); }
+.qp-all-icon { font-size: 20px; }
+.qp-all-text {
+  flex: 1; font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 600;
+}
+.qp-all .qp-arrow { color: var(--gold); }
+
+/* =============================================
+   THANK YOU (single question)
+   ============================================= */
+.q-thankyou {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 100px 28px 60px; position: relative; z-index: 2; text-align: center;
+}
+.q-thankyou-inner { max-width: 500px; }
+.q-thankyou-check {
+  font-size: 48px; color: #2c6e49; margin-bottom: 16px;
+}
+.q-thankyou-inner h2 {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 36px; text-transform: uppercase; margin-bottom: 12px;
+  color: var(--blood);
+}
+.q-thankyou-inner p {
+  font-family: 'Space Grotesk', sans-serif; font-size: 17px;
+  color: rgba(10,8,6,0.6); margin-bottom: 32px;
+}
+.q-thankyou-actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+
 /* =============================================
    ACTIVITY FEED
    ============================================= */
