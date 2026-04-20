@@ -165,14 +165,8 @@ async function renderAnswers() {
       return (a.id || 0) - (b.id || 0);
     });
 
-  // Paginate locally (PAGE_SIZE answers per page)
-  const PAGE_SIZE = 3;
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageList = list.slice(start, start + PAGE_SIZE);
-  const hasMore = list.length > start + PAGE_SIZE;
-  const totalPages = Math.ceil(list.length / PAGE_SIZE);
-
-  renderAnswerCards(el, pageList, qIdx, hasMore, totalPages);
+  // Show all answers — no local pagination until volume grows
+  renderAnswerCards(el, list, qIdx, false, 1);
 }
 
 function renderAnswerCards(el, list, qIdx, hasMore, totalPages) {

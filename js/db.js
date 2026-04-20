@@ -5,7 +5,7 @@
    ============================================= */
 
 const DB = {
-  PAGE_SIZE: 20,
+  PAGE_SIZE: 500,   // show all answers — effectively no pagination until we scale
 
   /* ----- ANSWERS ----- */
 
