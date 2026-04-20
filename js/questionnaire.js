@@ -279,12 +279,25 @@ async function doSubmitSingleAnswer(user) {
   let existingEntry = answers.find(a => a._userId === user.phone);
 
   if (existingEntry) {
-    // Update existing entry with new question answer
-    existingEntry[currentQuestionId] = currentDraft[currentQuestionId];
+    // User is adding a new question answer to their existing entry
+    const newText = currentDraft[currentQuestionId];
+    const hadAnswer = !!(existingEntry[currentQuestionId] && String(existingEntry[currentQuestionId]).trim());
+    existingEntry[currentQuestionId] = newText;
 
-    // Update in Firestore
+    // Update the doc + increment perQuestion/totalAnswers only if this is a
+    // BRAND NEW question answer (not an edit of an existing one).
     if (typeof DB !== 'undefined' && db) {
-      try { await DB.vote(existingEntry.id, currentQuestionId, 0); } catch (e) {}
+      try {
+        await db.collection('answers').doc(existingEntry.id).set(
+          { [currentQuestionId]: newText }, { merge: true }
+        );
+        if (!hadAnswer && newText && newText.trim()) {
+          await db.collection('meta').doc('stats').set({
+            totalAnswers: firebase.firestore.FieldValue.increment(1),
+            [`perQuestion.${currentQuestionId}`]: firebase.firestore.FieldValue.increment(1)
+          }, { merge: true });
+        }
+      } catch (e) { console.warn('Answer update error:', e.message); }
     }
   } else {
     // Create new entry
