@@ -237,13 +237,16 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('profile-overlay').classList.contains('open')) hideProfile();
   });
+  // About is public — no auth required
+  setLang(currentLang);
   const user = getStoredUser();
-  if (!user || !user.registered) {
-    window.location.href = 'index.html';
-  } else {
-    setLang(currentLang);
+  const profileBtn = document.getElementById('profile-btn');
+  if (user && user.registered) {
     const el = document.getElementById('profile-initials');
     if (el) el.textContent = getInitials(user.name);
+  } else if (profileBtn) {
+    // No account → hide the profile button instead of showing empty circle
+    profileBtn.style.display = 'none';
   }
 </script>
 <script src="js/modern.js"></script>
