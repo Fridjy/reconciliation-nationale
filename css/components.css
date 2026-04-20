@@ -122,14 +122,16 @@
   transform: translateX(-50%) translateY(30px) scale(0.96);
   background: var(--white);
   color: var(--ink);
-  padding: 12px 22px;
+  padding: 14px 22px;
   border: 0.5px solid var(--ink-08);
   border-left: 2px solid var(--red);
-  border-radius: var(--radius-sm);
-  font-family: 'DM Mono', monospace;
-  font-size: 12px; letter-spacing: 0.06em;
+  border-radius: var(--radius-md);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; line-height: 1.45;
+  max-width: min(480px, calc(100vw - 40px));
+  text-align: left;
   z-index: 200;
-  transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
   opacity: 0; pointer-events: none;
 }
 .toast.show { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; pointer-events: auto; }

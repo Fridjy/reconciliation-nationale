@@ -663,7 +663,20 @@
   }
 
   /* ============================================================
-    13. BOOT SEQUENCE
+    13. WELCOME TOAST — shown once per session on the landing
+     ============================================================ */
+  function maybeShowWelcomeToast() {
+    if (!document.querySelector('.welcome-screen')) return;         // landing only
+    try { if (sessionStorage.getItem('rn_welcomed')) return; } catch (e) {}
+    if (typeof showToast !== 'function') return;
+    setTimeout(() => {
+      showToast(t('welcome-toast'), 6500);
+      try { sessionStorage.setItem('rn_welcomed', '1'); } catch (e) {}
+    }, 1400);
+  }
+
+  /* ============================================================
+    14. BOOT SEQUENCE
      ============================================================ */
   enhanceWelcome();
   enhanceQuestionsHeader();
@@ -671,6 +684,7 @@
   syncCounters();
   paintCount(currentCount);
   observeReveals();
+  maybeShowWelcomeToast();
 
   // Subscribe to real Firestore participant count (live updates on submit)
   if (countHandles.length > 0) {

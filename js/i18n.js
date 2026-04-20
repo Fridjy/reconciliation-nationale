@@ -250,6 +250,9 @@ const i18n = {
     'hero-stat-depatman': 'DEPATMAN',
     'hero-stat-jodi-a': 'JODI A',
 
+    /* Welcome toast (shown once per session on the landing) */
+    'welcome-toast': 'Byenveni \u2014 LANS konte sou patisipasyon ou pou jwenn yon solisyon ayisyen a kriz aktyèl la.',
+
     /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
     'ty-voice-prefix': 'Ou se vwa',
     'ty-voice-suffix': 'nan konv\u00e8sasyon an.',
@@ -533,6 +536,9 @@ const i18n = {
     'hero-stat-depatman': 'D\u00c9PARTEMENTS',
     'hero-stat-jodi-a': 'AUJOURD\u2019HUI',
 
+    /* Welcome toast (shown once per session on the landing) */
+    'welcome-toast': 'Bienvenue \u2014 LANS compte sur votre participation pour trouver une solution ha\u00eftienne \u00e0 la crise actuelle.',
+
     /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
     'ty-voice-prefix': 'Vous \u00eates la voix',
     'ty-voice-suffix': 'de la conversation.',
@@ -815,6 +821,9 @@ const i18n = {
     'hero-stat-peyi-dias': 'DIASPORA COUNTRIES',
     'hero-stat-depatman': 'DEPARTMENTS',
     'hero-stat-jodi-a': 'TODAY',
+
+    /* Welcome toast (shown once per session on the landing) */
+    'welcome-toast': 'Welcome \u2014 LANS is counting on your participation to find a Haitian solution to the current crisis.',
 
     /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
     'ty-voice-prefix': 'You are voice',
