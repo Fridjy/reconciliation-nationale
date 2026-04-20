@@ -498,6 +498,10 @@
           if (typeof paintCommunityStats === 'function') {
             try { paintCommunityStats(data); } catch (e) {}
           }
+          // Question list counts on the community hub ("0 réponses" → live)
+          if (typeof buildQuestionButtons === 'function' && document.getElementById('qb-grid')) {
+            try { buildQuestionButtons(); } catch (e) {}
+          }
           // Map page: re-render with the live perDept baseline
           if (typeof renderMap === 'function' && document.querySelector('.map-svg')) {
             try { renderMap(); } catch (e) {}

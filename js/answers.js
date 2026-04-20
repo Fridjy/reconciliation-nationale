@@ -6,15 +6,21 @@ function buildQuestionButtons() {
   const el = document.getElementById('qb-grid');
   if (!el) return;
 
-  // Count how many people answered each question (1 per person)
+  // Per-question count: prefer Firestore (cachedStats.perQuestion), fall back
+  // to the local answers array (which is empty at runtime but kept as safety).
+  const perQuestion = (typeof cachedStats !== 'undefined' && cachedStats && cachedStats.perQuestion) || {};
   const counts = {};
   QUESTIONS.forEach(q => {
-    counts[q.id] = answers.filter(a => {
+    const fromFirestore = Number(perQuestion[q.id]) || 0;
+    const fromLocal = (typeof answers !== 'undefined' ? answers : []).filter(a => {
       const val = a[q.id];
       if (!val) return false;
       const text = typeof val === 'object' ? (val[currentLang] || val.ht || '') : val;
       return text.trim().length > 0;
     }).length;
+    // Firestore perQuestion is the authoritative count. Local answers add
+    // in-session submissions that haven't yet propagated.
+    counts[q.id] = Math.max(fromFirestore, fromLocal);
   });
 
   el.innerHTML = QUESTIONS.map((q, i) => `
