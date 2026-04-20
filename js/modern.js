@@ -418,7 +418,7 @@
   }
 
   function shareSectionHTML() {
-    const msg = encodeURIComponent('https://reconciliation-nationale.web.app');
+    const msg = encodeURIComponent('https://reconciliation-nationale.ht');
     return `
       <section class="share-section reveal">
         <div class="share-inner">
@@ -437,7 +437,7 @@
               </span>
               <span class="sr-arrow">\u2192</span>
             </a>
-            <a class="share-row sr-telegram" href="https://t.me/share/url?url=https://reconciliation-nationale.web.app" target="_blank" rel="noopener">
+            <a class="share-row sr-telegram" href="https://t.me/share/url?url=https://reconciliation-nationale.ht" target="_blank" rel="noopener">
               <span class="sr-icon">T</span>
               <span class="sr-body">
                 <div class="sr-name">Telegram</div>
@@ -445,7 +445,7 @@
               </span>
               <span class="sr-arrow">\u2192</span>
             </a>
-            <a class="share-row sr-instagram" href="#" onclick="navigator.clipboard && navigator.clipboard.writeText('https://reconciliation-nationale.web.app'); return false;">
+            <a class="share-row sr-instagram" href="#" onclick="navigator.clipboard && navigator.clipboard.writeText('https://reconciliation-nationale.ht'); return false;">
               <span class="sr-icon">IG</span>
               <span class="sr-body">
                 <div class="sr-name">Instagram</div>

@@ -26,142 +26,166 @@
   }
 
   /* Site URL (sharing) */
-  const SITE_URL = 'https://reconciliation-nationale.web.app';
+  const SITE_URL = 'https://reconciliation-nationale.ht';
+
+  /* Preload the RN logo once for the canvas */
+  let _logoImg = null;
+  function loadLogo() {
+    if (_logoImg) return Promise.resolve(_logoImg);
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload  = () => { _logoImg = img; resolve(img); };
+      img.onerror = () => resolve(null);
+      img.src = 'logo.png';
+    });
+  }
 
   /* =============================================
-     CANVAS IMAGE GENERATION
-     Produces a 1080x1350 PNG of the vox card, drawn natively
-     (no external libraries). Used for Save + native Share.
+     CANVAS IMAGE GENERATION — Editorial poster
+     1080x1350 warm gradient card with centered quote,
+     logo, voice number hero, dark footer band, flag accent.
      ============================================= */
   async function generateCardImage(data) {
-    // Ensure webfonts are loaded before measuring/drawing text
     try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+    const logo = await loadLogo();
 
     const W = 1080, H = 1350;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    const RED       = '#D21034';
-    const BLUE      = '#00209F';
-    const GOLD      = '#F5C518';
-    const NIGHT     = '#0A0A14';
-    const WHITE     = '#F7F5EE';
-    const MUTED     = 'rgba(247,245,238,0.55)';
-    const HAIRLINE  = 'rgba(247,245,238,0.12)';
+    const RED   = '#D21034';
+    const BLUE  = '#00209F';
+    const GOLD  = '#F5C518';
+    const INK   = '#0A0A14';
+    const WHITE = '#F7F5EE';
 
-    /* ---------- RED HERO (top 62%) ---------- */
-    const RED_H = Math.round(H * 0.62);           // ~837px
-    ctx.fillStyle = RED;
-    ctx.fillRect(0, 0, W, RED_H);
+    /* ---------- WARM PASTEL BACKGROUND ---------- */
+    // Base wash
+    const base = ctx.createLinearGradient(0, 0, 0, H);
+    base.addColorStop(0, '#FBF4EE');
+    base.addColorStop(1, '#F5EDE4');
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, W, H);
+    // Blush rose, center-left
+    const rose = ctx.createRadialGradient(W * 0.38, H * 0.28, 80, W * 0.38, H * 0.28, W * 0.75);
+    rose.addColorStop(0, 'rgba(244, 186, 194, 0.55)');
+    rose.addColorStop(1, 'rgba(244, 186, 194, 0)');
+    ctx.fillStyle = rose;
+    ctx.fillRect(0, 0, W, H);
+    // Pale lavender, top-right
+    const lav = ctx.createRadialGradient(W * 0.85, H * 0.1, 50, W * 0.85, H * 0.1, W * 0.5);
+    lav.addColorStop(0, 'rgba(214, 208, 236, 0.4)');
+    lav.addColorStop(1, 'rgba(214, 208, 236, 0)');
+    ctx.fillStyle = lav;
+    ctx.fillRect(0, 0, W, H);
 
-    // Diagonal hatching overlay
-    ctx.save();
-    ctx.strokeStyle = 'rgba(0,0,0,0.045)';
-    ctx.lineWidth = 1;
-    for (let x = -RED_H; x < W + RED_H; x += 10) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x + RED_H, RED_H);
-      ctx.stroke();
+    /* ---------- TOP MARK: centered logo + small brand label ---------- */
+    const topY = 110;
+    if (logo) {
+      const logoH = 86;
+      const ratio = logo.naturalWidth / Math.max(1, logo.naturalHeight);
+      const logoW = logoH * ratio;
+      ctx.drawImage(logo, (W - logoW) / 2, topY, logoW, logoH);
     }
-    ctx.restore();
 
-    // Flag mark (3 vertical bars) — top left
-    const fmX = 72, fmY = 88, barH = 44;
-    ctx.fillStyle = BLUE;  roundRect(ctx, fmX,       fmY, 10, barH, 3); ctx.fill();
-    ctx.fillStyle = RED;   roundRect(ctx, fmX + 16,  fmY, 10, barH, 3); ctx.fill();
-    ctx.fillStyle = GOLD;  roundRect(ctx, fmX + 32,  fmY,  7, barH, 3); ctx.fill();
+    const brandY = topY + 110;
+    ctx.fillStyle = INK;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = '600 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(`R\u00c9CONCILIATION NATIONALE  \u00b7  VWA N\u00b0 ${formatNum(data.voiceN)}`, W / 2, brandY);
 
-    // Brand line
-    ctx.fillStyle = WHITE;
-    ctx.font = '600 22px "DM Mono", "IBM Plex Mono", ui-monospace, monospace';
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'left';
-    const brandTxt = `${t('ty-vox-brand')} #${formatNum(data.voiceN)}`;
-    ctx.fillText(brandTxt, fmX + 56, fmY + barH / 2);
+    // Tiny flag accent below the brand label
+    const accY = brandY + 18;
+    const accW = 60, accH = 4;
+    const accX = (W - accW) / 2;
+    ctx.fillStyle = BLUE;  roundRect(ctx, accX, accY, accW * 0.4,  accH, 2); ctx.fill();
+    ctx.fillStyle = RED;   roundRect(ctx, accX + accW * 0.42, accY, accW * 0.4,  accH, 2); ctx.fill();
+    ctx.fillStyle = GOLD;  roundRect(ctx, accX + accW * 0.84, accY, accW * 0.16, accH, 2); ctx.fill();
 
-    // Quote — centered vertically in the remaining red space
-    const quoteX = 72;
-    const quoteW = W - 144;
-    const quoteText = data.quote && data.quote.trim()
+    /* ---------- QUOTE (centered, Playfair italic) ---------- */
+    const quoteText = (data.quote && data.quote.trim())
       ? '\u00AB\u00A0' + data.quote + '\u00A0\u00BB'
       : '\u00AB\u00A0' + t('ty-img-quote-placeholder') + '\u00A0\u00BB';
 
-    ctx.fillStyle = WHITE;
-    ctx.font = 'italic 400 56px "Playfair Display", "Fraunces", Georgia, serif';
-    const lineHeight = 72;
+    ctx.fillStyle = INK;
+    ctx.font = 'italic 400 60px "Playfair Display", Georgia, serif';
+    ctx.textAlign = 'center';
+    const quoteW = W - 180;
+    const lineH = 82;
     const lines = wrapText(ctx, quoteText, quoteW);
-    const maxLines = 8;
+    const maxLines = 6;
     const shown = lines.slice(0, maxLines);
     if (lines.length > maxLines) {
-      shown[maxLines - 1] = shown[maxLines - 1].replace(/[\s\u00A0]+\u00BB\s*$/, '').replace(/[\s\u00A0]+$/, '') + '\u2026\u00A0\u00BB';
+      shown[maxLines - 1] = shown[maxLines - 1].replace(/[\s\u00A0]+\u00BB\s*$/, '').trim() + '\u2026\u00A0\u00BB';
     }
-    const quoteBlockH = shown.length * lineHeight;
-    const quoteTop = Math.max(fmY + barH + 60, (RED_H - quoteBlockH) / 2 + 20);
+
+    // Footer panel occupies bottom 30%
+    const FOOTER_Y = Math.round(H * 0.70);
+
+    // Vertically center the quote in the space between accent and footer
+    const spaceTop = accY + 40;
+    const spaceBottom = FOOTER_Y - 40;
+    const quoteBlockH = shown.length * lineH;
+    const quoteStart = spaceTop + Math.max(0, (spaceBottom - spaceTop - quoteBlockH) / 2);
+
     ctx.textBaseline = 'alphabetic';
     shown.forEach((line, i) => {
-      ctx.fillText(line, quoteX, quoteTop + (i + 1) * lineHeight - 18);
+      ctx.fillText(line, W / 2, quoteStart + (i + 1) * lineH - 20);
     });
 
-    /* ---------- FLAG DIVIDER (3px-ish stripe) ---------- */
-    const fdY = RED_H;
-    const stripeH = 5;
-    const unit = W / 7; // ratio 3:3:1
-    ctx.fillStyle = BLUE;  ctx.fillRect(0,          fdY, unit * 3, stripeH);
-    ctx.fillStyle = RED;   ctx.fillRect(unit * 3,   fdY, unit * 3, stripeH);
-    ctx.fillStyle = GOLD;  ctx.fillRect(unit * 6,   fdY, unit * 1, stripeH);
+    /* ---------- FOOTER PANEL (dark ink) ---------- */
+    ctx.fillStyle = INK;
+    ctx.fillRect(0, FOOTER_Y, W, H - FOOTER_Y);
 
-    /* ---------- DARK BOTTOM ---------- */
-    const DARK_Y = RED_H + stripeH;
-    ctx.fillStyle = NIGHT;
-    ctx.fillRect(0, DARK_Y, W, H - DARK_Y);
-
-    // VWA / VOIX / VOICE label (top of dark)
-    ctx.fillStyle = GOLD;
-    ctx.font = '600 22px "DM Mono", "IBM Plex Mono", ui-monospace, monospace';
+    // Huge voice number, left
+    ctx.fillStyle = WHITE;
+    ctx.font = '700 150px "Unbounded", "Space Grotesk", system-ui, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(t('ty-img-voice-label'), 72, DARK_Y + 70);
+    ctx.fillText('#' + formatNum(data.voiceN), 72, FOOTER_Y + 150);
 
-    // Huge voice number
+    // "VOIX" / "VWA" label above the number
+    ctx.fillStyle = GOLD;
+    ctx.font = '600 14px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(t('ty-img-voice-label'), 72, FOOTER_Y + 60);
+
+    // Name + location, right side
+    ctx.textAlign = 'right';
     ctx.fillStyle = WHITE;
-    ctx.font = '700 200px "Space Grotesk", system-ui, sans-serif';
-    ctx.textAlign = 'left';
-    const voiceStr = '#' + formatNum(data.voiceN);
-    ctx.fillText(voiceStr, 72, DARK_Y + 240);
-
-    // Name + where (below the number)
-    ctx.fillStyle = WHITE;
-    ctx.font = '600 30px "Space Grotesk", system-ui, sans-serif';
-    const nameY = DARK_Y + 310;
-    ctx.fillText(data.name, 72, nameY);
-
+    ctx.font = '600 26px "DM Sans", system-ui, sans-serif';
+    ctx.fillText(data.name || t('ty-region-anon'), W - 72, FOOTER_Y + 120);
     if (data.where) {
-      ctx.fillStyle = MUTED;
-      ctx.font = '500 20px "DM Mono", "IBM Plex Mono", ui-monospace, monospace';
-      ctx.fillText(data.where, 72, nameY + 34);
+      ctx.fillStyle = 'rgba(247,245,238,0.5)';
+      ctx.font = '500 17px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(data.where, W - 72, FOOTER_Y + 148);
     }
 
-    // Thin hairline above the footer
-    ctx.strokeStyle = HAIRLINE;
+    // Thin hairline + URL row at the very bottom
+    ctx.strokeStyle = 'rgba(247,245,238,0.12)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(72, H - 96);
-    ctx.lineTo(W - 72, H - 96);
+    ctx.moveTo(72, H - 92);
+    ctx.lineTo(W - 72, H - 92);
     ctx.stroke();
 
-    // URL at bottom
     ctx.fillStyle = GOLD;
-    ctx.font = '600 22px "DM Mono", "IBM Plex Mono", ui-monospace, monospace';
+    ctx.font = '600 20px "DM Mono", ui-monospace, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('reconciliation-nationale.ht', 72, H - 56);
+    ctx.fillText('reconciliation-nationale.ht', 72, H - 54);
 
-    // Tagline right
-    ctx.fillStyle = MUTED;
-    ctx.font = '500 18px "DM Mono", "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillStyle = 'rgba(247,245,238,0.45)';
+    ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
     ctx.textAlign = 'right';
-    ctx.fillText('5 kesyon \u00b7 5 repons \u00b7 yon peyi', W - 72, H - 56);
+    ctx.fillText('5 kesyon \u00b7 5 repons \u00b7 yon peyi', W - 72, H - 54);
+
+    // Flag stripe at the very bottom edge
+    const edgeY = H - 6;
+    const edgeH = 6;
+    ctx.fillStyle = BLUE;  ctx.fillRect(0,                edgeY, W * (3/7), edgeH);
+    ctx.fillStyle = RED;   ctx.fillRect(W * (3/7),        edgeY, W * (3/7), edgeH);
+    ctx.fillStyle = GOLD;  ctx.fillRect(W * (6/7),        edgeY, W * (1/7), edgeH);
 
     // Export
     return await new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/png', 0.95));
@@ -240,41 +264,30 @@
     return 'reconciliation-nationale-vox-' + voiceN + '.png';
   }
 
-  /* Static dept rankings for the regional pride block
-     (matches MOBILIZATION.departments shape in modern.js) */
-  const DEPT_LEADERBOARD = [
-    { id: 'ouest',      label: { ht: 'Lw\u00e8s',       fr: 'Ouest',      en: 'West' },       count: 3840 },
-    { id: 'sud',        label: { ht: 'Sid',             fr: 'Sud',        en: 'South' },      count: 1922 },
-    { id: 'artibonite', label: { ht: 'Latibonit',       fr: 'Artibonite', en: 'Artibonite' }, count: 1506 },
-    { id: 'nord',       label: { ht: 'N\u00f2',         fr: 'Nord',       en: 'North' },      count: 1284 },
-    { id: 'centre',     label: { ht: 'Sant',            fr: 'Centre',     en: 'Center' },     count:  988 },
-    { id: 'grand-anse', label: { ht: 'Grandans',        fr: 'Grand\u2019Anse', en: 'Grand\u2019Anse' }, count: 740 },
-    { id: 'nord-est',   label: { ht: 'N\u00f2-\u00c8s', fr: 'Nord-Est',   en: 'North-East' }, count:  620 },
-    { id: 'nord-ouest', label: { ht: 'N\u00f2-Lw\u00e8s', fr: 'Nord-Ouest', en: 'North-West' }, count: 555 },
-    { id: 'nippes',     label: { ht: 'Nip',             fr: 'Nippes',     en: 'Nippes' },     count:  488 },
-    { id: 'sud-est',    label: { ht: 'Sid-\u00c8s',     fr: 'Sud-Est',    en: 'South-East' }, count:  433 }
-  ];
+  /* Live department leaderboard from Firestore cachedStats.perDept.
+     Labels come from DEPARTMENTS (data.js) — real geography only,
+     zero hardcoded counts. */
+  function getLiveLeaderboard() {
+    const perDept = (typeof cachedStats !== 'undefined' && cachedStats && cachedStats.perDept) || {};
+    const depts = (typeof DEPARTMENTS !== 'undefined') ? DEPARTMENTS : [];
+    return depts.map(d => ({
+      id: d.id,
+      label: d.name,
+      count: Number(perDept[d.id]) || 0
+    }));
+  }
 
-  /* Fallback in case matchDepartment / user address can't resolve */
   function resolveUserDept() {
     const u = (typeof getStoredUser === 'function') ? getStoredUser() : null;
     if (!u) return null;
-    const addr = u.address || '';
-    let id = null;
-    if (typeof matchDepartment === 'function') id = matchDepartment(addr);
-    if (!id) {
-      // Fallback: scan leaderboard labels
-      const lower = addr.toLowerCase();
-      for (const d of DEPT_LEADERBOARD) {
-        const labels = Object.values(d.label).map(s => s.toLowerCase());
-        if (labels.some(l => lower.includes(l))) { id = d.id; break; }
-      }
-    }
-    return id;
+    if (typeof matchDepartment === 'function') return matchDepartment(u.address || '');
+    return null;
   }
 
   function findDept(id) {
-    return DEPT_LEADERBOARD.find(d => d.id === id) || null;
+    const depts = (typeof DEPARTMENTS !== 'undefined') ? DEPARTMENTS : [];
+    const d = depts.find(x => x.id === id);
+    return d ? { id: d.id, label: d.name } : null;
   }
 
   /* Get user's submitted answer. After submitSingleAnswer() runs:
@@ -324,15 +337,17 @@
     const answerText = getLastAnswerText();
     const trimmedAnswer = answerText.length > 120 ? answerText.slice(0, 117).trimEnd() + '\u2026' : answerText;
 
-    /* Regional ranking: sort desc by count, find user's position */
-    const sorted = DEPT_LEADERBOARD.slice().sort((a, b) => b.count - a.count);
+    /* Regional ranking: read live perDept counts, sort desc, find user's position */
+    const liveBoard = getLiveLeaderboard();
+    const sorted = liveBoard.slice().sort((a, b) => b.count - a.count);
     const myRank = deptId ? (sorted.findIndex(d => d.id === deptId) + 1) : 0;
 
     /* Top 5 for display; if user's dept isn't in top 5, append it as 6th row */
     const topN = sorted.slice(0, 5);
     const inTop = deptId ? topN.some(d => d.id === deptId) : false;
-    const rows  = inTop || !deptId ? topN : topN.concat([sorted.find(d => d.id === deptId)]);
-    const maxCount = sorted[0].count;
+    const extra = (!inTop && deptId) ? [sorted.find(d => d.id === deptId)].filter(Boolean) : [];
+    const rows  = topN.concat(extra);
+    const maxCount = Math.max(1, ...sorted.map(d => d.count));
 
     /* Share messages */
     const waMsg  = t('ty-wa-message');
