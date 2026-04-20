@@ -47,32 +47,24 @@
 }
 
 /* =============================================
-   WELCOME HERO — RED full viewport with hatching
-   Single mobilization hero: eyebrow + huge counter + goal bar
-   + CTA row + 4-col stats band inside the hero
+   WELCOME HERO — soft gradient (blush pink → cream → lavender hint)
+   Airy, light, product-grade. Dark ink text throughout.
    ============================================= */
 .welcome-screen {
   min-height: calc(100vh - 60px); /* body has padding-top:60px for fixed nav */
-  background: var(--red);
-  color: var(--white);
+  background:
+    radial-gradient(ellipse 80% 70% at 38% 28%, rgba(244, 186, 194, 0.55) 0%, rgba(244, 186, 194, 0) 60%),
+    radial-gradient(ellipse 60% 50% at 82% 12%, rgba(214, 208, 236, 0.45) 0%, rgba(214, 208, 236, 0) 60%),
+    radial-gradient(ellipse 70% 60% at 60% 90%, rgba(250, 236, 226, 0.7) 0%, rgba(250, 236, 226, 0) 65%),
+    linear-gradient(180deg, #FBF4EE 0%, #F5EDE4 100%);
+  color: var(--ink);
   padding: 0;
   position: relative; z-index: 2;
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
   overflow: hidden;
 }
-.welcome-screen::before {
-  content: ""; position: absolute; inset: 0;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(0,0,0,0.035) 0px,
-    rgba(0,0,0,0.035) 1px,
-    transparent 1px,
-    transparent 8px
-  );
-  z-index: 0;
-}
+/* No hatching overlay — the gradient is the visual */
 
 .welcome-inner {
   position: relative; z-index: 1;
@@ -88,8 +80,8 @@
   display: block;
   height: 72px; width: auto;
   margin: 0 auto 14px;
-  filter: brightness(0) invert(1);  /* white silhouette on red bg */
-  opacity: 0.92;
+  filter: none;  /* show the real logo colors on the soft gradient */
+  opacity: 1;
 }
 
 /* Hide legacy elements that don't belong in the new layout */
@@ -106,13 +98,13 @@
   font-family: var(--font-label);
   font-size: 12px; font-weight: 600;
   letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--white);
+  color: var(--ink-60);
   margin-bottom: 18px;
 }
 .welcome-kicker::before,
 .welcome-kicker::after {
   content: ""; width: 32px; height: 1px;
-  background: rgba(247,245,238,0.55);
+  background: var(--ink-20);
 }
 
 /* Big counter block */
@@ -125,7 +117,7 @@
   font-family: var(--font-label);
   font-size: 12px; font-weight: 600;
   letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(247,245,238,0.75);
+  color: var(--ink-60);
   order: -1;  /* label above the number */
 }
 .welcome-count {
@@ -134,7 +126,7 @@
   font-size: clamp(84px, 16vw, 180px);
   line-height: 0.88;
   letter-spacing: -0.045em;
-  color: var(--white);
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
   transition: transform 0.15s var(--ease);
   display: inline-block;
@@ -145,19 +137,19 @@
 .welcome-delta {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px; color: rgba(247,245,238,0.8);
+  font-size: 14px; color: var(--ink-60);
   margin-top: 2px;
 }
 .welcome-delta .wd-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--white);
+  background: var(--red);
   animation: liveBlink 1.6s var(--ease) infinite;
   flex-shrink: 0;
 }
 .welcome-delta .wd-num {
-  color: var(--gold); font-weight: 700;
+  color: var(--red); font-weight: 700;
 }
-.welcome-delta .wd-text { color: rgba(247,245,238,0.75); }
+.welcome-delta .wd-text { color: var(--ink-50); }
 
 /* Goal progress */
 .welcome-goal {
@@ -170,20 +162,20 @@
   align-items: baseline; gap: 12px;
   font-family: 'DM Mono', monospace;
   font-size: 11px; letter-spacing: 0.08em;
-  color: rgba(247,245,238,0.65);
+  color: var(--ink-50);
 }
 .welcome-goal-labels .wg-left   { text-align: left; }
-.welcome-goal-labels .wg-center { color: var(--gold); font-weight: 600; text-align: center; }
+.welcome-goal-labels .wg-center { color: var(--red); font-weight: 600; text-align: center; }
 .welcome-goal-labels .wg-right  { text-align: right; }
 .welcome-goal-bar {
   position: relative; height: 6px;
-  background: rgba(0,0,0,0.22);
+  background: var(--ink-08);
   border-radius: var(--radius-pill);
   overflow: hidden;
 }
 .welcome-goal-fill {
   position: absolute; left: 0; top: 0; bottom: 0;
-  background: var(--gold);
+  background: var(--rn-gradient);
   border-radius: var(--radius-pill);
   transition: width 0.7s var(--ease);
 }
@@ -194,7 +186,7 @@
   margin-top: 18px;
 }
 .welcome-cta {
-  background: var(--white); color: var(--red);
+  background: var(--red); color: var(--white);
   padding: 15px 30px;
   font-family: var(--font-slogan);
   font-size: 14px; font-weight: 700; letter-spacing: 0;
@@ -205,16 +197,16 @@
   text-decoration: none;
 }
 .welcome-cta::after { content: "\2192"; font-size: 16px; transition: transform var(--t-fast); }
-.welcome-cta:hover { transform: scale(1.02); }
+.welcome-cta:hover { background: var(--red-deep); transform: scale(1.02); }
 .welcome-cta:hover::after { transform: translateX(2px); }
 
 .welcome-about {
-  background: rgba(0,0,0,0.14);
-  color: var(--white);
+  background: var(--white);
+  color: var(--ink);
   padding: 15px 30px;
   font-family: var(--font-slogan);
   font-size: 14px; font-weight: 600; letter-spacing: 0;
-  border: 0.5px solid rgba(247,245,238,0.35);
+  border: 0.5px solid var(--ink-12);
   border-radius: var(--radius-pill);
   cursor: pointer;
   display: inline-flex; align-items: center; gap: 10px;
@@ -222,15 +214,15 @@
   text-decoration: none;
 }
 .welcome-about::after { content: "\2192"; font-size: 16px; transition: transform var(--t-fast); }
-.welcome-about:hover { background: rgba(0,0,0,0.25); border-color: rgba(247,245,238,0.6); transform: scale(1.02); }
+.welcome-about:hover { border-color: var(--ink); transform: scale(1.02); }
 .welcome-about:hover::after { transform: translateX(2px); }
 
 /* LANS attribution — "Une initiative de [LANS logo]" pill below the CTAs */
 .welcome-lans {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 7px 16px;
-  background: rgba(0,0,0,0.14);
-  border: 0.5px solid rgba(247,245,238,0.3);
+  background: var(--white);
+  border: 0.5px solid var(--ink-08);
   border-radius: var(--radius-pill);
   order: 99;             /* flex order: push to the bottom of .welcome-inner */
   margin-top: 10px;
@@ -238,58 +230,61 @@
 .welcome-lans-label {
   font-family: 'DM Mono', monospace;
   font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(247,245,238,0.75);
+  color: var(--ink-60);
 }
 .welcome-lans-link {
   display: inline-flex; align-items: center; gap: 8px;
-  color: var(--white); text-decoration: none;
+  color: var(--ink); text-decoration: none;
   transition: opacity var(--t-fast);
 }
 .welcome-lans-link:hover { opacity: 0.7; }
 .welcome-lans-logo {
   height: 20px; width: auto;
-  filter: brightness(0) invert(1);   /* white silhouette on red bg */
+  filter: none;   /* natural logo on light bg */
 }
 .welcome-lans-full {
   display: none;   /* full-name sub-text hidden; only "Une initiative de [logo]" shows */
 }
 
 /* =============================================
-   IN-HERO STATS BAND (4 columns, white dividers)
+   IN-HERO STATS BAND (4 columns, hairline dividers)
    Injected by modern.js — .welcome-stats
    ============================================= */
 .welcome-stats {
   position: relative; z-index: 1;
   width: 100%;
   display: grid; grid-template-columns: repeat(4, 1fr);
-  border-top: 0.5px solid rgba(247,245,238,0.15);
+  border-top: 0.5px solid var(--ink-08);
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .welcome-stats .ws-item {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; text-align: center;
   padding: 26px 12px;
-  border-right: 0.5px solid rgba(247,245,238,0.15);
+  border-right: 0.5px solid var(--ink-08);
 }
 .welcome-stats .ws-item:last-child { border-right: none; }
 .welcome-stats .ws-num {
   font-family: var(--font-slogan); font-weight: 700;
   font-size: clamp(24px, 3.2vw, 34px); line-height: 1;
   letter-spacing: -0.025em;
-  color: var(--white);
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.welcome-stats .ws-num.gold { color: var(--gold); }
+.welcome-stats .ws-num.gold { color: var(--red); }  /* accent → red on light bg */
 .welcome-stats .ws-label {
   font-family: 'DM Mono', monospace;
   font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(247,245,238,0.55); margin-top: 10px;
+  color: var(--ink-50); margin-top: 10px;
 }
 
 @media (max-width: 720px) {
   .welcome-stats { grid-template-columns: repeat(2, 1fr); }
-  .welcome-stats .ws-item:nth-child(odd) { border-right: 0.5px solid rgba(247,245,238,0.15); }
+  .welcome-stats .ws-item:nth-child(odd) { border-right: 0.5px solid var(--ink-08); }
   .welcome-stats .ws-item:nth-child(even) { border-right: none; }
-  .welcome-stats .ws-item:nth-child(-n+2) { border-bottom: 0.5px solid rgba(247,245,238,0.15); }
+  .welcome-stats .ws-item:nth-child(-n+2) { border-bottom: 0.5px solid var(--ink-08); }
 }
 
 /* Floating hero cards from prior iteration — hidden on new layout */
