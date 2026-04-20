@@ -150,7 +150,7 @@ async function doSubmitFullForm(user) {
   const newEntry = {
     name: publicName,
     where: user.address,
-    department: typeof matchDepartment === 'function' ? matchDepartment(user.address) : null,
+    department: user.department || (typeof matchDepartment === 'function' ? matchDepartment(user.address) : null),
     votes: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
     comments: { q1: [], q2: [], q3: [], q4: [], q5: [] },
     _userId: user.phone
@@ -291,7 +291,7 @@ async function doSubmitSingleAnswer(user) {
     const newEntry = {
       name: publicName,
       where: user.address,
-      department: typeof matchDepartment === 'function' ? matchDepartment(user.address) : null,
+      department: user.department || (typeof matchDepartment === 'function' ? matchDepartment(user.address) : null),
       votes: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
       comments: { q1: [], q2: [], q3: [], q4: [], q5: [] },
       _userId: user.phone
@@ -510,6 +510,21 @@ function updateAnonPreview() {
   }
 }
 
+/* Map HAITI_COMMUNES dept keys (capitalized FR names) to DEPARTMENTS[].id */
+const HAITI_DEPT_NAME_TO_ID = {
+  "Ouest": "ouest",
+  "Nord": "nord",
+  "Artibonite": "artibonite",
+  "Sud": "sud",
+  "Sud-Est": "sud-est",
+  "Nord-Est": "nord-est",
+  "Nord-Ouest": "nord-ouest",
+  "Centre": "centre",
+  "Grand'Anse": "grand-anse",
+  "Grande'Anse": "grand-anse",
+  "Nippes": "nippes"
+};
+
 async function handleRegister(e) {
   e.preventDefault();
 
@@ -519,24 +534,27 @@ async function handleRegister(e) {
   const phoneNum = document.getElementById('reg-phone').value.trim();
   const phone = phoneCode + phoneNum;
   const email = (document.getElementById('reg-email').value || '').trim();
-  // Build address from country + city/commune
+  // Build address from country + city/commune + resolve department id
   const countryCode = document.getElementById('reg-country').value;
   const country = COUNTRIES.find(c => c.code === countryCode);
   const countryName = country ? country.name : '';
   let address = '';
+  let department = null;
   if (countryCode === 'HT') {
     const commune = document.getElementById('reg-commune').value;
-    const dept = document.getElementById('reg-dept').value;
-    address = commune + (dept ? ', ' + dept : '') + ', Ha\u00efti';
+    const deptName = document.getElementById('reg-dept').value;
+    address = commune + (deptName ? ', ' + deptName : '') + ', Ha\u00efti';
+    department = HAITI_DEPT_NAME_TO_ID[deptName] || null;
   } else {
     const city = document.getElementById('reg-city').value.trim();
     address = city + (countryName ? ', ' + countryName : '');
+    department = 'diaspora';
   }
   const password = document.getElementById('reg-password').value;
   const isAnon = document.getElementById('reg-anon').checked;
 
-  // Save user
-  const user = { name, phone, email, address, isAnon, registered: true };
+  // Save user (department stored explicitly so submission won't need to re-parse)
+  const user = { name, phone, email, address, department, isAnon, registered: true };
   localStorage.setItem('rn_user', JSON.stringify(user));
   if (password) localStorage.setItem('rn_auth', btoa(phone.replace(/\s+/g, '') + ':' + password));
 

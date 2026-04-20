@@ -520,6 +520,14 @@
           }
           // Redraw leaderboard + stats band labels with fresh per-dept data
           refreshLeaderboard();
+          // Map page: re-render with the live perDept baseline
+          if (typeof renderMap === 'function' && document.querySelector('.map-svg')) {
+            try { renderMap(); } catch (e) {}
+          }
+          // Rapport page: rebuild analysis sections with the live data
+          if (typeof buildRapport === 'function' && document.getElementById('rapport-questions')) {
+            try { buildRapport(); } catch (e) {}
+          }
         },
         (err) => console.warn('Counter subscription error:', err && err.message)
       );
