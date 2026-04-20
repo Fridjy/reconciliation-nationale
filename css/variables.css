@@ -1,15 +1,84 @@
 /* =============================================
-   DESIGN TOKENS
+   DESIGN TOKENS — Réconciliation Nationale
+   Light, warm, product-grade SaaS aesthetic
    ============================================= */
 :root {
-  --ink: #0a0806;
-  --paper: #f3ead7;
-  --paper-warm: #ebdfc3;
-  --blood: #d62418;
-  --blood-deep: #8a1812;
-  --blue: #012F8A;
-  --blue-light: #1a4ab0;
-  --blue-pale: #e6ecf7;
-  --gold: #d4a24c;
-  --rule: rgba(10, 8, 6, 0.18);
+  /* Surfaces */
+  --cream:   #F5F0E8;
+  --cream-2: #EFEADE;     /* slightly deeper cream — subtle bands */
+  --white:   #FFFFFF;
+
+  /* Ink */
+  --ink:     #0A0A14;
+  --ink-80:  rgba(10,10,20,0.8);
+  --ink-60:  rgba(10,10,20,0.6);
+  --ink-50:  rgba(10,10,20,0.5);
+  --ink-40:  rgba(10,10,20,0.4);
+  --ink-20:  rgba(10,10,20,0.2);
+  --ink-12:  rgba(10,10,20,0.12);
+  --ink-08:  rgba(10,10,20,0.08);
+  --ink-04:  rgba(10,10,20,0.04);
+
+  /* Accent trio (Haitian flag) */
+  --red:     #D21034;
+  --red-08:  rgba(210,16,52,0.08);
+  --red-12:  rgba(210,16,52,0.12);
+  --red-20:  rgba(210,16,52,0.2);
+  --red-30:  rgba(210,16,52,0.3);
+  --red-deep: #b01029;
+
+  --blue:    #00209F;
+  --blue-08: rgba(0,32,159,0.08);
+
+  --gold:    #F5C518;
+  --gold-08: rgba(245,197,24,0.08);
+
+  /* On-dark text (for the stats band + ticker) */
+  --on-dark:        #F7F5EE;
+  --on-dark-70:     rgba(247,245,238,0.7);
+  --on-dark-50:     rgba(247,245,238,0.5);
+  --on-dark-35:     rgba(247,245,238,0.35);
+  --on-dark-08:     rgba(247,245,238,0.08);
+
+  /* Gradient (blue → red) — ONLY on progress bars / data bars */
+  --rn-gradient: linear-gradient(90deg, #00209F 0%, #D21034 100%);
+
+  /* Legacy aliases so older selectors still resolve */
+  --paper:      var(--cream);
+  --paper-warm: var(--cream-2);
+  --night:      var(--ink);
+  --n2:         var(--cream-2);
+  --n3:         var(--white);
+  --n4:         var(--ink-08);
+  --white-warm: var(--on-dark);
+  --muted:      var(--ink-50);
+  --dim:        var(--ink-20);
+  --hairline:   var(--ink-08);
+  --hairline-hover: var(--ink-20);
+  --blood:      var(--red);
+  --blood-deep: var(--red-deep);
+  --blue-light: #1a3ab7;
+  --blue-pale:  var(--blue-08);
+  --rule:       var(--ink-08);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 99px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 0.15s var(--ease);
+  --t-mid:  0.25s var(--ease);
+
+  /* Typography stack */
+  --font-display:     'Clash Display', 'Inter', ui-sans-serif, sans-serif;        /* H1/H2 big headlines */
+  --font-subdisplay:  'Cabinet Grotesk', 'Inter', ui-sans-serif, sans-serif;      /* secondary subheads */
+  --font-slogan:      'Unbounded', 'Inter', ui-sans-serif, sans-serif;            /* big numbers, CTAs, slogans */
+  --font-label:       'Bricolage Grotesque', 'Inter', ui-sans-serif, sans-serif;  /* eyebrows / kickers */
+  --font-body:        'DM Sans', 'Inter', system-ui, -apple-system, sans-serif;   /* body, UI */
+  --font-mono:        'DM Mono', ui-monospace, monospace;                         /* data, tabular numerals */
+  --font-quote:       'Playfair Display', Georgia, serif;                         /* citizen italic quotes */
 }

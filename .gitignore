@@ -76,5 +76,8 @@ node_modules/
 .claude/
 skills-lock.json
 
-# Firebase generated
-public/404.html
+# Firebase generated (unused — hosting serves from root via firebase.json "public": ".")
+public/
+
+# Admin tools (local only — never deploy, never commit)
+tools/

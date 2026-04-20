@@ -5,7 +5,7 @@
 let currentLang = 'fr';
 let currentStep = 0;
 let currentDraft = { q1: '', q2: '', q3: '', q4: '', q5: '', name: '', where: '' };
-let answers = JSON.parse(JSON.stringify(seedAnswers));
+let answers = [];
 let userVotes = new Set(JSON.parse(localStorage.getItem('rn_votes') || '[]'));
 let currentTab = 'q1';
 let selectedDept = null;

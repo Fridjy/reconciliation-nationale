@@ -12,7 +12,9 @@
 <title>Consultation · Réconciliation Nationale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono&family=Playfair+Display:ital,wght@1,400;1,500&family=Bricolage+Grotesque:wght@500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=cabinet-grotesk@500,600,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -20,114 +22,163 @@
 <link rel="stylesheet" href="css/register.css">
 <link rel="stylesheet" href="css/pagination.css">
 <style>
+  /* CONSULTED — light product aesthetic */
   .consult-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2px; background: var(--ink); border: 2px solid var(--ink); margin-top: 20px;
+    gap: 14px; margin-top: 24px;
   }
 
-  /* ===== INSTITUTION CARD ===== */
+  /* INSTITUTION CARD */
   .consult-card {
-    background: var(--paper); padding: 28px 24px;
+    background: var(--white); color: var(--ink);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-md);
+    padding: 24px 22px;
     display: flex; flex-direction: column; gap: 10px;
+    position: relative; overflow: hidden;
+    transition: border-color var(--t-fast), transform var(--t-fast);
   }
-  .card-header { display: flex; align-items: flex-start; gap: 16px; }
+  .consult-card::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: 2px; background: var(--blue);
+  }
+  .consult-card:hover { border-color: var(--ink-20); transform: translateY(-2px); }
+
+  .card-header { display: flex; align-items: flex-start; gap: 14px; }
   .card-logo {
-    width: 56px; height: 56px; flex-shrink: 0;
-    border: 1.5px solid var(--rule); background: var(--paper-warm);
+    width: 48px; height: 48px; flex-shrink: 0;
+    border: 0.5px solid var(--ink-08);
+    background: var(--cream);
+    border-radius: var(--radius-sm);
     display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
   .card-logo img { width: 100%; height: 100%; object-fit: contain; }
   .card-logo-placeholder {
-    font-family: 'IBM Plex Mono', monospace; font-size: 16px;
-    font-weight: 700; color: var(--blood); letter-spacing: 0.05em;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--red); letter-spacing: 0.04em;
   }
   .card-header-text { flex: 1; min-width: 0; }
   .consult-card .card-type {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.15em; text-transform: uppercase; color: var(--blood);
-    display: block; margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--red); display: block; margin-bottom: 4px;
   }
-  .consult-card h4 { font-family: 'DM Serif Display', serif; font-size: 20px; line-height: 1.15; }
+  .consult-card h4 {
+    font-family: var(--font-subdisplay);
+    font-weight: 700; font-size: 18px; line-height: 1.2;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
   .consult-card .card-desc {
-    font-family: 'Fraunces', serif; font-size: 14px;
-    line-height: 1.5; color: rgba(10,8,6,0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; line-height: 1.6;
+    color: var(--ink-60);
   }
   .consult-card .card-location {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(10,8,6,0.45); margin-top: auto; padding-top: 10px;
-    border-top: 1px dashed var(--rule);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-50); margin-top: auto; padding-top: 10px;
+    border-top: 0.5px dashed var(--ink-08);
   }
   .card-website a {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; color: var(--blood); text-decoration: none;
-    border-bottom: 1px solid var(--blood);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; color: var(--red);
+    text-decoration: none; border-bottom: 0.5px solid var(--red);
   }
   .card-website a:hover { color: var(--ink); border-color: var(--ink); }
 
-  /* ===== PERSONALITY CARD ===== */
+  /* PERSONALITY CARD */
   .person-card {
-    background: var(--paper); padding: 0; display: flex;
-    flex-direction: column; overflow: hidden;
+    background: var(--white); color: var(--ink);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-md);
+    padding: 0;
+    display: flex; flex-direction: column; overflow: hidden;
+    transition: border-color var(--t-fast), transform var(--t-fast);
   }
+  .person-card:hover { border-color: var(--ink-20); transform: translateY(-2px); }
   .person-top {
-    background: var(--ink); color: var(--paper);
-    padding: 24px 24px 20px; position: relative;
+    background: var(--cream); color: var(--ink);
+    padding: 22px 22px 18px;
+    position: relative;
+    border-bottom: 0.5px solid var(--ink-08);
+  }
+  .person-top::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: 2px; background: var(--red);
   }
   .person-role {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 6px;
   }
   .person-name {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px; line-height: 1.1;
+    font-family: var(--font-subdisplay);
+    font-weight: 700; font-size: 22px; line-height: 1.15;
+    letter-spacing: -0.015em; color: var(--ink);
   }
   .person-expertise {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 15px; color: rgba(243,234,215,0.75);
-    margin-top: 8px; line-height: 1.35;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--ink-50);
+    margin-top: 6px; line-height: 1.5;
   }
   .person-body {
-    padding: 20px 24px 24px; flex: 1;
+    padding: 18px 22px 22px; flex: 1;
     display: flex; flex-direction: column; gap: 10px;
+    background: var(--white);
   }
   .person-body .card-desc {
-    font-family: 'Fraunces', serif; font-size: 14px;
-    line-height: 1.5; color: rgba(10,8,6,0.7); flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; line-height: 1.6;
+    color: var(--ink-60); flex: 1;
   }
   .person-body .card-location {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(10,8,6,0.45); padding-top: 10px;
-    border-top: 1px dashed var(--rule); margin-top: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-50); padding-top: 10px;
+    border-top: 0.5px dashed var(--ink-08); margin-top: auto;
   }
 
   /* Category tabs */
-  .consulted-tabs { display: flex; gap: 2px; flex-wrap: wrap; }
+  .consulted-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
   .c-tab {
-    background: transparent; border: 1.5px solid var(--ink); padding: 8px 16px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    background: var(--white); color: var(--ink-50);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: all var(--t-fast);
   }
-  .c-tab:hover { background: var(--ink); color: var(--paper); }
-  .c-tab.active { background: var(--blood); color: var(--paper); border-color: var(--blood); }
+  .c-tab:hover { color: var(--ink); border-color: var(--ink-20); }
+  .c-tab.active { background: var(--red); color: var(--white); border-color: var(--red); }
 
   /* Type chips */
   .consulted-type-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
   .ct-chip {
-    background: transparent; border: 1px solid var(--rule); padding: 4px 12px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; color: var(--ink);
+    background: var(--white); color: var(--ink-50);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-pill);
+    padding: 4px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.06em;
+    cursor: pointer; transition: all var(--t-fast);
   }
-  .ct-chip:hover { border-color: var(--blood); color: var(--blood); }
-  .ct-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .ct-chip:hover { border-color: var(--ink-20); color: var(--ink); }
+  .ct-chip.active { background: var(--red-08); color: var(--red); border-color: var(--red); }
 
   .consult-note {
-    margin-top: 48px; padding: 28px;
-    background: var(--paper-warm); border-left: 6px solid var(--blood);
+    margin-top: 48px; padding: 24px 28px;
+    background: var(--white);
+    border: 0.5px solid var(--ink-08);
+    border-left: 2px solid var(--red);
+    border-radius: var(--radius-md);
   }
-  .consult-note p { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; line-height: 1.55; max-width: 60ch; }
+  .consult-note p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; line-height: 1.65;
+    max-width: 60ch; color: var(--ink-60);
+  }
+  .consult-note strong { color: var(--ink); font-weight: 600; }
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -216,7 +267,7 @@
   </div>
   <div class="footer-legal">
     <span>&copy; 2026 &middot; Réconciliation Nationale</span>
-    <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+    <span>Yon pwojè <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
   </div>
 </footer>
 
@@ -244,23 +295,7 @@
 <script src="js/questionnaire.js"></script>
 <script src="js/consulted.js"></script>
 <script>
-  // Seed data for fallback (when Firestore is not configured)
-  const CONSULTED_SEED = [
-    // INSTITUTIONS (with logo, website, description)
-    { name: 'LANS', type: 'Sosyete sivil', category: 'institution', logo: '', logoInitials: 'LA', website: 'https://lfrancophonie.org', description: 'Leadership Ayitien pour une Nouvelle Société. Inisyatè pwojè Rekonsilyasyon Nasyonal. Mouvman sitwayen ki travay pou chanjman sosyal ann Ayiti.', location: 'Port-au-Prince' },
-    { name: "Université d'État d'Haïti", type: 'Inivèsite', category: 'institution', logo: '', logoInitials: 'UEH', website: '', description: 'Fakilte Syans Imèn. Kontribisyon nan redaksyon kesyon yo ak analiz done sosyolojik.', location: 'Port-au-Prince' },
-    { name: 'Radio Kiskeya', type: 'Medya', category: 'institution', logo: '', logoInitials: 'RK', website: '', description: 'Difizyon kanpay la ak deba piblik sou 5 kesyon yo. Espas pou vwa sitwayen sou antèn nasyonal.', location: 'Port-au-Prince' },
-    { name: 'Haitian Diaspora Federation', type: 'Dyaspora', category: 'institution', logo: '', logoInitials: 'HDF', website: '', description: 'Relè vwa Ayisyen nan dyaspora a nan pwosesis la. Kowòdinasyon patisipasyon nan 32 peyi.', location: 'New York · Montreal · Paris' },
-    { name: "Conférence Épiscopale d'Haïti", type: 'Relijyon', category: 'institution', logo: '', logoInitials: 'CEH', website: '', description: 'Konsiltasyon sou kesyon rekonsilyasyon, jistis, ak lapè. Akonpayman moral ak espirityèl.', location: 'Port-au-Prince' },
-    { name: 'RNDDH', type: 'Dwa moun', category: 'institution', logo: '', logoInitials: 'RN', website: '', description: 'Réseau National de Défense des Droits Humains. Konsèy sou enklizyon, transparans, ak pwoteksyon done pèsonèl.', location: 'Port-au-Prince' },
-
-    // PERSONALITIES (with role, expertise)
-    { name: 'Jean-Robert Cadet', role: 'Ekriven · Aktivis', category: 'personality', expertise: 'Dwa timoun, edikasyon, jistis sosyal', description: 'Otè ak defansè dwa timoun. Kontribisyon sou kesyon lidèchip ak enstitisyon.', location: 'Ayiti · Etazini' },
-    { name: 'Marie-Laurence Jocelyn Lassègue', role: 'Ansyen Minis', category: 'personality', expertise: 'Dwa fanm, kominikasyon, politik piblik', description: 'Ansyen Minis Kondisyon Feminin ak Kominikasyon. Ekspètiz nan kesyon enstitisyon ak patisipasyon sitwayen.', location: 'Port-au-Prince' },
-    { name: 'Patrick Elie', role: 'Aktivis · Analis politik', category: 'personality', expertise: 'Sekirite nasyonal, demokrasi, rekonsilyasyon', description: 'Figiy enpòtan nan mouvman demokratik. Konsiltasyon sou lidèchip ak vizyon nasyonal.', location: 'Port-au-Prince' },
-    { name: 'Yanick Lahens', role: 'Ekriven · Pwofesè', category: 'personality', expertise: 'Literati, idantite kiltirèl, syans sosyal', description: 'Ekriven ak entelektyèl rekonèt entènasyonalman. Refleksyon sou idantite ayisyen ak anviwonman.', location: 'Port-au-Prince' }
-  ];
-
+  // Consulted institutions / personalities load live from Firestore (see js/consulted.js)
   document.querySelectorAll('.lang-switch button').forEach(b => {
     b.addEventListener('click', () => { setLang(b.dataset.lang); initConsultedPage(); });
   });

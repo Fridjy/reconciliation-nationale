@@ -129,13 +129,24 @@ function matchDepartment(where) {
 
 function getDeptCounts() {
   const counts = {};
-  DEPARTMENTS.forEach(d => { counts[d.id] = { answers: 0, participants: 0, seeded: d.seedCount }; });
+  DEPARTMENTS.forEach(d => { counts[d.id] = { answers: 0, participants: 0, seeded: 0 }; });
   counts.diaspora = { answers: 0, participants: 0, seeded: 0 };
 
+  // Baseline from Firestore meta/stats.perDept (populated by updateStats)
+  if (typeof cachedStats !== 'undefined' && cachedStats && cachedStats.perDept) {
+    Object.entries(cachedStats.perDept).forEach(([deptId, count]) => {
+      if (counts[deptId]) {
+        const n = Number(count) || 0;
+        counts[deptId].participants = n;
+        counts[deptId].answers = n;
+      }
+    });
+  }
+
+  // Add any real-time answers visible locally (in-session submissions)
   answers.forEach(a => {
     const deptId = matchDepartment(a.where);
     if (!deptId || !counts[deptId]) return;
-    // Count 1 per person (form submission), not per question
     const hasAnyAnswer = QUESTIONS.some(q => {
       const val = a[q.id];
       const text = typeof val === 'object' ? (val && (val[currentLang] || val.ht || '')) : val;
@@ -444,7 +455,7 @@ function renderDeptDetail(counts) {
   const emptyState = total === 0
     ? `<div class="dd-empty">${i18n[currentLang]['dd-no-voices']}</div>`
     : `<div class="dept-stats-row">
-         <div class="dept-stat"><div class="dd-n">${c.participants + Math.floor(c.seeded / 5)}</div><div class="dd-label">${i18n[currentLang]['dd-participants']}</div></div>
+         <div class="dept-stat"><div class="dd-n">${c.participants}</div><div class="dd-label">${i18n[currentLang]['dd-participants']}</div></div>
          <div class="dept-stat"><div class="dd-n">${total}</div><div class="dd-label">${i18n[currentLang]['dd-answers']}</div></div>
        </div>`;
 

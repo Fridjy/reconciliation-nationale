@@ -1,48 +1,130 @@
 /* =============================================
-   RESET, BODY, PARCHMENT, TYPOGRAPHY
+   RESET, BODY, CREAM CANVAS, TYPOGRAPHY
+   Light warm product aesthetic
    ============================================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--paper);
-  background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(180, 140, 80, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(160, 120, 60, 0.15) 0%, transparent 55%),
-    radial-gradient(ellipse at 50% 50%, rgba(200, 170, 100, 0.08) 0%, transparent 70%),
-    linear-gradient(180deg, #efe2c8 0%, #f3ead7 15%, #f0e4c9 50%, #e8d9b8 85%, #dfd0a8 100%);
+  background: var(--cream);
   color: var(--ink);
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 17px;
-  line-height: 1.55;
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
   overflow-x: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Parchment noise texture */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.45;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.09  0 0 0 0 0.04  0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1.05;
+  text-wrap: balance;
 }
 
-/* Parchment vignette */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(120, 90, 40, 0.15) 100%);
+::selection { background: var(--red); color: var(--on-dark); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--ink-12); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-20); }
+
+/* =============================================
+   REVEAL ANIMATION
+   ============================================= */
+.reveal {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
 }
-
-::selection { background: var(--blood); color: var(--paper); }
-
-/* Reveal animation */
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.visible { opacity: 1; transform: none; }
+
+.reveal-stagger > * {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s;     opacity: 1; transform: none; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.06s;  opacity: 1; transform: none; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.12s;  opacity: 1; transform: none; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.18s;  opacity: 1; transform: none; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.24s;  opacity: 1; transform: none; }
+.reveal-stagger.visible > *:nth-child(n+6) { transition-delay: 0.3s; opacity: 1; transform: none; }
+
+.reveal-left  { opacity: 0; transform: translateX(-16px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+.reveal-left.visible { opacity: 1; transform: none; }
+.reveal-scale { opacity: 0; transform: scale(0.97); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease-out); }
+.reveal-scale.visible { opacity: 1; transform: none; }
+
+/* =============================================
+   BRAND MARKS
+   ============================================= */
+
+/* Small 3-bar flag (used inside logo square and in tight spaces) */
+.flag-mark {
+  display: inline-flex; align-items: center; gap: 2px;
+  flex-shrink: 0;
+}
+.flag-mark span { display: block; border-radius: 2px; }
+.flag-mark .fm-blue { width: 4px; height: 16px; background: var(--blue); }
+.flag-mark .fm-red  { width: 4px; height: 16px; background: var(--red); }
+.flag-mark .fm-gold { width: 3px; height: 16px; background: var(--gold); }
+
+/* Logo square (32px, dark, contains the flag mark) */
+.logo-square {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.logo-square .flag-mark { height: 16px; }
+
+/* Horizontal flag divider (3-color stripe) */
+.flag-divider {
+  display: flex; width: 100%; height: 3px;
+}
+.flag-divider span { display: block; height: 100%; }
+.flag-divider .fd-blue { flex: 3; background: var(--blue); }
+.flag-divider .fd-red  { flex: 3; background: var(--red); }
+.flag-divider .fd-gold { flex: 1; background: var(--gold); }
+
+/* Live dot (pulsing) */
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+  animation: liveBlink 1.6s var(--ease) infinite;
+}
+.live-dot--red  { background: var(--red); }
+.live-dot--gold { background: var(--gold); }
+.live-dot--ink  { background: var(--ink); }
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* Gradient text (used sparingly on a single word in headlines) */
+.rn-gradient-text {
+  background: var(--rn-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Page-in transition */
+body { animation: pageIn 0.45s var(--ease); }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.phase { animation: phaseIn 0.35s var(--ease); }
+@keyframes phaseIn {
+  from { opacity: 0; } to { opacity: 1; }
+}

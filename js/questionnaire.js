@@ -68,7 +68,7 @@ function buildPickerCards() {
       ? (i18n[lang]['picker-done'] || 'R\u00e9pondu')
       : (i18n[lang]['picker-answer'] || 'R\u00e9pondre');
     return `
-      <div class="qp-card ${isAnswered ? 'qp-answered' : ''}" onclick="openQuestion('${q.id}')">
+      <div class="qp-card ${isAnswered ? 'qp-answered' : ''}" data-q="${i + 1}" onclick="openQuestion('${q.id}')">
         <span class="qp-num">${i + 1}</span>
         <span class="qp-text">${i18n[lang][q.key]}</span>
         <div class="qp-right">

@@ -12,7 +12,9 @@
 <title>A propos · Réconciliation Nationale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=GFS+Didot&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono&family=Playfair+Display:ital,wght@1,400;1,500&family=Bricolage+Grotesque:wght@500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=cabinet-grotesk@500,600,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -22,36 +24,72 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <style>
-  .about-block { margin-bottom: 48px; }
+  /* ABOUT — light product aesthetic */
+  .about-block { margin-bottom: 44px; }
   .about-block h3 {
-    font-family: 'DM Serif Display', serif; font-size: 28px;
-    line-height: 1.1; margin-bottom: 16px; color: var(--blood);
+    font-family: var(--font-display);
+    font-weight: 700; font-size: clamp(24px, 3.4vw, 32px);
+    line-height: 1.1; letter-spacing: -0.025em;
+    margin-bottom: 14px; color: var(--ink);
   }
   .about-block p {
-    font-family: 'Fraunces', serif; font-size: 17px;
-    line-height: 1.6; max-width: 65ch; margin-bottom: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; line-height: 1.7;
+    max-width: 64ch; margin-bottom: 14px;
+    color: var(--ink-60);
   }
-  .about-block p strong { color: var(--ink); }
+  .about-block p strong { color: var(--ink); font-weight: 600; }
+  .about-block p a {
+    color: var(--red) !important; border-bottom: 0.5px solid var(--red) !important;
+  }
+  .about-block p a:hover { color: var(--ink) !important; border-color: var(--ink) !important; }
+
   .about-values {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-    background: var(--ink); border: 2px solid var(--ink); margin-top: 28px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    margin-top: 24px;
   }
   @media (max-width: 700px) { .about-values { grid-template-columns: 1fr; } }
   .about-value {
-    background: var(--paper); padding: 28px 22px;
+    background: var(--white);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-md);
+    padding: 24px 22px;
+    color: var(--ink);
+    position: relative; overflow: hidden;
+  }
+  .about-value::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: 2px; background: var(--rn-gradient);
   }
   .about-value h4 {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--blood); margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px; font-weight: 500;
   }
-  .about-value p { font-size: 15px; line-height: 1.5; }
+  .about-value p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; line-height: 1.6; color: var(--ink-60);
+  }
+
   .about-quote {
-    font-family: 'DM Serif Display', serif; font-style: italic;
-    font-size: clamp(22px, 3.5vw, 36px); line-height: 1.2;
-    color: var(--blood); max-width: 30ch; padding: 40px 0;
-    border-top: 3px double var(--ink); border-bottom: 3px double var(--ink);
-    margin: 48px 0;
+    font-family: var(--font-display);
+    font-weight: 700; font-style: normal;
+    font-size: clamp(26px, 4vw, 40px); line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    max-width: 32ch;
+    padding: 36px 0 36px 18px;
+    border-left: 2px solid var(--red);
+    margin: 44px 0;
+    position: relative;
+  }
+  .about-quote::before {
+    content: "\00AB "; color: var(--red); font-size: 0.9em;
+    font-family: 'Playfair Display', serif; font-weight: 400;
+  }
+  .about-quote::after {
+    content: " \00BB"; color: var(--red); font-size: 0.9em;
+    font-family: 'Playfair Display', serif; font-weight: 400;
   }
 </style>
 <link rel="stylesheet" href="css/modern.css">
@@ -105,7 +143,7 @@
     <h3>Qui sommes-nous</h3>
     <p data-i18n="about-p3">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
     <p data-i18n="about-p4">Aujourd'hui, la crise nous donne l'opportunité. L'opportunité de reconfigurer totalement. L'occasion de faire une entente nationale sur ce que nous voulons, non pas pour la garder pour nous, mais pour l'extérioriser. Pour prendre conscience, ensemble et publiquement, de qui nous sommes.</p>
-    <p>Réconciliation Nationale est une initiative de <a href="https://lfrancophonie.org" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">LANS</a> — Leadership Ayitien pour une Nouvelle Société.</p>
+    <p>Réconciliation Nationale est une initiative de <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">LANS</a> — Leadership Ayitien pour une Nouvelle Société.</p>
   </div>
 
   <div class="about-values">
@@ -126,7 +164,7 @@
   <div class="about-block" style="margin-top:48px;">
     <h3>Contactez-nous</h3>
     <p>E-mail : <strong>contact@reconciliation-nationale.ht</strong></p>
-    <p>Site web LANS : <a href="https://lfrancophonie.org" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">lfrancophonie.org</a></p>
+    <p>Site web LANS : <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">lansayiti.netlify.app</a></p>
   </div>
 </div>
 
@@ -166,7 +204,7 @@
   </div>
   <div class="footer-legal">
     <span>&copy; 2026 &middot; Réconciliation Nationale</span>
-    <span>Yon pwojè <a href="https://lfrancophonie.org" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
+    <span>Yon pwojè <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" class="lans-link">LANS</a></span>
   </div>
 </footer>
 

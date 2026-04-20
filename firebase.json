@@ -5,7 +5,10 @@
       "firebase.json",
       "firestore.rules",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "tools/**",
+      "README*",
+      "CLAUDE.md"
     ]
   },
   "firestore": {

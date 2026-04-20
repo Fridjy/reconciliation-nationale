@@ -26,11 +26,7 @@ document.addEventListener('keydown', e => {
 // Boot
 (function init() {
   try {
-    // Auto-seed Firestore on first load if connected
-    if (typeof DB !== 'undefined' && db) {
-      DB.seedInitialData().catch(function() {});
-    }
-
+    // Seed data lives in Firestore; no client-side seeding.
     const user = getStoredUser();
 
     if (user && user.registered) {

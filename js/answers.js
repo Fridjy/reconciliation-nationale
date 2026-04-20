@@ -188,7 +188,7 @@ function renderAnswerCards(el, list, qIdx, hasMore, totalPages) {
     const aId = a.id || 0;
 
     return `
-      <article class="answer-card">
+      <article class="answer-card" data-q="${currentTab}">
         <div class="answer-meta">
           <span class="who-tag">${escapeHtml(a.name)}</span>
           <span>\u00B7 ${escapeHtml(a.where)}</span>

@@ -192,7 +192,99 @@ const i18n = {
     'profile-address': 'Kote',
     'profile-status': 'Estati',
     'profile-status-anon': 'Anonim (piblik)',
-    'profile-status-public': 'Non vizib (piblik)'
+    'profile-status-public': 'Non vizib (piblik)',
+
+    /* === MOBILIZATION HERO (injected by modern.js) === */
+    'mob-counter-label': 'ap patisipe',
+    'mob-today-delta': 'jodi a \u00b7 ap grandi chak minit',
+    'mob-goal-prefix': 'Objektif :',
+    'mob-goal-suffix': 'repons',
+    'mob-goal-pct-complete': 'konplete',
+    'mob-lb-dept': 'Depatman \u00b7 Klasman',
+    'mob-lb-dias': 'Dyaspora \u00b7 Klasman',
+    'mob-challenge-kicker': 'Defi Nasyonal',
+    'mob-challenge-title': '50 000 repons anvan 15 fevriye.',
+    'mob-challenge-cta': 'Rejwenn mouvman an',
+    'mob-share-kicker': 'Pataje \u00b7 F\u00e8 mouvman an grandi',
+    'mob-share-title-before': 'Envite ',
+    'mob-share-people': '5 moun',
+    'mob-share-title-after': ' nan sikl ou.',
+    'mob-share-wa-sub': 'Kanal prensipal Ayiti \u00b7 pataje nan gwoup fanmi / zanmi',
+    'mob-share-tg-sub': 'Pataje ak kanal dyaspora yo',
+    'mob-share-ig-sub': 'Kopye lyen an \u00b7 mete l nan story ou',
+    'mob-share-sms-sub': 'Voye l dir\u00e8kteman bay 5 moun',
+
+    /* Ticker action phrases (noun-based, no subject) */
+    'tick-q1': 'repons kesyon 1',
+    'tick-q3': 'repons kesyon 3',
+    'tick-q4': 'repons kesyon 4',
+    'tick-q5all': '5 kesyon konplete',
+    'tick-register': 'nouvo enskripsyon',
+    'tick-diaspora': 'enskripsyon dyaspora',
+    'tick-share12': 'pataj ak 12 moun',
+    'tick-share-wa': 'pataj WhatsApp',
+    'tick-share-tg': 'pataj Telegram',
+    'tick-voted': 'nouvo v\u00f2t',
+    'tick-vote3': '3 v\u00f2t',
+    'tick-comment': 'nouvo koment\u00e8',
+
+    /* CTA banner (light theme) */
+    'cta-banner-title': 'Vwa <span class="accent">ou</span> manke.',
+    'cta-banner-sub': 'San ou, nou sou wont sa n t ap di. Pale kounye a. Vwa pa ou konte.',
+    'cta-banner-btn': 'Kòmanse reponn kounye a',
+    'cta-banner-tags': '#AyitiPale \u00b7 San pati \u00b7 San gouvènman',
+
+    /* Hero card 3 (goal progress label) */
+    'mob-goal-toward': 'v\u00e8 50,000',
+
+    /* Questions header body text (2-col) */
+    'qb-head-body': 'Chak kesyon se yon fen\u00eat sou peyi a. Yon chans pou pale san p\u00e8, san kaz, san jijman. Vwa pa ou se yon briket nan yon k\u00e8 ki ap limen.',
+    'hero-card-count-sfx': 'repons',
+
+    /* Welcome hero — goal bar label */
+    'hero-goal-label': 'v\u00e8 objektif la',
+
+    /* Welcome hero — 4-col stats band (inside red hero) */
+    'hero-stat-vwa': 'VWA TOTAL',
+    'hero-stat-peyi-dias': 'PEYI DYASPORA',
+    'hero-stat-depatman': 'DEPATMAN',
+    'hero-stat-jodi-a': 'JODI A',
+
+    /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
+    'ty-voice-prefix': 'Ou se vwa',
+    'ty-voice-suffix': 'nan konv\u00e8sasyon an.',
+    'ty-live-label': 'Kont\u00e8 nasyonal kounye a',
+    'ty-see-mirror': 'W\u00e8 repons yo nan Mirwa',
+    'ty-share-voice': 'Pataje vwa ou',
+    'ty-vox-brand': 'REKONSILYASYON NASYONAL \u00b7 VOX',
+    'ty-share-wa-name': 'WhatsApp',
+    'ty-share-wa-sub': 'Voye vwa ou bay 5 zanmi',
+    'ty-share-ig-name': 'Instagram',
+    'ty-share-ig-sub': 'Kopye t\u00e8ks la epi pataje nan istwa ou',
+    'ty-share-copy-name': 'Kopye lyen an',
+    'ty-share-copy-sub': 'Mete l kote ou vle',
+    'ty-share-copied': 'Lyen kopye',
+    'ty-share-ig-copied': 'T\u00e8ks kopye \u2014 ale nan Instagram',
+    'ty-wa-message': 'Mwen reponn kesyon peyi a. Vwa ou konte tou \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-region-title-prefix': 'Depatman',
+    'ty-region-title-mid': 'nan pozisyon',
+    'ty-region-title-suffix': 'kounye a',
+    'ty-region-cta-prefix': 'Ede',
+    'ty-region-cta-suffix': 'monte \u2014 pataje ak zanmi ou',
+    'ty-region-wa': 'Pataje pou ede depatman ou',
+    'ty-region-anon': 'Peyi a',
+
+    /* Vox image save / share */
+    'ty-save-img-name': 'Sove imaj la',
+    'ty-save-img-sub': 'Pou istwa WhatsApp, IG, FB',
+    'ty-share-img-name': 'Pataje imaj la',
+    'ty-share-img-sub': 'Louvri WhatsApp, IG, oswa SMS',
+    'ty-img-generating': 'N ap jenere imaj la...',
+    'ty-img-saved': 'Imaj sove',
+    'ty-img-shared': 'Imaj pataje',
+    'ty-img-caption': 'Mwen reponn kesyon pou peyi a. Vwa pa ou konte tou \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-img-quote-placeholder': 'Vwa mwen konte.',
+    'ty-img-voice-label': 'VWA'
   },
   fr: {
     'ticker': '5 QUESTIONS · 5 RÉPONSES · UN PAYS',
@@ -383,7 +475,99 @@ const i18n = {
     'profile-address': 'Lieu',
     'profile-status': 'Statut',
     'profile-status-anon': 'Anonyme (public)',
-    'profile-status-public': 'Nom visible (public)'
+    'profile-status-public': 'Nom visible (public)',
+
+    /* === MOBILIZATION HERO (injected by modern.js) === */
+    'mob-counter-label': 'participent',
+    'mob-today-delta': 'aujourd\u2019hui \u00b7 grandit chaque minute',
+    'mob-goal-prefix': 'Objectif :',
+    'mob-goal-suffix': 'r\u00e9ponses',
+    'mob-goal-pct-complete': 'compl\u00e9t\u00e9',
+    'mob-lb-dept': 'D\u00e9partements \u00b7 Classement',
+    'mob-lb-dias': 'Diaspora \u00b7 Classement',
+    'mob-challenge-kicker': 'D\u00e9fi National',
+    'mob-challenge-title': '50\u202f000 r\u00e9ponses avant le 15 f\u00e9vrier.',
+    'mob-challenge-cta': 'Rejoindre le mouvement',
+    'mob-share-kicker': 'Partager \u00b7 Faire grandir le mouvement',
+    'mob-share-title-before': 'Invitez ',
+    'mob-share-people': '5 personnes',
+    'mob-share-title-after': ' de votre cercle.',
+    'mob-share-wa-sub': 'Canal principal en Ha\u00efti \u00b7 partagez dans vos groupes famille / amis',
+    'mob-share-tg-sub': 'Partagez avec les canaux de la diaspora',
+    'mob-share-ig-sub': 'Copiez le lien \u00b7 mettez-le dans votre story',
+    'mob-share-sms-sub': 'Envoyez-le directement \u00e0 5 personnes',
+
+    /* Ticker action phrases (noun-based, no subject) */
+    'tick-q1': 'r\u00e9ponse \u00e0 la question 1',
+    'tick-q3': 'r\u00e9ponse \u00e0 la question 3',
+    'tick-q4': 'r\u00e9ponse \u00e0 la question 4',
+    'tick-q5all': '5 questions compl\u00e9t\u00e9es',
+    'tick-register': 'nouvelle inscription',
+    'tick-diaspora': 'inscription diaspora',
+    'tick-share12': 'partage avec 12 personnes',
+    'tick-share-wa': 'partage WhatsApp',
+    'tick-share-tg': 'partage Telegram',
+    'tick-voted': 'nouveau vote',
+    'tick-vote3': '3 votes',
+    'tick-comment': 'nouveau commentaire',
+
+    /* CTA banner (light theme) */
+    'cta-banner-title': 'Votre <span class="accent">voix</span> manque.',
+    'cta-banner-sub': 'Sans vous, nous n\u2019entendons qu\u2019un \u00e9cho. Parlez maintenant. Votre voix compte.',
+    'cta-banner-btn': 'Commencer \u00e0 r\u00e9pondre',
+    'cta-banner-tags': '#AyitiPale \u00b7 Sans parti \u00b7 Sans gouvernement',
+
+    /* Hero card 3 (goal progress label) */
+    'mob-goal-toward': 'vers 50\u202f000',
+
+    /* Questions header body text (2-col) */
+    'qb-head-body': 'Chaque question est une fen\u00eatre sur le pays. Une chance de parler sans peur, sans fard, sans jugement. Votre voix est une \u00e9tincelle dans un c\u0153ur qui s\u2019allume.',
+    'hero-card-count-sfx': 'r\u00e9ponses',
+
+    /* Welcome hero — goal bar label */
+    'hero-goal-label': 'vers l\u2019objectif',
+
+    /* Welcome hero — 4-col stats band (inside red hero) */
+    'hero-stat-vwa': 'VOIX TOTALES',
+    'hero-stat-peyi-dias': 'PAYS DIASPORA',
+    'hero-stat-depatman': 'D\u00c9PARTEMENTS',
+    'hero-stat-jodi-a': 'AUJOURD\u2019HUI',
+
+    /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
+    'ty-voice-prefix': 'Vous \u00eates la voix',
+    'ty-voice-suffix': 'de la conversation.',
+    'ty-live-label': 'Compteur national en temps r\u00e9el',
+    'ty-see-mirror': 'Voir les r\u00e9ponses dans le Miroir',
+    'ty-share-voice': 'Partager votre voix',
+    'ty-vox-brand': 'R\u00c9CONCILIATION NATIONALE \u00b7 VOX',
+    'ty-share-wa-name': 'WhatsApp',
+    'ty-share-wa-sub': 'Envoyez votre voix \u00e0 5 ami\u00b7e\u00b7s',
+    'ty-share-ig-name': 'Instagram',
+    'ty-share-ig-sub': 'Copiez le texte et partagez-le dans votre story',
+    'ty-share-copy-name': 'Copier le lien',
+    'ty-share-copy-sub': 'Collez-le o\u00f9 vous voulez',
+    'ty-share-copied': 'Lien copi\u00e9',
+    'ty-share-ig-copied': 'Texte copi\u00e9 \u2014 ouvrez Instagram',
+    'ty-wa-message': 'J\u2019ai r\u00e9pondu aux questions pour le pays. Votre voix compte aussi \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-region-title-prefix': 'Le d\u00e9partement',
+    'ty-region-title-mid': 'est en position',
+    'ty-region-title-suffix': 'actuellement',
+    'ty-region-cta-prefix': 'Aidez',
+    'ty-region-cta-suffix': '\u00e0 monter \u2014 partagez avec vos ami\u00b7e\u00b7s',
+    'ty-region-wa': 'Partager pour aider votre d\u00e9partement',
+    'ty-region-anon': 'Le pays',
+
+    /* Vox image save / share */
+    'ty-save-img-name': 'T\u00e9l\u00e9charger l\u2019image',
+    'ty-save-img-sub': 'Pour story WhatsApp, IG, FB',
+    'ty-share-img-name': 'Partager l\u2019image',
+    'ty-share-img-sub': 'Ouvrir WhatsApp, IG ou SMS',
+    'ty-img-generating': 'G\u00e9n\u00e9ration de l\u2019image...',
+    'ty-img-saved': 'Image enregistr\u00e9e',
+    'ty-img-shared': 'Image partag\u00e9e',
+    'ty-img-caption': 'J\u2019ai r\u00e9pondu aux questions pour le pays. Votre voix compte aussi \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-img-quote-placeholder': 'Ma voix compte.',
+    'ty-img-voice-label': 'VOIX'
   },
   en: {
     'ticker': '5 QUESTIONS · 5 ANSWERS · ONE COUNTRY',
@@ -574,6 +758,98 @@ const i18n = {
     'profile-address': 'Location',
     'profile-status': 'Status',
     'profile-status-anon': 'Anonymous (public)',
-    'profile-status-public': 'Name visible (public)'
+    'profile-status-public': 'Name visible (public)',
+
+    /* === MOBILIZATION HERO (injected by modern.js) === */
+    'mob-counter-label': 'participating',
+    'mob-today-delta': 'today \u00b7 growing every minute',
+    'mob-goal-prefix': 'Goal:',
+    'mob-goal-suffix': 'answers',
+    'mob-goal-pct-complete': 'complete',
+    'mob-lb-dept': 'Departments \u00b7 Ranking',
+    'mob-lb-dias': 'Diaspora \u00b7 Ranking',
+    'mob-challenge-kicker': 'National Challenge',
+    'mob-challenge-title': '50,000 answers before February 15.',
+    'mob-challenge-cta': 'Join the movement',
+    'mob-share-kicker': 'Share \u00b7 Grow the movement',
+    'mob-share-title-before': 'Invite ',
+    'mob-share-people': '5 people',
+    'mob-share-title-after': ' in your circle.',
+    'mob-share-wa-sub': 'Primary channel in Haiti \u00b7 share with family / friend groups',
+    'mob-share-tg-sub': 'Share with diaspora channels',
+    'mob-share-ig-sub': 'Copy the link \u00b7 drop it in your story',
+    'mob-share-sms-sub': 'Send it directly to 5 people',
+
+    /* Ticker action phrases (noun-based, no subject) */
+    'tick-q1': 'answer to question 1',
+    'tick-q3': 'answer to question 3',
+    'tick-q4': 'answer to question 4',
+    'tick-q5all': '5 questions completed',
+    'tick-register': 'new registration',
+    'tick-diaspora': 'diaspora registration',
+    'tick-share12': 'shared with 12 people',
+    'tick-share-wa': 'WhatsApp share',
+    'tick-share-tg': 'Telegram share',
+    'tick-voted': 'new vote',
+    'tick-vote3': '3 votes',
+    'tick-comment': 'new comment',
+
+    /* CTA banner (light theme) */
+    'cta-banner-title': 'Your <span class="accent">voice</span> is missing.',
+    'cta-banner-sub': 'Without you, we only hear an echo. Speak now. Your voice counts.',
+    'cta-banner-btn': 'Start answering now',
+    'cta-banner-tags': '#AyitiPale \u00b7 No party \u00b7 No government',
+
+    /* Hero card 3 (goal progress label) */
+    'mob-goal-toward': 'toward 50,000',
+
+    /* Questions header body text (2-col) */
+    'qb-head-body': 'Each question is a window into the country. A chance to speak without fear, without posture, without judgment. Your voice is a spark in a heart lighting up.',
+    'hero-card-count-sfx': 'answers',
+
+    /* Welcome hero — goal bar label */
+    'hero-goal-label': 'toward the goal',
+
+    /* Welcome hero — 4-col stats band (inside red hero) */
+    'hero-stat-vwa': 'TOTAL VOICES',
+    'hero-stat-peyi-dias': 'DIASPORA COUNTRIES',
+    'hero-stat-depatman': 'DEPARTMENTS',
+    'hero-stat-jodi-a': 'TODAY',
+
+    /* === POST-SUBMIT CONFIRMATION (injected by post-submit.js) === */
+    'ty-voice-prefix': 'You are voice',
+    'ty-voice-suffix': 'in the conversation.',
+    'ty-live-label': 'National counter right now',
+    'ty-see-mirror': 'See answers in the Mirror',
+    'ty-share-voice': 'Share your voice',
+    'ty-vox-brand': 'NATIONAL RECONCILIATION \u00b7 VOX',
+    'ty-share-wa-name': 'WhatsApp',
+    'ty-share-wa-sub': 'Send your voice to 5 friends',
+    'ty-share-ig-name': 'Instagram',
+    'ty-share-ig-sub': 'Copy the text and drop it in your story',
+    'ty-share-copy-name': 'Copy link',
+    'ty-share-copy-sub': 'Paste it anywhere',
+    'ty-share-copied': 'Link copied',
+    'ty-share-ig-copied': 'Text copied \u2014 open Instagram',
+    'ty-wa-message': 'I answered the questions for my country. Your voice counts too \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-region-title-prefix': 'The',
+    'ty-region-title-mid': 'department is in position',
+    'ty-region-title-suffix': 'right now',
+    'ty-region-cta-prefix': 'Help',
+    'ty-region-cta-suffix': 'climb \u2014 share with your friends',
+    'ty-region-wa': 'Share to help your department',
+    'ty-region-anon': 'The country',
+
+    /* Vox image save / share */
+    'ty-save-img-name': 'Save the image',
+    'ty-save-img-sub': 'For WhatsApp, IG, FB stories',
+    'ty-share-img-name': 'Share the image',
+    'ty-share-img-sub': 'Open WhatsApp, IG, or SMS',
+    'ty-img-generating': 'Generating image...',
+    'ty-img-saved': 'Image saved',
+    'ty-img-shared': 'Image shared',
+    'ty-img-caption': 'I answered the questions for my country. Your voice counts too \uD83D\uDC49 reconciliation-nationale.ht',
+    'ty-img-quote-placeholder': 'My voice counts.',
+    'ty-img-voice-label': 'VOICE'
   }
 };
