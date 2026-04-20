@@ -12,40 +12,40 @@ const DB = {
   // Fetch one page of answers for a question
   // Returns { answers: [...], hasMore: boolean, lastDoc: snapshot }
   async fetchAnswers(qId, { sortBy = 'votes', page = 1, filterDept = null, searchQuery = '', lastDoc = null } = {}) {
-    let query = db.collection('answers').where(qId, '!=', '');
+    // Strategy: pull up to 500 docs with a single orderBy (no composite index
+    // required), then filter / sort / paginate client-side.
+    // Previous Firestore .where(qId, '!=', '') + orderBy threw silently because
+    // Firestore requires the first orderBy to match the inequality field.
+    let query = db.collection('answers').orderBy('createdAt', 'desc').limit(500);
 
-    // Sort
-    if (sortBy === 'votes') {
-      query = query.orderBy(`votes.${qId}`, 'desc');
-    } else if (sortBy === 'newest') {
-      query = query.orderBy('createdAt', 'desc');
-    } else {
-      query = query.orderBy('createdAt', 'asc');
+    let snap;
+    try { snap = await query.get(); }
+    catch (e) {
+      // Fallback: no sort (unseeded or missing createdAt)
+      snap = await db.collection('answers').limit(500).get();
     }
 
-    // Department filter
+    let results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Filter 1 — only docs that actually have a non-empty answer for qId
+    results = results.filter(a => {
+      const val = a[qId];
+      const text = (typeof val === 'object' && val !== null)
+        ? (val.ht || val.fr || val.en || '')
+        : val;
+      return text && String(text).trim();
+    });
+
+    // Filter 2 — department
     if (filterDept) {
-      query = query.where('department', '==', filterDept);
+      results = results.filter(a => a.department === filterDept);
     }
 
-    // Cursor pagination
-    if (lastDoc) {
-      query = query.startAfter(lastDoc);
-    }
-
-    query = query.limit(this.PAGE_SIZE + 1); // fetch 1 extra to check hasMore
-
-    const snap = await query.get();
-    const docs = snap.docs.slice(0, this.PAGE_SIZE);
-    const hasMore = snap.docs.length > this.PAGE_SIZE;
-
-    let results = docs.map(d => ({ id: d.id, ...d.data() }));
-
-    // Client-side search filter (Firestore has no full-text search)
+    // Filter 3 — full-text search (name, location, answer text)
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       results = results.filter(a => {
-        const text = typeof a[qId] === 'object'
+        const text = (typeof a[qId] === 'object' && a[qId] !== null)
           ? Object.values(a[qId]).join(' ')
           : String(a[qId] || '');
         return text.toLowerCase().includes(q)
@@ -54,10 +54,29 @@ const DB = {
       });
     }
 
+    // Sort
+    const tsOf = a => (a.createdAt && typeof a.createdAt.toMillis === 'function')
+      ? a.createdAt.toMillis()
+      : (a.createdAt && a.createdAt.seconds ? a.createdAt.seconds * 1000 : 0);
+    if (sortBy === 'votes') {
+      results.sort((a, b) => (((b.votes && b.votes[qId]) || 0) - ((a.votes && a.votes[qId]) || 0)));
+    } else if (sortBy === 'newest') {
+      results.sort((a, b) => tsOf(b) - tsOf(a));
+    } else {
+      results.sort((a, b) => tsOf(a) - tsOf(b));
+    }
+
+    // Paginate client-side
+    const pageNum = Math.max(1, page || 1);
+    const start = (pageNum - 1) * this.PAGE_SIZE;
+    const end = start + this.PAGE_SIZE;
+    const pageItems = results.slice(start, end);
+    const hasMore = results.length > end;
+
     return {
-      answers: results,
+      answers: pageItems,
       hasMore,
-      lastDoc: docs.length > 0 ? docs[docs.length - 1] : null
+      lastDoc: null   // no cursor — client-side pagination
     };
   },
 
