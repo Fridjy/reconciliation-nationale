@@ -52,9 +52,7 @@ async function updateStats() {
   if (typeof DB !== 'undefined' && typeof db !== 'undefined') {
     try {
       cachedStats = await DB.fetchStats();
-      partEl.textContent = (cachedStats.totalParticipants || 0).toLocaleString();
-      document.getElementById('stat-answers').textContent = (cachedStats.totalAnswers || 0).toLocaleString();
-      document.getElementById('stat-votes').textContent = (cachedStats.totalVotes || 0).toLocaleString();
+      paintCommunityStats(cachedStats);
       return;
     } catch (e) {
       console.warn('Stats Firestore error, using local:', e.message);
@@ -72,9 +70,26 @@ async function updateStats() {
     if (hasAny) manifests++;
     QUESTIONS.forEach(q => { votes += (a.votes && a.votes[q.id]) || 0; });
   });
-  partEl.textContent = manifests.toLocaleString();
-  document.getElementById('stat-answers').textContent = manifests.toLocaleString();
-  document.getElementById('stat-votes').textContent = (12408 - 1510 + votes).toLocaleString();
+  paintCommunityStats({ totalParticipants: manifests, totalAnswers: manifests, totalVotes: votes, perDept: {} });
+}
+
+/* Paint the community stats band from a stats object. No padding, no hardcoded
+   geography — every number reflects actual Firestore / local data. */
+function paintCommunityStats(stats) {
+  const s = stats || {};
+  const set = (id, n) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = Number(n || 0).toLocaleString();
+  };
+  set('stat-participants', s.totalParticipants);
+  set('stat-answers',       s.totalAnswers);
+  set('stat-votes',         s.totalVotes);
+
+  const perDept = s.perDept || {};
+  const activeDepts = Object.keys(perDept).filter(k => k !== 'diaspora' && (perDept[k] || 0) > 0).length;
+  const diasporaCount = Number(perDept.diaspora || 0);
+  set('stat-dept',  activeDepts);
+  set('stat-dias',  diasporaCount);
 }
 
 /* =============================================

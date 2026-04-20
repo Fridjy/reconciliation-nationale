@@ -232,11 +232,12 @@
     }
   }
 
-  /* 4-column stats band inside the red hero */
+  /* 4-column stats band inside the red hero — all numbers live from Firestore */
   function welcomeStatsHTML() {
     const vwa   = currentCount.toLocaleString('fr-FR');
-    const dias  = '32';
-    const depts = '10';
+    const perDept = (typeof cachedStats !== 'undefined' && cachedStats && cachedStats.perDept) || {};
+    const activeDepts = Object.keys(perDept).filter(k => k !== 'diaspora' && (Number(perDept[k]) || 0) > 0).length;
+    const diasporaCount = Number(perDept.diaspora) || 0;
     const delta = '+' + MOBILIZATION.todayDelta;
     return `
       <div class="ws-item">
@@ -244,11 +245,11 @@
         <span class="ws-label" data-i18n="hero-stat-vwa">${t('hero-stat-vwa')}</span>
       </div>
       <div class="ws-item">
-        <span class="ws-num gold">${dias}</span>
+        <span class="ws-num gold" data-ws-dias>${diasporaCount}</span>
         <span class="ws-label" data-i18n="hero-stat-peyi-dias">${t('hero-stat-peyi-dias')}</span>
       </div>
       <div class="ws-item">
-        <span class="ws-num">${depts}</span>
+        <span class="ws-num" data-ws-dept>${activeDepts}</span>
         <span class="ws-label" data-i18n="hero-stat-depatman">${t('hero-stat-depatman')}</span>
       </div>
       <div class="ws-item">
@@ -256,6 +257,15 @@
         <span class="ws-label" data-i18n="hero-stat-jodi-a">${t('hero-stat-jodi-a')}</span>
       </div>
     `;
+  }
+
+  /* Live-refresh the welcome-stats band's dept + diaspora numbers */
+  function refreshWelcomeStats() {
+    const perDept = (typeof cachedStats !== 'undefined' && cachedStats && cachedStats.perDept) || {};
+    const activeDepts = Object.keys(perDept).filter(k => k !== 'diaspora' && (Number(perDept[k]) || 0) > 0).length;
+    const diasporaCount = Number(perDept.diaspora) || 0;
+    document.querySelectorAll('[data-ws-dept]').forEach(el => { el.textContent = activeDepts; });
+    document.querySelectorAll('[data-ws-dias]').forEach(el => { el.textContent = diasporaCount; });
   }
 
   /* Enhance questions header with a second column body text */
@@ -267,43 +277,6 @@
     body.setAttribute('data-i18n', 'qb-head-body');
     body.textContent = t('qb-head-body');
     head.appendChild(body);
-  }
-
-  /* Three floating hero cards (below CTA) */
-  function heroCardsHTML() {
-    const sampleQuote = {
-      ht: 'Mwen kwè peyi a ka chanje si nou tout pale ansanm.',
-      fr: 'Je crois que le pays peut changer si nous parlons tous ensemble.',
-      en: 'I believe the country can change if we all speak together.'
-    };
-    const lang = (typeof currentLang === 'string') ? currentLang : 'fr';
-    const q = sampleQuote[lang] || sampleQuote.fr;
-
-    const goalPct = Math.min(100, Math.round((currentCount / MOBILIZATION.goalTotal) * 100));
-    const firstQ = typeof QUESTIONS !== 'undefined' && QUESTIONS[0] ? QUESTIONS[0] : { key: 'q1' };
-    const qText = (typeof i18n !== 'undefined' && i18n[lang] && i18n[lang][firstQ.key]) ? i18n[lang][firstQ.key] : '';
-    const qCount = MOBILIZATION.departments[0].count; // arbitrary sample count
-
-    return `
-      <div class="hero-card hero-card--progress">
-        <span class="hero-card-label">KESYON 01</span>
-        <div class="hero-card-text">${qText}</div>
-        <div class="hero-card-progress"><div class="hero-card-progress-fill" style="width:62%"></div></div>
-        <div class="hero-card-count">${qCount.toLocaleString('fr-FR')} <span data-i18n="hero-card-count-sfx">${t('hero-card-count-sfx')}</span></div>
-      </div>
-      <div class="hero-card hero-card-voice">
-        <span class="hero-card-label" data-i18n="aw-k">KESYON 03</span>
-        <div class="hero-card-quote">${q}</div>
-        <div class="hero-card-author">Marie L.</div>
-        <div class="hero-card-location">Port-au-Prince</div>
-      </div>
-      <div class="hero-card hero-card-live">
-        <span class="hero-card-num" data-count-sync>${currentCount.toLocaleString('fr-FR')}</span>
-        <span class="hero-card-label" data-i18n="mob-counter-label">${t('mob-counter-label')}</span>
-        <div class="hero-card-progress"><div class="hero-card-progress-fill" data-goal-fill style="width:${goalPct}%"></div></div>
-        <div class="hero-card-count"><span data-goal-pct>${goalPct}%</span> <span data-i18n="mob-goal-toward">vè 50,000</span></div>
-      </div>
-    `;
   }
 
   function tickerBarHTML() {
@@ -520,6 +493,11 @@
           }
           // Redraw leaderboard + stats band labels with fresh per-dept data
           refreshLeaderboard();
+          refreshWelcomeStats();
+          // Community stats band (#stat-dept, #stat-dias) from the same snapshot
+          if (typeof paintCommunityStats === 'function') {
+            try { paintCommunityStats(data); } catch (e) {}
+          }
           // Map page: re-render with the live perDept baseline
           if (typeof renderMap === 'function' && document.querySelector('.map-svg')) {
             try { renderMap(); } catch (e) {}
