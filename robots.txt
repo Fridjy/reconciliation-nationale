@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /tools/
+Disallow: /data/
+
+Sitemap: https://reconciliation-nationale.ht/sitemap.xml
