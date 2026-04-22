@@ -156,7 +156,7 @@ async function checkRateLimit(ip) {
    ============================================================ */
 
 exports.submitAnswer = onCall(
-  { region: 'us-central1', maxInstances: 10, cors: true },
+  { region: 'us-central1', maxInstances: 10, cors: true, invoker: 'public' },
   async (request) => {
     const ip = extractIp(request);
     await checkRateLimit(ip);
