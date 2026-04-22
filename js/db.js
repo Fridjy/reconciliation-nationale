@@ -80,16 +80,29 @@ const DB = {
     };
   },
 
-  // Submit a new answer
+  // Submit a new answer — goes through the submitAnswer Cloud Function.
+  // The CF validates, hashes the phone (SHA-256), merges by phoneHash,
+  // and increments meta/stats. Client never writes answers/ or meta/ directly.
   async submitAnswer(entry) {
-    const doc = {
-      ...entry,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    if (typeof functions === 'undefined' || !functions) {
+      throw new Error('Cloud Functions SDK not initialized');
+    }
+
+    const payload = {
+      name: entry.name,
+      phone: entry._userId || entry.phone,
+      department: entry.department,
+      where: entry.where || ''
     };
-    const ref = await db.collection('answers').add(doc);
-    // Update stats
-    await this.incrementStats(entry);
-    return ref.id;
+    ['q1', 'q2', 'q3', 'q4', 'q5'].forEach(qId => {
+      if (entry[qId] != null && entry[qId] !== '') {
+        payload[qId] = entry[qId];
+      }
+    });
+
+    const call = functions.httpsCallable('submitAnswer');
+    const res = await call(payload);
+    return res.data.answerId;
   },
 
   // Vote on an answer
@@ -110,27 +123,6 @@ const DB = {
     await ref.update({
       [`comments.${qId}`]: firebase.firestore.FieldValue.arrayUnion(comment)
     });
-  },
-
-  // Increment stats after new submission
-  async incrementStats(entry) {
-    const statsRef = db.collection('meta').doc('stats');
-    const updates = {
-      totalParticipants: firebase.firestore.FieldValue.increment(1)
-    };
-    QUESTIONS.forEach(q => {
-      const val = entry[q.id];
-      const text = typeof val === 'object' ? (val && (val.ht || '')) : val;
-      if (text && text.trim()) {
-        updates.totalAnswers = firebase.firestore.FieldValue.increment(1);
-        updates[`perQuestion.${q.id}`] = firebase.firestore.FieldValue.increment(1);
-      }
-    });
-    // Update department count
-    if (entry.department) {
-      updates[`perDept.${entry.department}`] = firebase.firestore.FieldValue.increment(1);
-    }
-    await statsRef.set(updates, { merge: true });
   },
 
   /* ----- STATS ----- */

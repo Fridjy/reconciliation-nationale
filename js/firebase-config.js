@@ -3,6 +3,7 @@
    ============================================= */
 
 let db = null;
+let functions = null;
 
 (function initFirebase() {
   if (typeof firebase === 'undefined') {
@@ -23,6 +24,9 @@ let db = null;
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     db.enablePersistence({ synchronizeTabs: true }).catch(function() {});
+    if (typeof firebase.functions === 'function') {
+      functions = firebase.functions('us-central1');
+    }
     console.log('Firebase connected');
   } catch (e) {
     console.warn('Firebase init failed:', e.message);

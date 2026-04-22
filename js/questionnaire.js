@@ -274,59 +274,41 @@ async function submitSingleAnswer() {
 
 async function doSubmitSingleAnswer(user) {
   const publicName = user.isAnon ? (i18n[currentLang]['reg-anon-name'] || 'Anonyme') : user.name;
+  const newText = currentDraft[currentQuestionId];
 
-  // Check if user already has an answer entry
-  let existingEntry = answers.find(a => a._userId === user.phone);
+  // Delegate merge/create decision to the CF (keyed by phoneHash server-side).
+  const entry = {
+    name: publicName,
+    phone: user.phone,
+    where: user.address,
+    department: user.department || (typeof matchDepartment === 'function' ? matchDepartment(user.address) : null),
+    [currentQuestionId]: newText
+  };
 
+  let docId = null;
+  if (typeof DB !== 'undefined' && typeof functions !== 'undefined' && functions) {
+    try { docId = await DB.submitAnswer(entry); }
+    catch (e) { console.warn('submitAnswer failed:', e.message); }
+  }
+
+  // Sync local UI state so the answer appears immediately without a refetch.
+  const existingEntry = answers.find(a => a._userId === user.phone);
   if (existingEntry) {
-    // User is adding a new question answer to their existing entry
-    const newText = currentDraft[currentQuestionId];
-    const hadAnswer = !!(existingEntry[currentQuestionId] && String(existingEntry[currentQuestionId]).trim());
     existingEntry[currentQuestionId] = newText;
-
-    // Update the doc + increment perQuestion/totalAnswers only if this is a
-    // BRAND NEW question answer (not an edit of an existing one).
-    if (typeof DB !== 'undefined' && db) {
-      try {
-        await db.collection('answers').doc(existingEntry.id).set(
-          { [currentQuestionId]: newText }, { merge: true }
-        );
-        if (!hadAnswer && newText && newText.trim()) {
-          await db.collection('meta').doc('stats').set({
-            totalAnswers: firebase.firestore.FieldValue.increment(1),
-            [`perQuestion.${currentQuestionId}`]: firebase.firestore.FieldValue.increment(1)
-          }, { merge: true });
-        }
-      } catch (e) { console.warn('Answer update error:', e.message); }
-    }
+    if (docId) existingEntry.id = docId;
   } else {
-    // Create new entry
     const newEntry = {
+      id: docId || Date.now(),
       name: publicName,
       where: user.address,
-      department: user.department || (typeof matchDepartment === 'function' ? matchDepartment(user.address) : null),
+      department: entry.department,
       votes: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
       comments: { q1: [], q2: [], q3: [], q4: [], q5: [] },
       _userId: user.phone
     };
-
-    // Only fill the answered question
     QUESTIONS.forEach(q => {
-      newEntry[q.id] = q.id === currentQuestionId ? currentDraft[currentQuestionId] : '';
+      newEntry[q.id] = q.id === currentQuestionId ? newText : '';
     });
-
-    // Submit to Firestore
-    if (typeof DB !== 'undefined' && db) {
-      try {
-        const docId = await DB.submitAnswer(newEntry);
-        newEntry.id = docId;
-      } catch (e) {
-        newEntry.id = Date.now();
-      }
-    } else {
-      newEntry.id = Date.now();
-    }
-
     answers.unshift(newEntry);
   }
 
