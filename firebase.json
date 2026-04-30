@@ -1,6 +1,8 @@
 {
   "hosting": {
     "public": ".",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "firestore.rules",
@@ -9,6 +11,10 @@
       "tools/**",
       "README*",
       "CLAUDE.md"
+    ],
+    "redirects": [
+      { "source": "/index.html",    "destination": "/",   "type": 301 },
+      { "source": "/**/index.html", "destination": "/:1", "type": 301 }
     ],
     "headers": [
       {

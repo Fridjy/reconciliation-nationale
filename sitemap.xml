@@ -2,26 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://reconciliation-nationale.ht/</loc>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://reconciliation-nationale.ht/map.html</loc>
+    <loc>https://reconciliation-nationale.ht/map</loc>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://reconciliation-nationale.ht/rapport.html</loc>
+    <loc>https://reconciliation-nationale.ht/rapport</loc>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://reconciliation-nationale.ht/about.html</loc>
+    <loc>https://reconciliation-nationale.ht/about</loc>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://reconciliation-nationale.ht/consulted.html</loc>
+    <loc>https://reconciliation-nationale.ht/consulted</loc>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
