@@ -20,15 +20,12 @@ async function buildConsultedFilters() {
 
   let types = [];
 
-  // Try Firestore
   if (typeof DB !== 'undefined' && typeof db !== 'undefined') {
     try {
       types = await DB.fetchConsultedTypes();
     } catch (e) {
-      types = ['Sosyete sivil', 'Inivèsite', 'Medya', 'Dyaspora', 'Relijyon', 'Dwa moun', 'ONG', 'Sektè prive'];
+      types = [];
     }
-  } else {
-    types = ['Sosyete sivil', 'Inivèsite', 'Medya', 'Dyaspora', 'Relijyon', 'Dwa moun', 'ONG', 'Sektè prive'];
   }
 
   bar.innerHTML = `
@@ -106,16 +103,6 @@ async function loadConsulted(reset) {
       console.warn('Consulted Firestore error:', e.message);
       items = [];
     }
-  }
-
-  // Fallback: use hardcoded items from page (if Firestore empty or unavailable)
-  if (items.length === 0 && reset && typeof CONSULTED_SEED !== 'undefined') {
-    items = CONSULTED_SEED.filter(o => {
-      if (consultedCategory && o.category !== consultedCategory) return false;
-      if (consultedType && o.type !== consultedType) return false;
-      if (consultedSearch && !o.name.toLowerCase().includes(consultedSearch.toLowerCase())) return false;
-      return true;
-    });
   }
 
   if (reset) consultedItems = items;
