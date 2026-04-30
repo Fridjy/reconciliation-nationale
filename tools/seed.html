@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Seed · Réconciliation Nationale</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 760px; margin: 0 auto; padding: 48px 24px; line-height: 1.55; color: #0A0A14; background: #F5F0E8; }
+  h1 { font-size: 28px; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .sub { color: rgba(10,10,20,0.6); margin-bottom: 28px; font-size: 14px; }
+  .card { background: #fff; border: 0.5px solid rgba(10,10,20,0.12); border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; margin-bottom: 10px; }
+  .card p { font-size: 13px; color: rgba(10,10,20,0.6); margin-bottom: 12px; }
+  button { background: #D21034; color: #fff; border: none; border-radius: 8px; padding: 12px 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  button:hover { background: #b01029; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .danger { background: #0A0A14; }
+  .danger:hover { background: #333; }
+  .gate { text-align: center; padding: 60px 24px; }
+  .gate input { font-size: 16px; padding: 10px 14px; border: 0.5px solid rgba(10,10,20,0.2); border-radius: 8px; width: 260px; margin-right: 8px; }
+  #log { white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 12px; background: #0A0A14; color: #0f0; padding: 14px; border-radius: 8px; min-height: 120px; max-height: 320px; overflow-y: auto; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 99px; background: rgba(210,16,52,0.1); color: #D21034; font-size: 11px; font-family: ui-monospace, monospace; margin-left: 8px; }
+  .warn { background: rgba(245,197,24,0.15); border: 0.5px solid rgba(245,197,24,0.4); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <h1>Admin Seed <span class="pill">PRIVÉ</span></h1>
+  <p class="sub">Ce fichier ne doit jamais être déployé. Entrez le mot de passe admin pour continuer.</p>
+  <input type="password" id="pw" placeholder="Mot de passe">
+  <button onclick="checkPw()">Entrer</button>
+</div>
+
+<div id="app" style="display:none;">
+  <h1>Seed Firestore <span class="pill" id="env">prod</span></h1>
+  <p class="sub">Cet outil écrit les données initiales dans le backend. Ne jamais déployer ce fichier.</p>
+  <div class="warn">⚠️ Les opérations sont destructives — elles écrasent les documents existants. Utiliser en connaissance de cause.</div>
+
+  <div class="card">
+    <h3>1. Stats baseline (500 participants · distribution par département)</h3>
+    <p>Écrit <code>meta/stats</code> avec le compteur, la distribution par département, et les totaux par question.</p>
+    <button onclick="seedStats()">Seed stats</button>
+  </div>
+
+  <div class="card">
+    <h3>2. Types de consultation</h3>
+    <p>Écrit <code>meta/consultedTypes</code> avec les 14 catégories pour les filtres de la page Consultations.</p>
+    <button onclick="seedConsultedTypes()">Seed types</button>
+  </div>
+
+  <div class="card">
+    <h3>3. Institutions + personnalités consultées (30 entrées)</h3>
+    <p>Écrit la collection <code>consulted</code>. Remplit la page "Consultations".</p>
+    <button onclick="seedConsulted()">Seed institutions</button>
+  </div>
+
+  <div class="card">
+    <h3>4. Voix citoyennes initiales (10 entrées)</h3>
+    <p>Écrit 10 documents <code>answers/seed-*</code>. Remplit le mur de voix avec du contenu initial.</p>
+    <button onclick="seedVoices()">Seed voices</button>
+  </div>
+
+  <div class="card">
+    <h3>Tout faire d'un coup</h3>
+    <p>Exécute les 4 opérations ci-dessus en batch.</p>
+    <button class="danger" onclick="seedAll()">Seed tout (4 étapes)</button>
+  </div>
+
+  <div class="card">
+    <h3>Reset (effacer + re-seeder)</h3>
+    <p>Supprime les soumissions réelles (garde <code>seed-*</code>), réinitialise les stats puis re-seed.</p>
+    <button class="danger" onclick="resetAll()">Reset complet</button>
+  </div>
+
+  <div class="card">
+    <h3>Vider la collection <code>consulted</code></h3>
+    <p>Supprime toutes les institutions et personnalités. La page Consultations sera vide.</p>
+    <button class="danger" onclick="wipeConsulted()">Vider consulted</button>
+  </div>
+
+  <div class="card">
+    <h3>Remettre les stats à zéro</h3>
+    <p>Écrase <code>meta/stats</code> : 0 participants, 0 réponses, 0 votes, distribution vide. Le compteur partira de 0 et grandira avec les vraies soumissions.</p>
+    <button class="danger" onclick="zeroStats()">Stats à zéro</button>
+  </div>
+
+  <h3 style="margin-top:28px;font-size:14px;">Log</h3>
+  <div id="log">En attente…</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+/* =============================================
+   Admin password gate (client-side only, trivial)
+   Actual security comes from Firestore rules + not deploying this file.
+   ============================================= */
+const ADMIN_PW = 'rn2026seed';
+
+function checkPw() {
+  const v = document.getElementById('pw').value;
+  if (v === ADMIN_PW) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initFirebase();
+  } else {
+    alert('Mot de passe incorrect.');
+  }
+}
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+
+/* =============================================
+   Firebase
+   ============================================= */
+let db = null;
+function initFirebase() {
+  firebase.initializeApp({
+    apiKey: "AIzaSyCK1YOXevEWpRuZ3fzRFooHmw5wWUuwpvg",
+    authDomain: "reconciliation-nationale.firebaseapp.com",
+    projectId: "reconciliation-nationale",
+    storageBucket: "reconciliation-nationale.firebasestorage.app",
+    messagingSenderId: "321426413379",
+    appId: "1:321426413379:web:93fbc48712ecb0cc55c1f6"
+  });
+  db = firebase.firestore();
+  log('Firebase connecté.');
+}
+
+/* =============================================
+   Log helper
+   ============================================= */
+const logEl = () => document.getElementById('log');
+function log(msg, isErr) {
+  const el = logEl();
+  const line = (isErr ? '✗ ' : '✓ ') + msg + '\n';
+  el.textContent += line;
+  el.scrollTop = el.scrollHeight;
+}
+
+/* =============================================
+   1. STATS BASELINE
+   ============================================= */
+async function seedStats() {
+  try {
+    await db.collection('meta').doc('stats').set({
+      totalParticipants: 500,
+      totalAnswers: 1950,
+      totalVotes: 0,
+      perQuestion: { q1: 420, q2: 380, q3: 450, q4: 360, q5: 340 },
+      perDept: {
+        'ouest':       140,
+        'artibonite':   55,
+        'nord':         45,
+        'sud':          35,
+        'centre':       30,
+        'sud-est':      25,
+        'grand-anse':   25,
+        'nord-ouest':   20,
+        'nippes':       15,
+        'nord-est':     15,
+        'diaspora':     95
+      },
+      seeded: true
+    }, { merge: true });
+    log('Stats seedées : 500 participants, distribution par dept complétée.');
+  } catch (e) { log('Erreur stats: ' + e.message, true); }
+}
+
+/* =============================================
+   2. CONSULTED TYPES
+   ============================================= */
+async function seedConsultedTypes() {
+  try {
+    await db.collection('meta').doc('consultedTypes').set({
+      types: ['Sosyete sivil', 'Inivèsite', 'Medya', 'Dyaspora', 'Relijyon', 'Dwa moun', 'ONG', 'Sektè prive', 'Politik', 'Kilti', 'Sante', 'Edikasyon', 'Agrikilti', 'Teknoloji']
+    });
+    log('14 types de consultation seedés.');
+  } catch (e) { log('Erreur types: ' + e.message, true); }
+}
+
+/* =============================================
+   3. CONSULTED ORGANIZATIONS + PERSONALITIES
+   ============================================= */
+const ORGS = [
+  { name: 'LANS', type: 'Sosyete sivil', category: 'institution', logoInitials: 'LA', website: 'https://lansayiti.netlify.app', description: 'Leadership Ayisyen pour une Nouvelle Société. Initiateur du projet Réconciliation Nationale.', location: 'Port-au-Prince', order: 0 },
+  { name: "Université d'État d'Haïti", type: 'Inivèsite', category: 'institution', logoInitials: 'UEH', website: '', description: "Faculté des Sciences Humaines. Contribution à la rédaction des questions et à l'analyse sociologique.", location: 'Port-au-Prince', order: 1 },
+  { name: 'Radio Kiskeya', type: 'Medya', category: 'institution', logoInitials: 'RK', website: '', description: 'Diffusion de la campagne et débats publics sur les 5 questions.', location: 'Port-au-Prince', order: 2 },
+  { name: 'Haitian Diaspora Federation', type: 'Dyaspora', category: 'institution', logoInitials: 'HDF', website: '', description: 'Relais de la voix haïtienne en diaspora. Coordination de la participation dans 32 pays.', location: 'New York · Montreal · Paris', order: 3 },
+  { name: "Conférence Épiscopale d'Haïti", type: 'Relijyon', category: 'institution', logoInitials: 'CEH', website: '', description: 'Consultation sur les questions de réconciliation, justice et paix.', location: 'Port-au-Prince', order: 4 },
+  { name: 'RNDDH', type: 'Dwa moun', category: 'institution', logoInitials: 'RN', website: '', description: "Réseau National de Défense des Droits Humains. Conseil sur l'inclusion et la transparence.", location: 'Port-au-Prince', order: 5 },
+  { name: 'Radio Télé Métropole', type: 'Medya', category: 'institution', logoInitials: 'RTM', website: '', description: 'Couverture médiatique nationale de la campagne de consultation.', location: 'Port-au-Prince', order: 6 },
+  { name: 'Le Nouvelliste', type: 'Medya', category: 'institution', logoInitials: 'LN', website: '', description: "Publication des résultats et analyses dans le principal quotidien du pays.", location: 'Port-au-Prince', order: 7 },
+  { name: 'FOKAL', type: 'ONG', category: 'institution', logoInitials: 'FK', website: '', description: 'Fondation Connaissance et Liberté. Soutien logistique et diffusion culturelle.', location: 'Port-au-Prince', order: 8 },
+  { name: "Chambre de Commerce d'Haïti", type: 'Sektè prive', category: 'institution', logoInitials: 'CCH', website: '', description: "Consultation du secteur privé sur les questions économiques et institutionnelles.", location: 'Port-au-Prince', order: 9 },
+  { name: 'USIH', type: 'Inivèsite', category: 'institution', logoInitials: 'US', website: '', description: "Université des Sciences et de l'Informatique d'Haïti. Partenaire recherche et données.", location: 'Port-au-Prince', order: 10 },
+  { name: 'Médecins du Monde', type: 'Sante', category: 'institution', logoInitials: 'MdM', website: '', description: 'Perspective santé publique dans les questions environnementales et institutionnelles.', location: 'Port-au-Prince', order: 11 },
+  { name: 'PAPDA', type: 'ONG', category: 'institution', logoInitials: 'PA', website: '', description: "Plateforme haïtienne de plaidoyer pour un développement alternatif.", location: 'Port-au-Prince', order: 12 },
+  { name: 'Kay Fanm', type: 'Dwa moun', category: 'institution', logoInitials: 'KF', website: '', description: "Organisation féministe. Consultation sur l'égalité des genres et la gouvernance.", location: 'Port-au-Prince', order: 13 },
+  { name: 'GRAHN', type: 'Dyaspora', category: 'institution', logoInitials: 'GR', website: '', description: "Groupe de réflexion et d'action pour une Haïti nouvelle. Réseau diaspora-Haïti.", location: 'Montreal', order: 14 },
+  { name: 'Protestant Federation of Haiti', type: 'Relijyon', category: 'institution', logoInitials: 'FPH', website: '', description: 'Consultation communautaire via le réseau protestant national.', location: 'Port-au-Prince', order: 15 },
+  { name: 'CIAT', type: 'Politik', category: 'institution', logoInitials: 'CI', website: '', description: "Comité Interministériel d'Aménagement du Territoire. Expertise en planification.", location: 'Port-au-Prince', order: 16 },
+  { name: 'Ayiti Nexus', type: 'Teknoloji', category: 'institution', logoInitials: 'AN', website: '', description: 'Plateforme technologique haïtienne. Support technique du projet.', location: 'Port-au-Prince', order: 17 },
+  { name: 'ORE', type: 'Edikasyon', category: 'institution', logoInitials: 'OR', website: '', description: "Organisation pour la Réhabilitation de l'Environnement. Éducation environnementale.", location: 'Camp-Perrin', order: 18 },
+  { name: 'VETERIMED', type: 'Agrikilti', category: 'institution', logoInitials: 'VM', website: '', description: "Vétérinaires en mission pour le développement. Voix du monde rural.", location: 'Port-au-Prince', order: 19 },
+  { name: 'Jean-Robert Cadet', role: 'Écrivain · Activiste', category: 'personality', expertise: "Droits de l'enfant, éducation, justice sociale", description: "Auteur et défenseur des droits de l'enfant. Contribution sur le leadership et les institutions.", location: 'Haïti · États-Unis', order: 100 },
+  { name: 'Marie-Laurence Jocelyn Lassègue', role: 'Ancienne Ministre', category: 'personality', expertise: 'Droits des femmes, communication, politique publique', description: "Ancienne Ministre de la Condition Féminine. Expertise sur les institutions et la participation citoyenne.", location: 'Port-au-Prince', order: 101 },
+  { name: 'Patrick Elie', role: 'Activiste · Analyste politique', category: 'personality', expertise: 'Sécurité nationale, démocratie, réconciliation', description: 'Figure du mouvement démocratique. Consultation sur le leadership et la vision nationale.', location: 'Port-au-Prince', order: 102 },
+  { name: 'Yanick Lahens', role: 'Écrivaine · Professeure', category: 'personality', expertise: 'Littérature, identité culturelle, sciences sociales', description: "Écrivaine reconnue internationalement. Réflexion sur l'identité haïtienne et l'environnement.", location: 'Port-au-Prince', order: 103 },
+  { name: 'Lyonel Trouillot', role: 'Écrivain · Intellectuel', category: 'personality', expertise: 'Littérature, société, engagement citoyen', description: "Romancier et poète. Voix critique sur la société haïtienne et ses aspirations.", location: 'Port-au-Prince', order: 104 },
+  { name: 'Michèle Duvivier Pierre-Louis', role: 'Ancienne Première Ministre', category: 'personality', expertise: 'Gouvernance, éducation, développement', description: "Ancienne Première Ministre. Présidente de FOKAL. Expertise en gouvernance et institutions.", location: 'Port-au-Prince', order: 105 },
+  { name: 'Raoul Peck', role: 'Cinéaste · Ancien Ministre', category: 'personality', expertise: 'Culture, communication, politique', description: "Cinéaste de renommée mondiale. Ancien Ministre de la Culture. Vision sur l'identité nationale.", location: 'Port-au-Prince · Paris', order: 106 },
+  { name: 'Danièle Magloire', role: 'Sociologue · Militante', category: 'personality', expertise: 'Droits humains, genre, société civile', description: "Sociologue et militante des droits des femmes. Consultation sur la société que nous voulons.", location: 'Port-au-Prince', order: 107 },
+  { name: 'Jean-Germain Gros', role: 'Politologue', category: 'personality', expertise: 'Sciences politiques, État, institutions', description: "Professeur de sciences politiques. Expertise sur les institutions et la gouvernance.", location: 'États-Unis', order: 108 },
+  { name: 'Edwidge Danticat', role: 'Écrivaine', category: 'personality', expertise: 'Littérature, diaspora, identité', description: "Écrivaine haïtiano-américaine. Voix de la diaspora. Réflexion sur le peuple que nous voulons être.", location: 'Miami', order: 109 }
+];
+
+async function seedConsulted() {
+  try {
+    const batch = db.batch();
+    ORGS.forEach((org, i) => {
+      batch.set(db.collection('consulted').doc('org-' + i), { ...org, logo: '' });
+    });
+    await batch.commit();
+    log(ORGS.length + ' institutions + personnalités seedées.');
+  } catch (e) { log('Erreur consulted: ' + e.message, true); }
+}
+
+/* =============================================
+   4. CITIZEN VOICES (10 seed entries)
+   ============================================= */
+const VOICES = [
+  { id: 1, name: 'Marie-Claire', where: 'Jacmel', dept: 'sud-est',
+    q1: { ht: 'Yon peyi kote timoun mwen ka mache al lekòl san pè. Kote lopital louvri. Kote yo pa oblije kite peyi a pou jwenn yon lavi dijne.', fr: "Un pays où mes enfants peuvent aller à l'école sans peur. Où les hôpitaux sont ouverts. Où on ne doit pas partir pour avoir une vie digne.", en: "A country where my children can walk to school without fear. Where hospitals are open. Where people don't have to leave to find a dignified life." },
+    q2: { ht: 'Yon pèp ki sonje 1804 men ki viv nan 2026. Fyè san ògèy. Solidè san nayif.', fr: 'Un peuple qui se souvient de 1804 mais qui vit en 2026. Fier sans orgueil. Solidaire sans naïveté.', en: 'A people who remember 1804 but live in 2026. Proud without arrogance. United without naivety.' },
+    q3: { ht: 'Vil san fatra. Lakanpay ki gen dlo. Pye bwa tout kote. Kote manman ka mennen tibebe l al jwe nan laplenn.', fr: "Des villes sans ordures. Des campagnes avec de l'eau. Des arbres partout. Où une mère peut amener son bébé jouer dans un parc.", en: "Cities without garbage. Countryside with water. Trees everywhere. Where a mother can take her baby to play in a park." },
+    q4: { ht: 'Yon lajistis ki pa sou vann. Yon lapolis ki respekte pèp la. Yon leta ki sèvi, pa ki sèvi tèt li.', fr: 'Une justice qui ne se vend pas. Une police qui respecte le peuple. Un État qui sert, pas qui se sert.', en: 'A justice that cannot be bought. A police that respects the people. A state that serves, not one that serves itself.' },
+    q5: { ht: 'Lidè ki koute anvan yo pale. Ki gen kouraj rekonèt yo pa gen tout repons. Ki kite pouvwa a lè lè a rive.', fr: "Des leaders qui écoutent avant de parler. Qui ont le courage de dire qu'ils n'ont pas toutes les réponses. Qui quittent le pouvoir quand le moment vient.", en: "Leaders who listen before they speak. Who have the courage to admit they don't have all the answers. Who leave power when the time comes." },
+    votes: { q1: 84, q2: 62, q3: 71, q4: 103, q5: 91 } },
+
+  { id: 2, name: 'Wilfrid', where: 'Boston · Dyaspora', dept: 'diaspora',
+    q1: { ht: 'Yon peyi kote mwen ka retounen san pè pèdi lavi mwen. Kote envestisman mwen ap rete nan peyi a.', fr: 'Un pays où je peux rentrer sans craindre de perdre ma vie. Où mon investissement reste dans le pays.', en: 'A country I can return to without fearing for my life. Where my investment stays in the country.' },
+    q2: { ht: "Yon pèp ki konprann dyaspora se pa lènmi. Nou se yon pati nan kò nasyon an — pa yon gichè ATM.", fr: "Un peuple qui comprend que la diaspora n'est pas l'ennemi. Nous sommes partie du corps de la nation — pas un distributeur.", en: "A people who understand the diaspora is not the enemy. We are part of the nation's body — not an ATM." },
+    q3: { ht: 'Yon anviwonman teknolojik. Entènèt pou tout moun. Lekòl ki anseye kod, lasyans, lang etranje.', fr: 'Un environnement technologique. Internet pour tous. Des écoles qui enseignent le code, la science, les langues.', en: 'A tech environment. Internet for everyone. Schools that teach code, science, foreign languages.' },
+    q4: { ht: 'Yon sistèm ki rekonèt dyaspora. Dwa vote. Reprezantasyon. Koneksyon fòmèl ak peyi a.', fr: 'Un système qui reconnaît la diaspora. Droit de vote. Représentation. Connexion formelle au pays.', en: 'A system that recognizes the diaspora. Voting rights. Representation. Formal connection to the country.' },
+    q5: { ht: 'Transparans total. Tout depans leta piblik. Chak kob ka suivi. Fen epòk lajan koupe nan lonbraj.', fr: 'Transparence totale. Toutes les dépenses publiques visibles. Chaque gourde suivie. Fin de l\'argent de l\'ombre.', en: 'Total transparency. All public spending visible. Every gourde traced. End of shadow money.' },
+    votes: { q1: 92, q2: 148, q3: 63, q4: 201, q5: 167 } },
+
+  { id: 3, name: 'Nadège', where: 'Gonaïves', dept: 'artibonite',
+    q1: { ht: 'Peyi a ki sispann mouri. Kote manje ap pouse nan jaden nou, pa sèlman vini nan bato.', fr: "Un pays qui arrête de mourir. Où la nourriture pousse dans nos jardins, pas seulement dans les bateaux.", en: 'A country that stops dying. Where food grows in our gardens, not just arrives in boats.' },
+    q2: { ht: "Yon pèp ki remete agrikilti a fyè. Manje nou se idantite nou. Peyi san manje pa gen libète.", fr: "Un peuple qui redonne sa fierté à l'agriculture. Notre nourriture c'est notre identité. Pas de liberté sans nourriture.", en: "A people who restore pride in agriculture. Our food is our identity. No freedom without food." },
+    q3: { ht: 'Sosyete kote peyizan gen respè. Kote travay tè a se yon metye digne, pa yon echèk.', fr: "Une société où le paysan a le respect. Où travailler la terre est un métier digne, pas un échec.", en: "A society where farmers are respected. Where working the land is a dignified profession, not a failure." },
+    q4: { ht: "Ministè agrikilti ki gen lajan, ki gen otorite. Koperativ peyizan sou tout teritwa.", fr: "Un ministère de l'agriculture avec budget et autorité. Des coopératives paysannes partout.", en: "An agriculture ministry with budget and authority. Peasant cooperatives everywhere." },
+    q5: { ht: "Lidè ki soti nan peyizan yo, ki konnen tè a. Pa sèlman moun ki fin lekòl nan kapital la.", fr: "Des leaders issus des paysans, qui connaissent la terre. Pas seulement des diplômés de la capitale.", en: "Leaders from the peasants, who know the land. Not just capital-city graduates." },
+    votes: { q1: 156, q2: 134, q3: 98, q4: 87, q5: 145 } },
+
+  { id: 4, name: 'Anonim', where: 'Port-au-Prince', dept: 'ouest',
+    q1: { ht: 'Yon peyi kote mwen pa oblije tande bri zam lannwit pou m dòmi.', fr: "Un pays où je ne dois pas écouter les coups de feu la nuit pour dormir.", en: "A country where I don't have to hear gunfire at night to sleep." },
+    q2: { ht: "Yon pèp ki chwazi lavi. Ki refize vyolans. Ki mete timoun li yo anvan pouvwa.", fr: "Un peuple qui choisit la vie. Qui refuse la violence. Qui met ses enfants avant le pouvoir.", en: "A people who choose life. Who refuse violence. Who put their children before power." },
+    q3: { ht: "Yon vil kote moun ka mache. Kote yon fanm ka retounen lakay li san pè. Kote lapolis pa konpliket ak gang.", fr: "Une ville où on peut marcher. Où une femme peut rentrer chez elle sans peur. Où la police n'est pas complice des gangs.", en: "A city where people can walk. Where a woman can go home without fear. Where the police aren't complicit with gangs." },
+    q4: { ht: "Yon lapolis ki sèvi pèp la. Yon tribinal ki jije san kouraj. Yon prizon ki pa yon lekòl pou krim.", fr: "Une police qui sert le peuple. Un tribunal qui juge sans couardise. Une prison qui n'est pas une école du crime.", en: "A police that serves the people. A court that judges without cowardice. A prison that isn't a crime school." },
+    q5: { ht: "Lidè ki pran responsablite. Ki pa fè pwomès yo pa ka kenbe. Ki koute victim yo.", fr: "Des leaders qui prennent leurs responsabilités. Qui ne promettent pas l'impossible. Qui écoutent les victimes.", en: "Leaders who take responsibility. Who don't promise what they can't keep. Who listen to victims." },
+    votes: { q1: 178, q2: 232, q3: 198, q4: 267, q5: 312 } },
+
+  { id: 5, name: 'Jean-Baptiste', where: 'Cap-Haïtien', dept: 'nord',
+    q1: { ht: "Yon peyi ki respekte istwa li. Kap-Ayisyen an se pa yon vil tè ki mouri. Se koulè 1804.", fr: "Un pays qui respecte son histoire. Le Cap n'est pas une ville morte. C'est la couleur de 1804.", en: "A country that respects its history. Cap-Haïtien isn't a dead city. It's the color of 1804." },
+    q2: { ht: "Yon pèp ki konprann istwa li. Lekòl ki anseye sa lejitisman, pa sèlman bay dat ak non.", fr: "Un peuple qui comprend son histoire. Des écoles qui l'enseignent sérieusement, pas juste des dates et des noms.", en: "A people who understand their history. Schools that teach it seriously, not just dates and names." },
+    q3: { ht: "Yon sosyete kote touris vini pou kilti nou, pa pou plaj nou. Kote atizan gen respè.", fr: "Une société où les touristes viennent pour notre culture, pas seulement nos plages. Où les artisans sont respectés.", en: "A society where tourists come for our culture, not just our beaches. Where artisans are respected." },
+    q4: { ht: "Yon ministè kilti ki finanse. Pa yon twou pou kopen ak fanmi.", fr: "Un ministère de la culture financé. Pas un piège pour copains et famille.", en: "A funded culture ministry. Not a patronage trap." },
+    q5: { ht: "Lidè ki gen kilti. Ki li liv. Ki konprann istwa. Ki respekte konesans.", fr: "Des leaders cultivés. Qui lisent. Qui comprennent l'histoire. Qui respectent le savoir.", en: "Cultured leaders. Who read. Who understand history. Who respect knowledge." },
+    votes: { q1: 98, q2: 267, q3: 178, q4: 56, q5: 234 } },
+
+  { id: 6, name: 'Anonim', where: 'Montreal · Dyaspora', dept: 'diaspora',
+    q1: { ht: "Peyi m ka envesti nan li san krent. Kote pitit mwen ap gen swen ak edikasyon.", fr: "Un pays où je peux investir sans crainte. Où mes enfants auront des soins et de l'éducation.", en: "A country I can invest in without fear. Where my children will have care and education." },
+    q2: { ht: "Yon pèp ki chèche pwogre, pa sèlman sòti.", fr: "Un peuple qui cherche le progrès, pas seulement l'exil.", en: "A people who seek progress, not just exile." },
+    q3: { ht: "Yon sosyete moderne. Teknoloji, santè, edikasyon. Pa yon peyi ki rete nan ane 1970.", fr: "Une société moderne. Technologie, santé, éducation. Pas un pays coincé dans les années 70.", en: "A modern society. Technology, health, education. Not a country stuck in the 1970s." },
+    q4: { ht: "Enstitisyon solid ki pa depan sou moun. Lwa ki aplike kelke lidè a.", fr: "Des institutions solides indépendantes des personnes. Des lois qui s'appliquent peu importe le dirigeant.", en: "Solid institutions independent of individuals. Laws that apply regardless of who leads." },
+    q5: { ht: "Gouvènans baze sou done ak evidans. Pa sou popilis ak emosyon.", fr: "Une gouvernance basée sur les données et les preuves. Pas sur le populisme et l'émotion.", en: "Governance based on data and evidence. Not populism and emotion." },
+    votes: { q1: 64, q2: 89, q3: 145, q4: 203, q5: 178 } },
+
+  { id: 7, name: 'Roseline', where: 'Les Cayes', dept: 'sud',
+    q1: { ht: "Yon peyi kote sid la konte tankou lòt zòn yo. Kote wout nou pa vin pi mal apre chak sezon lapli.", fr: "Un pays où le sud compte autant que les autres régions. Où nos routes ne se dégradent pas chaque saison des pluies.", en: "A country where the south counts as much as other regions. Where our roads don't crumble each rainy season." },
+    q2: { ht: "Yon pèp ki sonje dezas 2021 yo. Ki konprann rezilyans se pa dwa, se yon bezwen.", fr: "Un peuple qui se souvient des désastres de 2021. Qui comprend que la résilience n'est pas un droit, c'est un besoin.", en: "A people who remember the 2021 disasters. Who understand resilience isn't a right, it's a necessity." },
+    q3: { ht: "Sosyete prepare pou siklòn, tranbleman tè. Kote kay yo solid. Kote sistèm dlo yo mache.", fr: "Une société préparée aux cyclones et tremblements. Où les maisons tiennent. Où le système d'eau fonctionne.", en: "A society prepared for hurricanes and earthquakes. Where houses hold. Where the water system works." },
+    q4: { ht: "Pwoteksyon sivil ki reyèl. Plan dijans ki aplike, pa sèlman ki ekri.", fr: "Une protection civile réelle. Des plans d'urgence appliqués, pas seulement écrits.", en: "Real civil protection. Emergency plans executed, not just written." },
+    q5: { ht: "Lidè ki vini nan teren an. Ki pa atann kamera pou vizite yon zòn ki soufri.", fr: "Des leaders qui viennent sur le terrain. Qui n'attendent pas les caméras pour visiter une zone sinistrée.", en: "Leaders who come to the ground. Who don't wait for cameras to visit a disaster area." },
+    votes: { q1: 167, q2: 78, q3: 112, q4: 203, q5: 98 } },
+
+  { id: 8, name: 'Pierre-Louis', where: 'Hinche', dept: 'centre',
+    q1: { ht: "Peyi kote Plato Santral pa bliye. Kote moun nou gen menm dwa ak moun kapital la.", fr: "Un pays où le Plateau Central n'est pas oublié. Où nos habitants ont les mêmes droits que ceux de la capitale.", en: "A country where the Central Plateau isn't forgotten. Where our people have the same rights as the capital." },
+    q2: { ht: "Yon pèp ki konekte. Kote Centre ak Ouest pale menm lang. Pa de peyi nan yon peyi.", fr: "Un peuple connecté. Où le Centre et l'Ouest parlent la même langue. Pas deux pays en un.", en: "A connected people. Where Centre and Ouest speak the same language. Not two countries in one." },
+    q3: { ht: "Sosyete kote enfrastrikti rive patou. Elektrisite. Wout. Entènèt.", fr: "Une société où l'infrastructure arrive partout. Électricité. Routes. Internet.", en: "A society where infrastructure reaches everywhere. Electricity. Roads. Internet." },
+    q4: { ht: "Desantralizasyon reyèl. Chak depatman gen lajan li. Pa depann sou Pòtoprens.", fr: "Une vraie décentralisation. Chaque département a son budget. Ne dépend pas de Port-au-Prince.", en: "Real decentralization. Each department has its budget. Doesn't depend on Port-au-Prince." },
+    q5: { ht: "Lidè lokal ki gen otorite. Majistra ki ka deside. Pa yo avèti minis.", fr: "Des leaders locaux qui ont l'autorité. Des maires qui peuvent décider. Pas des ministres avertis.", en: "Local leaders with authority. Mayors who can decide. Not ministers who are merely notified." },
+    votes: { q1: 78, q2: 112, q3: 167, q4: 234, q5: 156 } },
+
+  { id: 9, name: 'Fabiola', where: 'Pétion-Ville', dept: 'ouest',
+    q1: { ht: "Peyi kote fanm ap respekte. Kote nou ka travay, mache, viv san arakman.", fr: "Un pays où les femmes sont respectées. Où nous pouvons travailler, marcher, vivre sans harcèlement.", en: "A country where women are respected. Where we can work, walk, live without harassment." },
+    q2: { ht: "Yon pèp ki konprann 50% nan popilasyon se fanm. Egalite se pa yon konsèp, se yon reyalite ki mande aksyon.", fr: "Un peuple qui comprend que 50% de la population est femme. L'égalité n'est pas un concept, c'est une réalité qui exige l'action.", en: "A people who understand 50% of the population is women. Equality isn't a concept, it's a reality that demands action." },
+    q3: { ht: "Sosyete kote yon jèn fanm ka reve vin minis, doktè, enjenyè. Kote modèl egziste.", fr: "Une société où une jeune femme peut rêver d'être ministre, docteure, ingénieure. Où les modèles existent.", en: "A society where a young woman can dream of being a minister, doctor, engineer. Where role models exist." },
+    q4: { ht: "Lwa kont vyolans sou fanm ki aplike. Tribunal ki jije. Polis ki pwoteje.", fr: "Des lois contre la violence faite aux femmes qui s'appliquent. Des tribunaux qui jugent. Une police qui protège.", en: "Laws against violence against women that apply. Courts that judge. Police that protect." },
+    q5: { ht: "Lidè ki rekonèt fanm yo. Kabinè paritè. Pa sèlman sekretè oswa dekor.", fr: "Des leaders qui reconnaissent les femmes. Un cabinet paritaire. Pas seulement secrétaires ou décoration.", en: "Leaders who recognize women. A gender-parity cabinet. Not just secretaries or decoration." },
+    votes: { q1: 287, q2: 234, q3: 198, q4: 312, q5: 267 } },
+
+  { id: 10, name: 'Emmanuel', where: 'Jérémie', dept: 'grand-anse',
+    q1: { ht: "Peyi kote Grandans pa yon bliye. Kote wout pou rive se pa yon echèk.", fr: "Un pays où la Grand'Anse n'est pas oubliée. Où la route d'accès n'est pas un échec.", en: "A country where Grand'Anse isn't forgotten. Where the access road isn't a failure." },
+    q2: { ht: "Yon pèp ki renmen lakanpay li. Ki konprann richès peyi a soti nan jaden, nan lanmè, nan pyebwa.", fr: "Un peuple qui aime sa campagne. Qui comprend que la richesse du pays vient des jardins, de la mer, des arbres.", en: "A people who love their countryside. Who understand the country's wealth comes from gardens, sea, and trees." },
+    q3: { ht: "Sosyete kote anviwonman se yon priyorite. Kote nou pa kouri ak peyi a pou lajan tou kout.", fr: "Une société où l'environnement est une priorité. Où on ne vend pas le pays pour de l'argent à court terme.", en: "A society where environment is a priority. Where we don't sell the country for short-term money." },
+    q4: { ht: "Ministè anviwonman ki gen dan. Ki ka fèmen biznis ki polye. Ki ka plante 1 milyon pyebwa chak ane.", fr: "Un ministère de l'environnement qui a des dents. Qui peut fermer les entreprises polluantes. Qui peut planter 1 million d'arbres par an.", en: "An environment ministry with teeth. That can close polluting businesses. That can plant 1 million trees a year." },
+    q5: { ht: "Lidè ki gen kilti. Ki li liv. Ki konprann istwa. Ki respekte konesans.", fr: "Des leaders cultivés. Qui lisent. Qui comprennent l'histoire. Qui respectent le savoir.", en: "Cultured leaders. Who read. Who understand history. Who respect knowledge." },
+    votes: { q1: 98, q2: 267, q3: 178, q4: 56, q5: 234 } }
+];
+
+async function seedVoices() {
+  try {
+    const batch = db.batch();
+    VOICES.forEach(v => {
+      batch.set(db.collection('answers').doc('seed-' + v.id), {
+        id: v.id,
+        name: v.name,
+        where: v.where,
+        department: v.dept,
+        q1: v.q1, q2: v.q2, q3: v.q3, q4: v.q4, q5: v.q5,
+        votes: v.votes,
+        comments: { q1: [], q2: [], q3: [], q4: [], q5: [] },
+        createdAt: firebase.firestore.Timestamp.now()
+      });
+    });
+    await batch.commit();
+    log(VOICES.length + ' voix citoyennes initiales seedées.');
+  } catch (e) { log('Erreur voices: ' + e.message, true); }
+}
+
+/* =============================================
+   BATCH: seed all
+   ============================================= */
+async function seedAll() {
+  log('--- Début seed tout ---');
+  await seedStats();
+  await seedConsultedTypes();
+  await seedConsulted();
+  await seedVoices();
+  log('--- Seed tout terminé ---');
+}
+
+/* =============================================
+   ZERO STATS
+   ============================================= */
+async function zeroStats() {
+  if (!confirm('Remettre toutes les stats à zéro ? (le compteur public affichera 0)')) return;
+  try {
+    await db.collection('meta').doc('stats').set({
+      totalParticipants: 0,
+      totalAnswers: 0,
+      totalVotes: 0,
+      perQuestion: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
+      perDept: {
+        'ouest': 0, 'artibonite': 0, 'nord': 0, 'sud': 0, 'centre': 0,
+        'sud-est': 0, 'grand-anse': 0, 'nord-ouest': 0, 'nippes': 0,
+        'nord-est': 0, 'diaspora': 0
+      },
+      seeded: false
+    });
+    log('Stats remises à zéro.');
+  } catch (e) { log('Erreur zero stats: ' + e.message, true); }
+}
+
+/* =============================================
+   WIPE CONSULTED
+   ============================================= */
+async function wipeConsulted() {
+  if (!confirm('Supprimer toutes les institutions et personnalités de la collection consulted ?')) return;
+  try {
+    const snap = await db.collection('consulted').get();
+    const batch = db.batch();
+    snap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    log(snap.size + ' entrées supprimées de consulted.');
+  } catch (e) { log('Erreur wipe consulted: ' + e.message, true); }
+}
+
+/* =============================================
+   RESET
+   ============================================= */
+async function resetAll() {
+  if (!confirm('Supprimer toutes les vraies soumissions et re-seeder? (les seed-* et les institutions seront réécrits)')) return;
+  try {
+    log('Suppression des soumissions non-seed…');
+    const snap = await db.collection('answers').get();
+    const batch = db.batch();
+    let del = 0;
+    snap.docs.forEach(d => {
+      if (!d.id.startsWith('seed-')) { batch.delete(d.ref); del++; }
+    });
+    await batch.commit();
+    log(del + ' soumissions supprimées.');
+    await seedAll();
+  } catch (e) { log('Erreur reset: ' + e.message, true); }
+}
+</script>
+</body>
+</html>
