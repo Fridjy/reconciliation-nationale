@@ -94,14 +94,22 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 /* =============================================
-   Admin password gate (client-side only, trivial)
-   Actual security comes from Firestore rules + not deploying this file.
+   Admin password gate — SHA-256 of the password
+   is stored, not the password itself. Real
+   security still comes from Firestore rules.
    ============================================= */
-const ADMIN_PW = 'rn2026seed';
+const ADMIN_PW_HASH = '9f7cfb6919085f951721d7d0fc040f9ab8eb18cfe2a8532236ed1cd4183fcab8';
 
-function checkPw() {
+async function sha256Hex(str) {
+  const buf = new TextEncoder().encode(str);
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkPw() {
   const v = document.getElementById('pw').value;
-  if (v === ADMIN_PW) {
+  const hash = await sha256Hex(v);
+  if (hash === ADMIN_PW_HASH) {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initFirebase();
