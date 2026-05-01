@@ -470,6 +470,18 @@
      and keeps it live via onSnapshot. Falls back to 0
      if Firestore is unavailable.
      ============================================= */
+  // Baseline = totalParticipants on the first snapshot. Anything above
+  // that during this session counts as "today's delta" — it's a
+  // session-scoped approximation, not a true UTC-day window.
+  let baselineCount = null;
+
+  function paintTodayDelta() {
+    const text = '+' + MOBILIZATION.todayDelta;
+    document.querySelectorAll('[data-today-delta], [data-today-delta-sign]').forEach(el => {
+      el.textContent = text;
+    });
+  }
+
   function subscribeToStats() {
     if (typeof db === 'undefined' || !db) {
       console.log('Counter: Firestore not available, staying at 0');
@@ -485,6 +497,12 @@
           try { cachedStats = data; } catch (e) {}
 
           const newCount = Number(data.totalParticipants) || 0;
+          if (baselineCount === null) baselineCount = newCount;
+          const sessionDelta = Math.max(0, newCount - baselineCount);
+          if (sessionDelta !== MOBILIZATION.todayDelta) {
+            MOBILIZATION.todayDelta = sessionDelta;
+            paintTodayDelta();
+          }
           const delta = newCount - currentCount;
           if (delta !== 0) {
             currentCount = newCount;
