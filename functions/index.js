@@ -220,7 +220,29 @@ exports.submitAnswer = onCall(
       }
     }
     if (Object.keys(statsUpdate).length > 0) {
-      await db.collection('meta').doc('stats').set(statsUpdate, { merge: true });
+      // .update() interprets dotted keys as nested paths (perDept.ouest →
+      // perDept: { ouest: ... }); .set({merge:true}) would keep them as
+      // flat literal field names, which broke per-department counters.
+      // The meta/stats doc must exist (initialized once at deploy time).
+      const statsRef = db.collection('meta').doc('stats');
+      try {
+        await statsRef.update(statsUpdate);
+      } catch (e) {
+        // Fallback: doc missing → create the canonical zero structure
+        // and re-apply the increments via update().
+        await statsRef.set({
+          totalParticipants: 0,
+          totalAnswers: 0,
+          totalVotes: 0,
+          perQuestion: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
+          perDept: {
+            ouest: 0, artibonite: 0, nord: 0, sud: 0, centre: 0,
+            'sud-est': 0, 'grand-anse': 0, 'nord-ouest': 0,
+            nippes: 0, 'nord-est': 0, diaspora: 0
+          }
+        }, { merge: true });
+        await statsRef.update(statsUpdate);
+      }
     }
 
     return {
