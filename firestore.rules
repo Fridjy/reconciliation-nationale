@@ -1,22 +1,40 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Answers — public read for the citizen wall.
+    // Creation goes through the submitAnswer Cloud Function (admin SDK),
+    // which validates input, hashes the phone, and rate-limits.
+    // Direct client creates are denied so the CF can't be bypassed.
     match /answers/{answerId} {
       allow read: if true;
-      allow create: if true;
+      allow create: if false;
       allow update: if request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['votes', 'comments']);
+      allow delete: if false;
     }
+
+    // Stats & types — public read; only the CF (admin SDK) can write.
     match /meta/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow write: if false;
     }
+
+    // Consulted institutions & personalities — public read; admin-only writes
+    // (handled out-of-band via Firebase Console or a future admin CF).
     match /consulted/{orgId} {
       allow read: if true;
-      allow write: if true;
+      allow write: if false;
     }
+
+    // Rate-limit ledger — internal CF state, never exposed.
+    match /_ratelimit/{key} {
+      allow read, write: if false;
+    }
+
+    // Users collection is no longer written from the client; deny everything.
     match /users/{userId} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

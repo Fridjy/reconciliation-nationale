@@ -62,7 +62,16 @@ function buildPickerCards() {
   if (!el) return;
   const lang = currentLang;
 
-  let html = QUESTIONS.map((q, i) => {
+  // "Answer all 5" button \u2014 placed first
+  let html = `
+    <div class="qp-all" onclick="startFullForm()">
+      <span class="qp-all-icon">\u2630</span>
+      <span class="qp-all-text">${i18n[lang]['picker-all'] || 'R\u00e9pondre aux 5 questions'}</span>
+      <span class="qp-arrow">\u2192</span>
+    </div>
+  `;
+
+  html += QUESTIONS.map((q, i) => {
     const isAnswered = answeredQuestions.includes(q.id);
     const badgeText = isAnswered
       ? (i18n[lang]['picker-done'] || 'R\u00e9pondu')
@@ -78,15 +87,6 @@ function buildPickerCards() {
       </div>
     `;
   }).join('');
-
-  // "Answer all 5" button
-  html += `
-    <div class="qp-all" onclick="startFullForm()">
-      <span class="qp-all-icon">\u2630</span>
-      <span class="qp-all-text">${i18n[lang]['picker-all'] || 'R\u00e9pondre aux 5 questions'}</span>
-      <span class="qp-arrow">\u2192</span>
-    </div>
-  `;
 
   el.innerHTML = html;
 }
@@ -548,15 +548,12 @@ async function handleRegister(e) {
   const password = document.getElementById('reg-password').value;
   const isAnon = document.getElementById('reg-anon').checked;
 
-  // Save user (department stored explicitly so submission won't need to re-parse)
+  // Save user locally only — PII (address, email) never leaves the browser.
+  // Submissions go through the submitAnswer Cloud Function, which only
+  // persists name + department + phoneHash on the answer doc.
   const user = { name, phone, email, address, department, isAnon, registered: true };
   localStorage.setItem('rn_user', JSON.stringify(user));
   if (password) localStorage.setItem('rn_auth', btoa(phone.replace(/\s+/g, '') + ':' + password));
-
-  // Save to Firestore
-  if (typeof DB !== 'undefined' && db) {
-    try { await DB.saveUser(user); } catch (e) { console.warn('User save error:', e.message); }
-  }
 
   // Submit pending answer(s)
   if (fullFormMode) {
