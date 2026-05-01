@@ -84,6 +84,20 @@ const DB = {
   // The CF validates, hashes the phone (SHA-256), merges by phoneHash,
   // and increments meta/stats. Client never writes answers/ or meta/ directly.
   async submitAnswer(entry) {
+    // Lazy fallback: if firebase-config.js couldn't get the regional
+    // functions instance at boot, try again here before giving up.
+    if ((typeof functions === 'undefined' || !functions) && typeof firebase !== 'undefined') {
+      try {
+        const app = firebase.app();
+        if (app && typeof app.functions === 'function') {
+          functions = app.functions('us-central1');
+        } else if (typeof firebase.functions === 'function') {
+          functions = firebase.functions('us-central1');
+        }
+      } catch (e) {
+        // fall through — error surfaces below
+      }
+    }
     if (typeof functions === 'undefined' || !functions) {
       throw new Error('Cloud Functions SDK not initialized');
     }

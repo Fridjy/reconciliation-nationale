@@ -24,10 +24,24 @@ let functions = null;
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     db.enablePersistence({ synchronizeTabs: true }).catch(function() {});
-    if (typeof firebase.functions === 'function') {
-      functions = firebase.functions('us-central1');
+
+    try {
+      // v10 compat: get the default app first, then ask it for the
+      // regional functions instance. firebase.functions(region) used to
+      // work in v8 but is unreliable in v10.
+      const app = firebase.app();
+      if (app && typeof app.functions === 'function') {
+        functions = app.functions('us-central1');
+      } else if (typeof firebase.functions === 'function') {
+        functions = firebase.functions('us-central1');
+      }
+      if (!functions) {
+        console.warn('Firebase Functions SDK could not be initialized');
+      }
+    } catch (e) {
+      console.warn('Functions init error:', e && e.message);
     }
-    console.log('Firebase connected');
+    console.log('Firebase connected', { db: !!db, functions: !!functions });
   } catch (e) {
     console.warn('Firebase init failed:', e.message);
   }
