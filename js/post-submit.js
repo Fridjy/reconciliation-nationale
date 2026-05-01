@@ -309,13 +309,18 @@
   }
 
   function currentVoiceNumber() {
-    // Read from any [data-count-sync] element; fall back to a sensible floor
+    // Read the live participant count if cached; otherwise read from any
+    // [data-count-sync] element. The user has just submitted, so they
+    // are at minimum voice #1 — never display a hard-coded floor.
+    if (typeof cachedStats === 'object' && cachedStats && typeof cachedStats.totalParticipants === 'number') {
+      return Math.max(cachedStats.totalParticipants, 1);
+    }
     const el = document.querySelector('[data-count-sync]');
     if (el) {
       const n = parseInt(String(el.textContent).replace(/[^\d]/g, ''), 10);
-      if (isFinite(n) && n > 0) return n;
+      if (isFinite(n) && n >= 0) return Math.max(n, 1);
     }
-    return 12840;
+    return 1;
   }
 
   function formatNum(n) {
