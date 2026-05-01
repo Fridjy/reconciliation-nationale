@@ -105,15 +105,15 @@ const DB = {
     return res.data.answerId;
   },
 
-  // Vote on an answer
+  // Vote on an answer.
+  // Firestore rules allow only the votes/comments subset to be updated
+  // on /answers; meta/stats is admin-only, so the global counter is
+  // not updated client-side anymore (the rapport reads /answers
+  // aggregates instead).
   async vote(answerId, qId, delta) {
     const ref = db.collection('answers').doc(answerId);
     await ref.update({
       [`votes.${qId}`]: firebase.firestore.FieldValue.increment(delta)
-    });
-    // Update global vote count
-    await db.collection('meta').doc('stats').update({
-      totalVotes: firebase.firestore.FieldValue.increment(delta)
     });
   },
 

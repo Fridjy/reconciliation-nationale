@@ -160,7 +160,15 @@ async function doSubmitFullForm(user) {
   });
 
   if (typeof DB !== 'undefined' && db) {
-    try { const docId = await DB.submitAnswer(newEntry); newEntry.id = docId; } catch (e) { newEntry.id = Date.now(); }
+    try {
+      const docId = await DB.submitAnswer(newEntry);
+      newEntry.id = docId;
+    } catch (e) {
+      console.error('submitAnswer (full form) failed:', e);
+      const msg = (e && e.message) ? e.message : 'Erreur réseau';
+      showToast((i18n[currentLang]['submit-error'] || 'Échec de la soumission') + ' — ' + msg, 6000);
+      return; // do not pretend success
+    }
   } else {
     newEntry.id = Date.now();
   }
@@ -287,8 +295,17 @@ async function doSubmitSingleAnswer(user) {
 
   let docId = null;
   if (typeof DB !== 'undefined' && typeof functions !== 'undefined' && functions) {
-    try { docId = await DB.submitAnswer(entry); }
-    catch (e) { console.warn('submitAnswer failed:', e.message); }
+    try {
+      docId = await DB.submitAnswer(entry);
+    } catch (e) {
+      console.error('submitAnswer (single) failed:', e);
+      const msg = (e && e.message) ? e.message : 'Erreur réseau';
+      showToast((i18n[currentLang]['submit-error'] || 'Échec de la soumission') + ' — ' + msg, 6000);
+      return;
+    }
+  } else {
+    showToast(i18n[currentLang]['submit-error'] || 'Échec de la soumission — service indisponible', 6000);
+    return;
   }
 
   // Sync local UI state so the answer appears immediately without a refetch.
