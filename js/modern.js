@@ -517,6 +517,11 @@
           if (typeof buildQuestionButtons === 'function' && document.getElementById('qb-grid')) {
             try { buildQuestionButtons(); } catch (e) {}
           }
+          // Re-render the national map if it's the visible page so dept
+          // counts stay in sync with meta/stats.perDept on every tick.
+          if (typeof renderMap === 'function' && document.querySelector('.map-svg')) {
+            try { renderMap(); } catch (e) {}
+          }
           // Map page: re-render with the live perDept baseline
           if (typeof renderMap === 'function' && document.querySelector('.map-svg')) {
             try { renderMap(); } catch (e) {}
