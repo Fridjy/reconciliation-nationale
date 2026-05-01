@@ -1,4 +1,5 @@
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const crypto = require('crypto');
@@ -211,6 +212,7 @@ exports.submitAnswer = onCall(
     const statsUpdate = {};
     if (isNew) {
       statsUpdate.totalParticipants = FieldValue.increment(1);
+      statsUpdate.todayCount = FieldValue.increment(1);
       statsUpdate[`perDept.${department}`] = FieldValue.increment(1);
     }
     if (newQuestionIds.length > 0) {
@@ -234,6 +236,7 @@ exports.submitAnswer = onCall(
           totalParticipants: 0,
           totalAnswers: 0,
           totalVotes: 0,
+          todayCount: 0,
           perQuestion: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
           perDept: {
             ouest: 0, artibonite: 0, nord: 0, sud: 0, centre: 0,
@@ -250,5 +253,20 @@ exports.submitAnswer = onCall(
       isNew,
       newQuestionCount: newQuestionIds.length
     };
+  }
+);
+
+/* ============================================================
+   resetDailyCounter — fires every day at 00:00 UTC, zeroes
+   meta/stats.todayCount so the homepage "+N aujourd'hui" pill
+   restarts at 0 each calendar day.
+   ============================================================ */
+exports.resetDailyCounter = onSchedule(
+  { schedule: '0 0 * * *', timeZone: 'UTC', region: 'us-central1' },
+  async () => {
+    await db.collection('meta').doc('stats').update({
+      todayCount: 0,
+      todayResetAt: FieldValue.serverTimestamp()
+    });
   }
 );

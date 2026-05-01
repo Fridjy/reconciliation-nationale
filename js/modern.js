@@ -470,11 +470,6 @@
      and keeps it live via onSnapshot. Falls back to 0
      if Firestore is unavailable.
      ============================================= */
-  // Baseline = totalParticipants on the first snapshot. Anything above
-  // that during this session counts as "today's delta" — it's a
-  // session-scoped approximation, not a true UTC-day window.
-  let baselineCount = null;
-
   function paintTodayDelta() {
     const text = '+' + MOBILIZATION.todayDelta;
     document.querySelectorAll('[data-today-delta], [data-today-delta-sign]').forEach(el => {
@@ -497,10 +492,12 @@
           try { cachedStats = data; } catch (e) {}
 
           const newCount = Number(data.totalParticipants) || 0;
-          if (baselineCount === null) baselineCount = newCount;
-          const sessionDelta = Math.max(0, newCount - baselineCount);
-          if (sessionDelta !== MOBILIZATION.todayDelta) {
-            MOBILIZATION.todayDelta = sessionDelta;
+          // Strict UTC-day count: server-incremented on each new
+          // participant, reset to 0 by the resetDailyCounter scheduled CF
+          // every day at 00:00 UTC.
+          const todayN = Number(data.todayCount) || 0;
+          if (todayN !== MOBILIZATION.todayDelta) {
+            MOBILIZATION.todayDelta = todayN;
             paintTodayDelta();
           }
           const delta = newCount - currentCount;
