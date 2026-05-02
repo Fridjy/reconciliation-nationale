@@ -257,12 +257,12 @@ exports.submitAnswer = onCall(
 );
 
 /* ============================================================
-   resetDailyCounter — fires every day at 00:00 UTC, zeroes
-   meta/stats.todayCount so the homepage "+N aujourd'hui" pill
-   restarts at 0 each calendar day.
+   resetDailyCounter — fires every day at 00:00 America/Port-au-Prince
+   (Haiti local time, DST-aware), zeroes meta/stats.todayCount so the
+   homepage "+N aujourd'hui" pill restarts at 0 each Haitian day.
    ============================================================ */
 exports.resetDailyCounter = onSchedule(
-  { schedule: '0 0 * * *', timeZone: 'UTC', region: 'us-central1' },
+  { schedule: '0 0 * * *', timeZone: 'America/Port-au-Prince', region: 'us-central1' },
   async () => {
     await db.collection('meta').doc('stats').update({
       todayCount: 0,
