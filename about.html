@@ -114,6 +114,57 @@
     content: " \00BB"; color: var(--red); font-size: 0.9em;
     font-family: 'Playfair Display', serif; font-weight: 400;
   }
+
+  /* 5-question editorial list */
+  .about-questions { margin: 28px 0 8px; display: flex; flex-direction: column; gap: 22px; }
+  .about-q { padding-left: 18px; border-left: 2px solid var(--ink-08); }
+  .about-q .about-q-creole {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2;
+    color: var(--red); margin-bottom: 4px;
+  }
+  .about-q .about-q-fr {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(18px, 2vw, 22px); line-height: 1.2;
+    letter-spacing: -0.015em; color: var(--ink); margin-bottom: 8px;
+  }
+  .about-q p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; line-height: 1.65; color: var(--ink-60);
+    max-width: 60ch; margin: 0;
+  }
+
+  /* 3-ask CTA list */
+  .about-asks {
+    margin: 32px 0 8px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 780px) { .about-asks { grid-template-columns: 1fr; } }
+  .about-ask {
+    background: var(--white);
+    border: 0.5px solid var(--ink-08);
+    border-radius: var(--radius-md);
+    padding: 22px 22px 26px;
+    position: relative;
+  }
+  .about-ask::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: 2px; background: var(--red);
+  }
+  .about-ask-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px; font-weight: 500;
+  }
+  .about-ask h4 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 20px; line-height: 1.2; letter-spacing: -0.02em;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .about-ask p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; line-height: 1.55; color: var(--ink-60); margin: 0;
+  }
 </style>
 <link rel="stylesheet" href="css/modern.css">
 </head>
@@ -148,46 +199,100 @@
 
 <div class="page-content">
   <div class="page-head">
-    <span class="page-kicker" data-i18n="about-kicker">Mouvman Sitwayen · Ayiti 2026</span>
-    <h2 data-i18n="about-title">Poukisa platfòm sa a<em>?</em></h2>
+    <span class="page-kicker">Mouvement Citoyen · Haïti 2026</span>
+    <h2>Pourquoi cette plateforme<em>?</em></h2>
   </div>
 
   <div class="about-block">
-    <h3>Mission</h3>
-    <p data-i18n="about-p1">Pa gen ankèt. Pa gen sondaj. Se yon apèl dirèk bay chak Ayisyen: isit la, nan dyaspora, nan pwovens, nan kapital. Si w vle peyi a chanje, pale. Si w pa pale, lòt moun pral deside pou ou — ankò.</p>
-    <p data-i18n="about-p2"><strong>5 kesyon. Pa gen mwayèn nan pòs. Pa gen reponn olye. Ekri sa w panse vre.</strong></p>
+    <h3>La crise n'est pas seulement sécuritaire ou économique</h3>
+    <p>Haïti traverse la phase la plus critique de son histoire contemporaine. L'imbrication d'une crise économique persistante, d'une instabilité politique chronique et d'une fragmentation sociale profonde produit un effondrement qui touche chaque foyer.</p>
+    <p>Mais cette situation n'est pas conjoncturelle. Elle ne se réduit pas à la sécurité, ni à l'économie, ni à la politique prise séparément. Elle révèle une vérité plus profonde : <strong>nous ne nous sommes jamais mis d'accord, en tant que nation, sur ce que nous voulons être ensemble.</strong></p>
+    <p>Les inégalités sociales, l'exclusion durable de larges segments de la population, la faiblesse des institutions publiques nourrissent un sentiment diffus d'injustice. Cette injustice se transforme en défiance. La défiance fragilise les institutions. Et le cycle se referme.</p>
   </div>
 
-  <div class="about-quote" data-i18n="tagline">
-    Yon sèl peyi. Yon sèl tab. Yon sèl konvèsasyon.
+  <div class="about-quote">
+    Nous ne nous sommes jamais mis d'accord, en tant que nation, sur ce que nous voulons être ensemble.
   </div>
 
   <div class="about-block">
-    <h3>Qui sommes-nous</h3>
-    <p data-i18n="about-p3">Yon platfòm sitwayen endepandan. San pati politik. San afilyasyon gouvènmantal. Sèlman vwa pèp Ayisyen an.</p>
-    <p data-i18n="about-p4">Aujourd'hui, la crise nous donne l'opportunité. L'opportunité de reconfigurer totalement. L'occasion de faire une entente nationale sur ce que nous voulons, non pas pour la garder pour nous, mais pour l'extérioriser. Pour prendre conscience, ensemble et publiquement, de qui nous sommes.</p>
-    <p>Réconciliation Nationale est une initiative de <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">LANS</a> — Leadership Ayitien pour une Nouvelle Société.</p>
+    <h3>Pourquoi parler de réconciliation aujourd'hui</h3>
+    <p>La réconciliation nationale n'est pas un dialogue de circonstance ni un compromis politique passager. Elle est <strong>la refondation du pacte qui nous lie les uns aux autres.</strong></p>
+    <p>L'expérience des sociétés sorties de crise, en Afrique du Sud, en Tunisie, au Bénin, démontre une chose simple : aucune réconciliation ne tient sans justice sociale. Aucune justice sociale ne tient sans une nouvelle dynamique économique. Et aucune dynamique économique ne tient sans la confiance retrouvée entre les citoyens et les institutions.</p>
+    <p>La réconciliation que nous proposons n'est pas un pardon abstrait. Elle est un projet concret de transformation, qui garantit les droits fondamentaux : la sécurité, l'éducation, la santé, le logement décent, l'accès à l'eau et à l'énergie. Elle exige une utilisation efficace des ressources nationales et une redistribution plus juste des richesses.</p>
   </div>
 
-  <div class="about-values">
-    <div class="about-value">
-      <h4>Indépendance</h4>
-      <p>Aucun parti politique. Aucun gouvernement. Aucune influence externe. Uniquement la voix des citoyens.</p>
+  <div class="about-block">
+    <h3>Pourquoi cinq questions</h3>
+    <p>Nous aurions pu poser cent questions. Nous en avons choisi cinq, parce qu'elles touchent au fond.</p>
+    <div class="about-questions">
+      <div class="about-q">
+        <div class="about-q-creole">Ki peyi nou vle ?</div>
+        <div class="about-q-fr">Quel pays voulons-nous ?</div>
+        <p>Cette question précède toutes les autres. Avant de débattre des moyens, il faut s'entendre sur la destination.</p>
+      </div>
+      <div class="about-q">
+        <div class="about-q-creole">Nan ki anviwònman nou vle viv ?</div>
+        <div class="about-q-fr">Dans quel environnement voulons-nous vivre ?</div>
+        <p>La sécurité, l'espace public, la qualité de vie, le rapport à la nature et au territoire.</p>
+      </div>
+      <div class="about-q">
+        <div class="about-q-creole">Ki moun nou vle ye ?</div>
+        <div class="about-q-fr">Qui voulons-nous être ?</div>
+        <p>Notre identité commune, notre rapport à notre histoire, à notre langue, à notre culture, à notre place dans le monde.</p>
+      </div>
+      <div class="about-q">
+        <div class="about-q-creole">Ki enstitisyon ke nou bezwen ?</div>
+        <div class="about-q-fr">Quelles institutions nous faut-il ?</div>
+        <p>L'État, la justice, l'école, la santé, et la manière dont elles servent les citoyens plutôt que de les exclure.</p>
+      </div>
+      <div class="about-q">
+        <div class="about-q-creole">Ki lidè nou bezwen ?</div>
+        <div class="about-q-fr">Quels dirigeants nous faut-il ?</div>
+        <p>Pas des noms. Des qualités. Des manières de gouverner. Des comptes à rendre.</p>
+      </div>
     </div>
-    <div class="about-value">
-      <h4>Transparence</h4>
-      <p>Toutes les réponses sont publiques. Toutes les données sont ouvertes. Tout le monde peut voir ce que les autres ont écrit.</p>
-    </div>
-    <div class="about-value">
-      <h4>Inclusion</h4>
-      <p>Tous les Haïtiens : ici, en diaspora, en province, dans la capitale. 3 langues. Tous les départements.</p>
+    <p style="margin-top:22px;">Ces cinq questions ne se répondent pas en un mot. Elles ouvrent un espace pour dire ce que nous portons depuis longtemps sans que personne ne nous l'ait jamais demandé.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>Ce que nous ferons de votre parole</h3>
+    <p>Pendant 30 jours, votre voix entre dans une base de données anonyme et sécurisée, accessible à tous une fois la consultation terminée. <strong>Aucune réponse n'est attribuée à un individu. Aucun numéro de téléphone n'est conservé après vérification.</strong> La transparence est totale : les données brutes seront publiées.</p>
+    <p>Ce cadre ne remplace pas l'État. Il ne se substitue à aucune institution. Il établit un socle commun, issu de la parole citoyenne, sur lequel toutes les forces du pays peuvent s'appuyer pour agir.</p>
+  </div>
+
+  <div class="about-block">
+    <h3>Pourquoi maintenant</h3>
+    <p>Parce que les solutions venues d'ailleurs n'ont pas fonctionné. Parce que les accords politiques entre élites n'ont pas tenu. Parce que les rapports d'experts s'empilent depuis des décennies sans changer la vie de personne.</p>
+    <p>Parce que cette crise, aussi douloureuse soit-elle, ouvre une fenêtre rare. Quand l'ancien ordre s'effondre, le nouveau ne peut naître que de ce que nous décidons ensemble. <strong>Pas dans des bureaux où nous n'entrons pas. Pas dans des langues qui ne sont pas la nôtre. Ici. Maintenant. Entre nous.</strong></p>
+  </div>
+
+  <div class="about-block">
+    <h3>Ce que nous vous demandons</h3>
+    <p>Trois choses simples.</p>
+    <div class="about-asks">
+      <div class="about-ask">
+        <div class="about-ask-num">01</div>
+        <h4>Répondez aux cinq questions</h4>
+        <p>Cinq minutes suffisent. Votre réponse compte autant que celle de n'importe qui d'autre.</p>
+      </div>
+      <div class="about-ask">
+        <div class="about-ask-num">02</div>
+        <h4>Partagez le lien</h4>
+        <p>À cinq personnes que vous aimez. Un voisin, un parent dans la diaspora, un ami qui a perdu espoir.</p>
+      </div>
+      <div class="about-ask">
+        <div class="about-ask-num">03</div>
+        <h4>Revenez le 30 mai</h4>
+        <p>Pour découvrir ce que le pays a répondu. Et ce que nous décidons d'en faire.</p>
+      </div>
     </div>
   </div>
 
   <div class="about-block" style="margin-top:48px;">
     <h3>Contactez-nous</h3>
     <p>E-mail : <strong>contact@reconciliation-nationale.ht</strong></p>
-    <p>Site web LANS : <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener" style="color:var(--blood);border-bottom:1px solid var(--blood);">lansayiti.netlify.app</a></p>
+    <p>Site web LANS : <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener">lansayiti.netlify.app</a></p>
+    <p style="margin-top:12px;font-size:14px;color:var(--ink-50);">Réconciliation Nationale est une initiative de <a href="https://lansayiti.netlify.app" target="_blank" rel="noopener">LANS</a> — Leadership Ayitien pour une Nouvelle Société.</p>
   </div>
 </div>
 
